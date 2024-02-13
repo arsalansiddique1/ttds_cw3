@@ -13,11 +13,11 @@
       </div>
     </section>
     <div class="pagination" v-if="images.length > 0">
-      <button @click="prevPage" :disabled="currentPage === 1">
+      <button @click="prevPage" :disabled="currentPage === 1" class="circular-btn">
         <span>&#9664;</span> <!-- Unicode character for left arrow -->
       </button>
       <span>{{ currentPage }}</span>
-      <button @click="nextPage" :disabled="currentPage === totalPages">
+      <button @click="nextPage" :disabled="currentPage === totalPages" class="circular-btn">
         <span>&#9654;</span> <!-- Unicode character for right arrow -->
       </button>
     </div>
@@ -36,7 +36,7 @@ export default {
       images: [],
       loading: false,
       currentPage: 1,
-      pageSize: 25, // Number of images per page
+      pageSize: 10, // Number of images per page
       preloadedImages: [],
     };
   },
@@ -142,5 +142,22 @@ img {
 
 .pagination button {
   margin: 0 5px;
+}
+
+.circular-btn {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background-color: #ddd; /* Add background color for circular buttons */
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.circular-btn span {
+  font-size: 20px;
 }
 </style>
