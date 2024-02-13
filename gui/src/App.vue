@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import API from './API';
 
 export default {
   name: 'app',
@@ -27,24 +28,13 @@ export default {
   methods: {
     formSubmitted() {
       this.loading = true;
-
-      this.images = this.getWikiLinks();
-      this.loading = false;
+      this.images = [];
+      API.search(this.searchTerm)
+        .then(images => {
+          this.images = images.slice(0, 200); // Limiting the number of results to 200
+          this.loading = false;
+        });
     },
-    getWikiLinks(){
-      return [
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Mtberlin_%2830745595202%29.jpg/800px-Mtberlin_%2830745595202%29.jpg',
-      'https://upload.wikimedia.org/wikipedia/commons/d/dd/Presidente_Nayib_Bukele_%28cropped%29.jpg',
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Magna_Lykseth_in_Tristan_och_Isolde_at_Kungliga_Operan_1909_-_SMV_-_GL164.jpg/800px-Magna_Lykseth_in_Tristan_och_Isolde_at_Kungliga_Operan_1909_-_SMV_-_GL164.jpg',
-      'https://upload.wikimedia.org/wikipedia/commons/6/6d/Puu_Oo_cropped.jpg',
-      'https://upload.wikimedia.org/wikipedia/commons/3/38/Great_American_Biotic_Interchange_examples.svg',
-      'https://upload.wikimedia.org/wikipedia/commons/3/37/Turritellatricarinata.jpg',
-      'https://upload.wikimedia.org/wikipedia/commons/5/58/Life_reconstruction_of_the_terror_bird_Titanis_walleri.jpg',
-      'https://upload.wikimedia.org/wikipedia/en/c/c1/Charles_Mitchill_Bogert_1955.jpg',
-      'https://upload.wikimedia.org/wikipedia/commons/3/34/Mesa_County_Court_House.jpg',
-      'https://upload.wikimedia.org/wikipedia/commons/6/60/Colorado_in_United_States.svg'
-      ];
-    }
   },
 };
 </script>
