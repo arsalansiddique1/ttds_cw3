@@ -6,9 +6,11 @@ export default {
     return fetch(url)
       .then(response => response.json())
       .then(result => {
-        const urls = result.results.map(item => item.filenames);
-        console.log('Image URLs:', urls);
-        return urls;
+        const data = result.results.map(item => ({
+          url: item.filenames,
+          caption: item.captions
+        }));
+        return data;
       });
   },
 };
