@@ -17,6 +17,8 @@
         <span>&#9664;</span> <!-- Unicode character for left arrow -->
       </button>
       <span>{{ currentPage }}</span>
+      <span> of </span>
+      <span>{{ totalPages }}</span> <!-- Display total number of pages -->
       <button @click="nextPage" :disabled="currentPage === totalPages" class="circular-btn">
         <span>&#9654;</span> <!-- Unicode character for right arrow -->
       </button>
@@ -36,14 +38,12 @@ export default {
       images: [],
       loading: false,
       currentPage: 1,
-      pageSize: 10, // Number of images per page
+      totalPages: 1,
+      pageSize: 30, // Number of images per page
       preloadedImages: [],
     };
   },
   computed: {
-    totalPages() {
-      return Math.ceil(this.images.length / this.pageSize);
-    },
     displayedImages() {
       const startIndex = (this.currentPage - 1) * this.pageSize;
       const endIndex = this.currentPage * this.pageSize;
@@ -63,6 +63,7 @@ export default {
             caption: image.caption,
             showCaption: false, // Initialize showCaption to false
           }));
+          this.totalPages = Math.ceil(this.images.length / this.pageSize);
           this.loading = false;
           this.preloadNextPageImages(); // Preload images for next page after search
         });
@@ -131,17 +132,8 @@ img {
   cursor: pointer; /* Add cursor pointer to indicate image clickability */
 }
 
-.caption {
-  background-color: lightgray; /* Add light gray background to caption */
-  padding: 5px; /* Add padding to caption */
-}
-
 .pagination {
   margin-top: 20px;
-}
-
-.pagination button {
-  margin: 0 5px;
 }
 
 .circular-btn {
@@ -155,9 +147,5 @@ img {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-}
-
-.circular-btn span {
-  font-size: 20px;
 }
 </style>
