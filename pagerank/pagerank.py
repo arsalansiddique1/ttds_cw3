@@ -1,4 +1,5 @@
 import csv
+import math
 import sys
 
 import networkx as nx
@@ -91,8 +92,7 @@ def page_rank(id_file, links_file, results_file):
 
     print('Calculating pagerank...')
 
-    # TODO: implement page rank. Function below is a place holder
-    results = nx.pagerank(graph)
+    results = algorithm(graph)
 
     # read ids file
     ids = dict()
@@ -105,6 +105,46 @@ def page_rank(id_file, links_file, results_file):
     with open(results_file, 'w') as results_writer:
         for page in tqdm(results, desc='Writing results file'):
             results_writer.write('"' + ids[page] + '",' + str(results[page]) + '\n')
+
+
+def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10):
+    n = len(graph)
+    initial = 1 / n
+    for node in graph.nodes:
+        graph.nodes[node]['pr'] = [initial, -1]
+
+    # this function checks if the stopping requirement has been reached
+    def stop():
+        total = 0
+        for node in graph:
+            current_value = graph.nodes[node]['pr'][current]
+            previous_value = graph.nodes[node]['pr'][not current]
+            total += (current_value - previous_value) ** 2
+        return math.sqrt(total) < stopping
+
+    # apply page rank algorithm until convergence
+    current = True
+    iteration = 0
+    while not stop():
+        iteration += 1
+        print("Running page rank iteration", iteration)
+
+        # this is algorithm from the Web Search 1 lecture slides
+        for node in graph:
+            graph.nodes[node]['pr'][current] = \
+                ((1-d)/n
+                 +
+                 d * sum([graph.nodes[y]['pr'][not current]/len(list(graph.successors(y)))
+                          for y in graph.predecessors(node)]))
+
+        current = not current
+
+    # finally, write results back to dictionary
+    results = dict()
+    for node in graph:
+        results[node] = graph.nodes[node]['pr'][not current]
+
+    return results
 
 
 def main():
