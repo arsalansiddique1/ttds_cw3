@@ -1,44 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import os
+import psycopg2
 
-#functions for csv load
-import hashlib
-import urllib.parse
-import csv
-
-def load_csv_to_dict_list(csv_file):
-    data = []
-    with open(csv_file, mode='r', newline='', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            row["filenames"] = row["filenames"].replace(" ", "_")
-            data.append(row)
-    return data
-
-def url_from_filenames(data):
-    
-    modified_data = []
-    
-    url_start = "https://upload.wikimedia.org/wikipedia/commons/"
-    
-    for entry in data:
-        
-        mod_entry = entry.copy()
-        decoded = urllib.parse.unquote(mod_entry["filenames"])
-        md5_hash = hashlib.md5(str(decoded).encode('utf-8')).hexdigest()
-        
-        file_name = mod_entry["filenames"]
-        
-        mod_entry["filenames"] = f"{url_start}{md5_hash[0]}/{md5_hash[0:2]}/{file_name}"
-        
-        modified_data.append(mod_entry)
-        
-    return modified_data
-
-#load data
-csv_file = 'images_with_captions.csv'
-raw_data = load_csv_to_dict_list(csv_file)
-data = url_from_filenames(raw_data)
 
 #backend
 app = FastAPI()
@@ -52,6 +16,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Read database credentials from environment variables
+DB_NAME = os.getenv("DBNAME")
+DB_USER = os.getenv("DBUSER")
+DB_PASSWORD = os.getenv("DBPASSWORD")
+DB_HOST = os.getenv("DBHOST")
+
+# Function to search PostgreSQL database
+def search_db(query):
+    conn = psycopg2.connect(
+        dbname=DB_NAME,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        host=DB_HOST
+    )
+    cursor = conn.cursor()
+
+    # Query PostgreSQL database
+    cursor.execute('''SELECT * FROM your_table_name WHERE caption ILIKE %s''', ('%' + query + '%',))
+    columns = [desc[0] for desc in cursor.description]  # Get column names
+    results = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+    # Close connection
+    conn.close()
+
+    return results
+
 
 @app.get("/")
 def read_root():
@@ -60,11 +50,8 @@ def read_root():
 @app.get("/search")
 def search(query: str):
     # Implement search logic here
-    results = [result for result in data if query.lower() in result["captions"].lower()]
+    results = search_db(query)
     return {"results": results}
-
-
-
 
 
 # sample_data = [
