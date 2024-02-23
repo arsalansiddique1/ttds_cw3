@@ -1,6 +1,6 @@
-from index_search import read_queries_from_file, load_index_from_file
+from utils import *
 import math
-
+from index_operations import load_index_from_file
 
 #### TFIDF scoring
 
