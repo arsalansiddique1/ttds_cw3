@@ -30,9 +30,9 @@ positional_index = load_index_from_file('index.txt')
 
 
 #Testing TF-IDF scoring (seems to work)
-produce_tfidf_results(inverted_index = positional_index, queries_filename="queries.txt", results_filename="results.test.txt")
+produce_tfidf_results(inverted_index = positional_index, queries_filename="queries.txt", results_filename="tfidf_results.txt")
 
-
+'''
 # Testing queries
 start_time = time.perf_counter()  # Start timing
 simple_result = perform_search('wilhelm', positional_index)
@@ -64,4 +64,4 @@ duration = end_time - start_time  # Calculate duration
 print(f"Prase Search Time: {duration:.6f} seconds")
 
 
-
+'''
