@@ -1,3 +1,4 @@
+import math
 import re
 import string
 import csv
@@ -7,6 +8,7 @@ from collections import defaultdict
 from nltk.stem import PorterStemmer
 from search_operations import *
 from index_operations import *
+from tfidf_scoring import *
 stopwords_file = "ttds_2023_english_stop_words.txt"
 
 # Reading the csv file
@@ -26,6 +28,28 @@ def read_csv_file(file_path):
     return text_dict
 
 
+def read_queries_from_file(filename):
+    """
+    Reads all the queries from a file and returns them as a list.
+    """
+    queries = []
+    with open(filename, 'r') as f:
+        for line in f.readlines():
+            query = line.strip().split(' ', 1)[1]
+            queries.append(query)
+  
+    return queries
+
+def write_results_to_file(results, filename):
+    """
+    Writes the results to a file given the dict with keys as query numbers and values as doc_ids.
+    """
+    with open(filename, 'w') as f:
+        for query_num, doc_ids in results.items():
+            for doc_id in doc_ids:
+                f.write(f"{query_num},{doc_id}\n")
+
+
 
 file_path = 'images_with_captions.csv'
 captions_by_title = read_csv_file(file_path)
@@ -43,6 +67,11 @@ positional_index = load_index_from_file('index.txt')
 
 
 
+
+#Testing TF-IDF scoring (seems to work)
+produce_tfidf_results(inverted_index = positional_index, queries_filename="queries.txt", results_filename="results.test.txt")
+
+'''
 # Testing queries
 start_time = time.perf_counter()  # Start timing
 simple_result = perform_search('wilhelm', positional_index)
@@ -74,4 +103,4 @@ duration = end_time - start_time  # Calculate duration
 print(f"Prase Search Time: {duration:.6f} seconds")
 
 
-
+'''
