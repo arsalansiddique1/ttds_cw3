@@ -1,7 +1,7 @@
 import re
 import string
 import csv
-
+import time
 from itertools import filterfalse
 from collections import defaultdict
 
@@ -170,20 +170,50 @@ def phrase_search(query, positional_index):
         return phrase_results
     else:
         return set()
+    
+    # Boolean search with timing
+def boolean_search_with_timing(query, positional_index):
+    start_time = time.perf_counter()  # Start timing
+    # Original boolean search code
+    result = boolean_search(query, positional_index)
+    end_time = time.perf_counter()  # End timing
+    duration = end_time - start_time  # Calculate duration
+    print(f"Boolean Search Time: {duration:.6f} seconds")
+    return result
+
+# Proximity search with timing
+def proximity_search_with_timing(query, k, positional_index):
+    start_time = time.perf_counter()  # Start timing
+    # Original proximity search code
+    result = proximity_search(query, k, positional_index)
+    end_time = time.perf_counter()  # End timing
+    duration = end_time - start_time  # Calculate duration
+    print(f"Proximity Search Time: {duration:.6f} seconds")
+    return result
+
+# Phrase search with timing
+def phrase_search_with_timing(query, positional_index):
+    start_time = time.perf_counter()  # Start timing
+    # Original phrase search code
+    result = phrase_search(query, positional_index)
+    end_time = time.perf_counter()  # End timing
+    duration = end_time - start_time  # Calculate duration
+    print(f"Phrase Search Time: {duration:.6f} seconds")
+    return result
 
 
 
-'''
+
 # Testing queries
-boolean_result = boolean_search('xi AND china', positional_index)
+boolean_result = boolean_search_with_timing('birmingham AND birmingham', positional_index)
 print("Boolean Search Result:", boolean_result)
 
-proximity_result = proximity_search('effort' 'form', 10, positional_index)
+proximity_result = proximity_search_with_timing('german' 'derffling', 10, positional_index)
 print("Proximity Search Result:", proximity_result)
 
-phrase_result = phrase_search('main airport', positional_index)
+phrase_result = phrase_search_with_timing('main airport', positional_index)
 print("Phrase Search Result:", phrase_result)
-'''
+
 
 
 # queries processing? results ranking?
