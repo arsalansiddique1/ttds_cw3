@@ -4,6 +4,10 @@
 - Added a timer to measure how quickly query takes for boolean, proximity and phase search
 - Fixed the load_index_from_file function and 3 main searches are now working 
 
+### TODOs
+- Impelement TF-IDF scoring
+- Try out compression techniques to reduce the size of the inverted index
+
 
 
 
