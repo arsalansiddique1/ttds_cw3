@@ -10,15 +10,19 @@ from search_operations import *
 from index_operations import *
 from tfidf_scoring import *
 from utils import *
+
 stopwords_file = "ttds_2023_english_stop_words.txt"
 
 file_path = 'images_with_captions.csv'
 captions_by_title = read_csv_file(file_path)
 
 
-# Create positional inverted index
+# Create positional inverted index and measure execution time
+start_time = time.perf_counter()  # Start timing
 positional_index = create_positional_inverted_index(captions_by_title)
-
+end_time = time.perf_counter()  # End timing
+duration = end_time - start_time  # Calculate duration
+print(f"Index creation Time: {duration:.6f} seconds")
 # Save the positional inverted index to a file
 save_index_to_file(positional_index, 'index.txt')
 
@@ -32,7 +36,7 @@ positional_index = load_index_from_file('index.txt')
 #Testing TF-IDF scoring (seems to work)
 produce_tfidf_results(inverted_index = positional_index, queries_filename="queries.txt", results_filename="tfidf_results.txt")
 
-'''
+
 # Testing queries
 start_time = time.perf_counter()  # Start timing
 simple_result = perform_search('wilhelm', positional_index)
@@ -64,4 +68,4 @@ duration = end_time - start_time  # Calculate duration
 print(f"Prase Search Time: {duration:.6f} seconds")
 
 
-'''
+
