@@ -8,7 +8,7 @@ from collections import defaultdict
 from nltk.stem import PorterStemmer
 from search_operations import *
 from index_operations import *
-from tfidf_scoring import *
+from tfidf_and_bm25_scoring import *
 from utils import *
 
 ####### Main method for loading indexes and perfomring searches #######
@@ -37,7 +37,8 @@ positional_index = load_index_from_file('index.txt')
 
 #Testing TF-IDF scoring (seems to work)
 produce_tfidf_results(inverted_index = positional_index, queries_filename="queries.txt", results_filename="tfidf_results.txt")
-
+#Testing BM25 Scoring
+produce_bm25_results(inverted_index = positional_index, queries_filename='queries.txt', results_filename='results.bm25.txt')
 
 # Testing queries
 start_time = time.perf_counter()  # Start timing

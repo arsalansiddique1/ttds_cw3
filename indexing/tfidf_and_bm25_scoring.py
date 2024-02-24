@@ -1,6 +1,7 @@
 from utils import *
 import math
 from index_operations import load_index_from_file
+from collections import defaultdict, Counter
 
 #### TFIDF scoring
 
@@ -79,6 +80,66 @@ def produce_tfidf_results(inverted_index=load_index_from_file("index.txt"), quer
         results[idx] = [doc for doc in ranked_docs if doc[1] > 0][:150][:150]  # Filter docs with score = 0, only store top 150 as required
 
     write_ranked_results_to_file(results, results_filename)
+    
+    ##### BM25 scoring
+    
+def compute_bm25(idf, tf, doc_len, avgdl, k1=1.5, b=0.75):
+    """
+    Compute the BM25 score for a single term in a document.
+    """
+    term_score = idf * ((tf * (k1 + 1)) / (tf + k1 * (1 - b + b * (doc_len / avgdl))))
+    return term_score
+
+def bm25_rank_docs(query, inverted_index, k1=1.5, b=0.75):
+    # Calculate document lengths and aggregate TF from the positional inverted index
+    doc_lengths = calculate_document_lengths(inverted_index)
+    aggregate_tf = calculate_aggregate_tf(inverted_index)
+    avgdl = sum(doc_lengths.values()) / len(doc_lengths)
+    
+    total_docs = len(doc_lengths)
+    scores = defaultdict(float)
+
+    for term in query.split():
+        idf = compute_idf(term, inverted_index, total_docs)  # Assuming IDF calculation adapts to non-positional data
+        for doc, tf in aggregate_tf.get(term, {}).items():
+            doc_len = doc_lengths[doc]
+            score = compute_bm25(idf, tf, doc_len, avgdl, k1, b)
+            scores[doc] += score
+
+    return sorted(scores.items(), key=lambda x: x[1], reverse=True)
+
+
+def produce_bm25_results(inverted_index, queries_filename='queries.txt', results_filename='results.bm25.txt'):
+    """
+    Given the query and the index, performs the BM25 ranking search and writes the results to a file.
+    """
+    queries = read_queries_from_file(queries_filename)
+    results = {}
+    
+    for idx, query in enumerate(queries, 1):
+        ranked_docs = bm25_rank_docs(query, inverted_index)
+        results[idx] = ranked_docs[:150]  # Assuming the desire to keep the top 150 results
+    
+    write_ranked_results_to_file(results, results_filename)
+    
+    
+    
+
+
+#2 util functions below which will be moved to relevant file once BM25 is working
+def calculate_document_lengths(inverted_index):
+    doc_lengths = defaultdict(int)
+    for token, doc_positions in inverted_index.items():
+        for doc, positions in doc_positions.items():
+            doc_lengths[doc] += len(positions)  # Summing all positions (occurrences) of all tokens
+    return doc_lengths
+
+def calculate_aggregate_tf(inverted_index):
+    aggregate_tf = defaultdict(lambda: defaultdict(int))
+    for token, doc_positions in inverted_index.items():
+        for doc, positions in doc_positions.items():
+            aggregate_tf[token][doc] = len(positions)  # Total occurrences of token in doc
+    return aggregate_tf
 
 
 def write_ranked_results_to_file(results, filename):

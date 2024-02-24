@@ -1,18 +1,48 @@
-1,Alfonso XIII,2.6028
-1,American Revolution,2.6028
-1,Ansbach,2.6028
-1,Artist,2.6028
-1,Austria-Hungary,2.6028
-1,Alexanderplatz,2.0006
-1,Alfonso XII,2.0006
-1,Alkaloid,2.0006
-1,Anarchism,2.0006
-1,Andreas Schlüter,2.0006
-1,Battle of Stalingrad,2.0006
-1,Berlin,2.0006
-1,Bifröst,2.0006
-1,Bonn,2.0006
-1,House of Ascania,2.0006
+1,American Revolution,2.7089
+1,American (word),2.5883
+1,Bermuda,2.4407
+1,AOL,2.2503
+1,Albert Sidney Johnston,2.2503
+1,American Revolutionary War,2.2503
+1,Amerigo Vespucci,2.2503
+1,Apollo 17,2.2503
+1,Batman Returns,2.2503
+1,British Empire,2.2503
+1,Brown University,2.2503
+1,The Bronx,2.2503
+1,Airline,1.9821
+1,Albanians,1.9821
+1,American Civil War,1.9821
+1,American cuisine,1.9821
+1,Aruba,1.9821
+1,Atlantic Ocean,1.9821
+1,Ayahuasca,1.9821
+1,Baptists,1.9821
+1,Bear,1.9821
+1,Benjamin Franklin,1.9821
+1,Book of Mormon,1.9821
+1,Extreme poverty,1.9821
+1,Northern bobwhite,1.9821
+1,Abortion,1.5235
+1,Adam of Bremen,1.5235
+1,Alaska,1.5235
+1,Alexander Graham Bell,1.5235
+1,Alkali metal,1.5235
+1,Amber,1.5235
+1,America the Beautiful,1.5235
+1,Andes,1.5235
+1,Andre Agassi,1.5235
+1,Anglicanism,1.5235
+1,Anthropology,1.5235
+1,Apatosaurus,1.5235
+1,Apollo 8,1.5235
+1,Apostolic succession,1.5235
+1,Bald eagle,1.5235
+1,Bikini,1.5235
+1,Bouldering,1.5235
+1,Brassicaceae,1.5235
+1,Economy of Brazil,1.5235
+1,History of baseball in the United States,1.5235
 2,Birka,10.1672
 2,Allah,5.4426
 2,Arabic alphabet,3.3496

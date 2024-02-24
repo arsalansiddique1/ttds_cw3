@@ -1,5 +1,11 @@
 # Current Optimizations implemented
 
+## V0.1.1
+- Added BM25 scoring for information retrieval (prototype)
+
+### TODOs
+- Needs to be tested further, modularized and made efficient by incorporatingdocument length paramters required for its calculation during the index creation process.
+
 ## V0.1.0
 - Added a timer to measure how quickly query takes for boolean, proximity and phase search
 - Fixed the load_index_from_file function and 3 main searches are now working 
@@ -17,8 +23,6 @@
 
 # Potential Further Indexing Optimizations
 
-## Term Frequency–Inverse Document Frequency (TF-IDF) Weighting:
-Integrate TF-IDF scoring to prioritize terms that are more unique to a document, improving the relevance of search results.
 ## Compression Techniques:
 Apply index compression methods (e.g., variable byte coding, Elias gamma coding) to reduce the size of your positional inverted index, optimizing memory usage and potentially speeding up search operations.
 ## Stemming and Lemmatization:

@@ -1,0 +1,49 @@
+1,American (word),3.2999
+1,Northern bobwhite,2.9888
+1,AOL,2.9276
+1,Brassicaceae,2.5628
+1,Adam of Bremen,2.5043
+1,Andre Agassi,2.4929
+1,Batman Returns,2.4704
+1,Amerigo Vespucci,2.3173
+1,America the Beautiful,2.2569
+1,British Empire,2.1677
+1,Baptists,2.1093
+1,Apollo 17,2.0262
+1,Apostolic succession,1.9379
+1,Anthropology,1.9311
+1,American Revolution,1.8139
+1,Bouldering,1.7981
+1,Extreme poverty,1.7893
+1,Bermuda,1.741
+1,Albert Sidney Johnston,1.6257
+1,Atlantic Ocean,1.585
+1,The Bronx,1.456
+1,History of baseball in the United States,1.4098
+1,Economy of Brazil,1.3608
+1,Abortion,1.3541
+1,American Civil War,1.3524
+1,Andes,1.3343
+1,Airline,1.312
+1,American cuisine,1.2769
+1,Anglicanism,1.2549
+1,Apollo 8,1.2027
+1,Brown University,1.2018
+1,Bear,1.1768
+1,Bald eagle,1.1012
+1,Ayahuasca,1.0914
+1,Benjamin Franklin,1.0328
+1,Alexander Graham Bell,1.0156
+1,Aruba,0.9723
+1,Albanians,0.7702
+1,American Revolutionary War,0.7688
+1,Book of Mormon,0.7183
+1,Amber,0.6568
+1,Apatosaurus,0.6013
+1,Alkali metal,0.5607
+1,Alaska,0.3859
+1,Bikini,0.2135
+2,Birka,11.7979
+2,Allah,5.8012
+2,Arabic alphabet,3.2463
+2,Arabs,0.2869
