@@ -11,6 +11,8 @@ from index_operations import *
 from tfidf_scoring import *
 from utils import *
 
+####### Main method for loading indexes and perfomring searches #######
+
 stopwords_file = "ttds_2023_english_stop_words.txt"
 
 file_path = 'images_with_captions.csv'
