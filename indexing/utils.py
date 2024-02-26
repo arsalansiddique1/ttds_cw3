@@ -6,14 +6,14 @@ def read_csv_file(file_path):
     with open(file_path, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
-            title = row['title']
+            file = row['filenames']
             caption = row['captions']
             # Tokenize the caption
             cap_tokens = re.findall(r'\b[\w\']+\b', caption)
-            if title in text_dict:
-                text_dict[title].append(cap_tokens)
+            if file in text_dict:
+                text_dict[file].append(cap_tokens)
             else:
-                text_dict[title] = [cap_tokens]
+                text_dict[file] = [cap_tokens]
     return text_dict
 
 

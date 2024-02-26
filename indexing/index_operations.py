@@ -12,16 +12,16 @@ from memory_profiler import profile
 # Index creation
 def create_positional_inverted_index(text_dict):
     inverted_index = {}
-    for title, captions in text_dict.items():
+    for file, captions in text_dict.items():
         for caption_index, caption_tokens in enumerate(captions):
             for position, token in enumerate(caption_tokens):
                 if token in inverted_index:
-                    if title in inverted_index[token]:
-                        inverted_index[token][title].append((caption_index, position))
+                    if file in inverted_index[token]:
+                        inverted_index[token][file].append((caption_index, position))
                     else:
-                        inverted_index[token][title] = [(caption_index, position)]
+                        inverted_index[token][file] = [(caption_index, position)]
                 else:
-                    inverted_index[token] = {title: [(caption_index, position)]}
+                    inverted_index[token] = {file: [(caption_index, position)]}
     return inverted_index
 
 
