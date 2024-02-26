@@ -39,7 +39,7 @@ def scrape_links(wiki_file, id_file, links_file):
         for i, article in enumerate(tqdm(wiki, desc='Reading Wikipedia')):
 
             # set this true if wanting quick test
-            early_stop = True
+            early_stop = False
             if early_stop and i > 10000:
                 break
 
