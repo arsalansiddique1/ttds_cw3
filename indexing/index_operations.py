@@ -2,6 +2,7 @@ import re
 import string
 import csv
 import time
+import json
 from itertools import filterfalse
 from collections import defaultdict
 from nltk.stem import PorterStemmer
@@ -9,7 +10,7 @@ from memory_profiler import profile
 
 
 #@profile #Meauring memory consumption for creating indices
-# Index creation
+# Index creation (image/file)
 def create_positional_inverted_index(text_dict):
     inverted_index = {}
     for file, captions in text_dict.items():
@@ -24,8 +25,11 @@ def create_positional_inverted_index(text_dict):
                     inverted_index[token] = {file: [(caption_index, position)]}
     return inverted_index
 
+def save_index_to_json(positional_index, file_path):
+    with open(file_path, 'w', encoding='utf-8') as index_file:
+        json.dump(positional_index, index_file, ensure_ascii=False, indent=4)
 
-
+'''
 def save_index_to_file(positional_index, file_path):
     with open(file_path, 'w', encoding='utf-8') as index_file:
         for term, postings in positional_index.items():
@@ -38,7 +42,8 @@ def save_index_to_file(positional_index, file_path):
                 for position in positions:
                     index_file.write(f'Position: {position}\n')
             index_file.write('\n')
-            
+'''  
+
             #load index
 def load_index_from_file(file_path):
     positional_index = {}

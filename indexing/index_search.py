@@ -16,18 +16,19 @@ from utils import *
 stopwords_file = "ttds_2023_english_stop_words.txt"
 
 file_path = 'images_with_captions.csv'
-captions_by_title = read_csv_file(file_path)
+captions_by_file = read_csv_file(file_path)
 
 
 # Create positional inverted index and measure execution time
 start_time = time.perf_counter()  # Start timing
-positional_index = create_positional_inverted_index(captions_by_title)
+positional_index = create_positional_inverted_index(captions_by_file)
 end_time = time.perf_counter()  # End timing
 duration = end_time - start_time  # Calculate duration
 print(f"Index creation Time: {duration:.6f} seconds")
 # Save the positional inverted index to a file
-save_index_to_file(positional_index, 'index.txt')
-
+'''save_index_to_file(positional_index, 'index.txt')
+'''
+save_index_to_json(positional_index, 'index.json')
 
 # Load the positional inverted index from the file
 positional_index = load_index_from_file('index.txt')
