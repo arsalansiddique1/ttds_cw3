@@ -68,11 +68,11 @@ def proximity_search(query, dist, inverted_index):
             for pos1 in term1_positions[doc_id]:
                 for pos2 in term2_positions[doc_id]:
                     # Check if the terms are in the same caption before comparing positions
-                    if pos1[0] == pos2[0]:  # pos1[0] and pos2[0] are caption_indices
+                    #if pos1[0] == pos2[0]:  # pos1[0] and pos2[0] are caption_indices
                         # Now compare the word positions within the same caption
-                        if abs(pos1[1] - pos2[1]) <= dist:  # pos1[1] and pos2[1] are word_positions
-                            result_docs.append(doc_id)
-                            break  # Found a valid pair, no need to check more positions for pos2
+                    if abs(pos1 - pos2) <= dist:  # pos1[1] and pos2[1] are word_positions
+                        result_docs.append(doc_id)
+                        break  # Found a valid pair, no need to check more positions for pos2
                 if doc_id in result_docs:
                     break  # Found a valid pair, no need to check more positions for pos1
 
@@ -176,7 +176,7 @@ def phrase_search(query, inverted_index):
             # Iterate through positions of term1 in the document
             for pos1 in term1_docs_positions[doc]:
                 # Check if there's a directly following position in term2's positions
-                following_pos = (pos1[0], pos1[1] + 1)  # Increment word position
+                following_pos = (pos1 + 1)  # Increment word position
                 if following_pos in term2_docs_positions[doc]:
                     result_docs.append(doc)
                     break  # Found a match, move to the next document
