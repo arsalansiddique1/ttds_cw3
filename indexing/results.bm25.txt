@@ -1,84 +1,84 @@
-1,Bowen America.png,4.3085
-1,Culinary Institute of America (276631101).jpg,4.2116
-1,British America.png,4.1191
-1,The Bronx - All-America City sign - panoramio.jpg,4.0914
+1,Bowen America.png,4.3094
+1,Culinary Institute of America (276631101).jpg,4.2123
+1,British America.png,4.1195
+1,The Bronx - All-America City sign - panoramio.jpg,4.0912
 1,America Online logo.svg,3.9456
-1,Stradanus America.jpg,3.8642
-1,Vertical Velocity (Six Flags Great America).jpg,3.7131
-1,First_Baptist_Church_in_America_from_Angell_St_2.jpg,3.6391
-1,76 Virginian Partridge.jpg,3.5698
-1,Military Governors and Staff Officers in British North America and West Indies 1778 and 1784.jpg,3.317
-1,Nostalgia (7539894906).jpg,3.3125
-1,Aconcagua_(aerial).jpg,3.1994
-1,Denali Mt McKinley.jpg,3.0937
-1,OSIA baseball team.jpg,2.9948
-1,Antropologo social.jpg,2.9021
-1,Agassi in argentina.jpg,2.9021
-1,Apollo 17 CM Houston.jpg,2.8149
-1,Seaburytablet.JPG,2.7328
-1,Smelowskia americana 4859.JPG,2.7328
-1,Jamestown Virginia ruin.JPG,2.6553
-1,Usina solar de Pirapora 2.gif,2.5822
-1,Spectacled Bear 161 (2).jpg,2.5822
-1,FirstCommitteeGreatSealReverseLossingDrawing.jpg,2.5129
-1,Tobacco cultivation (Virginia, ca. 1670).jpg,2.5129
-1,US Secession map 1863 (BlankMap derived).png,2.4473
-1,Apollo 17 CSM SIM bay.jpg,2.4473
-1,Bermuda in United Kingdom.svg,2.4473
-1,United Kingdom on the globe (Bermuda special) (Americas centered).svg,2.4473
-1,Wild animals of North America, intimate studies of big and little creatures of the mammal kingdom (Page 410) (white background).jpg,2.4473
-1,Amerigo Vespucci (with turban).jpg,2.368
-1,The_able_doctor,_or_America_swallowing_the_bitter_draught_(NYPL_Hades-248165-425086)_(cropped).jpg,2.368
-1,Tam.a330-200.pt-mvl.arp.jpg,2.2716
-1,Map_of_territorial_growth_1775.svg,2.2716
-1,President-Jefferson-Davis.jpg,2.2158
-1,Utdrag ur Gesta Hammaburgensis ecclesiae pontificum.jpg,2.1646
-1,Vespucci arrives in New World.jpg,1.9404
-1,Benjamin West, English (born America) - Benjamin Franklin Drawing Electricity from the Sky - Google Art Project.jpg,1.9404
-1,Norse-world.png,1.9011
-1,Grace Church Newark plaque.jpg,1.8633
-1,The iconic Van Wickle Gates at Brown University, one of America's prestigious &quot;Ivy League&quot; colleges, in Providence, the capital of, and largest city in, Rhode Island.jpg,1.7584
-1,Entrance to the John Carter Brown Library (cropped).jpg,1.6511
-1,NorthAmerica1762-83.png,1.5949
-1,The Bell Homestead National Historic Site, Brantford, Ontario, Canada, incl. Visitor Ctr, Henderson Home, Carriage House and Dreaming Place IMG 0039 09.JPG,1.5804
-1,AS17-147-22465 (21678759595).jpg,1.5542
-1,Union Army brigadier general rank insignia.svg,1.4575
-1,Commissioned Officer All Other Departments Brigadier General.svg,1.4575
-1,Confederate States of America General-collar.svg,1.4575
-1,Share-of-the-population-living-in-extreme-poverty-in-selected-parts-of-the-world.png,1.3729
-1,31 White-headed Eagle.jpg,1.3331
-1,FrenchPeriodicalPills-January61845,BostonDailyTimes.jpg,1.1387
-1,Soldiers_at_the_siege_of_Yorktown_(1781),_by_Jean-Baptiste-Antoine_DeVerger_(cropped).png,1.1116
-1,Circulacion termohalina.jpg,1.0613
-1,AS08-16-2593 remastered.jpg,0.9731
-1,AUA Arrivals building.JPG,0.93
-1,The Cliffs at DUMBO.jpg,0.8899
-1,USMA01 Major Campaigns of the American Revolutionary War.jpg,0.8127
-1,Pichblende.jpg,0.5919
-1,Star and Crescent.svg,0.5535
-1,Christian cross.svg,0.5535
-1,The Glorious Appearing of Jesus to the Nephites by William Armitage.PNG,0.4632
-1,Baltic-amber-fossils-inclusions.jpg,0.4414
-1,Apatosaurus ajax sacrum.jpg,0.4104
-1,EBGrandinPrintingPress.jpg,0.3932
-1,Ayahuasca and chacruna cocinando.jpg,0.2912
-1,Women in bikinis at an aerobics class at Hietaniemi beach.jpg,0.2178
-2,Ring of Allah, from a grave in Birka Sweden.jpg,9.8438
+1,Stradanus America.jpg,3.864
+1,Vertical Velocity (Six Flags Great America).jpg,3.7121
+1,First_Baptist_Church_in_America_from_Angell_St_2.jpg,3.6384
+1,76 Virginian Partridge.jpg,3.5689
+1,Military Governors and Staff Officers in British North America and West Indies 1778 and 1784.jpg,3.3157
+1,Nostalgia (7539894906).jpg,3.3122
+1,Aconcagua_(aerial).jpg,3.1988
+1,Denali Mt McKinley.jpg,3.093
+1,OSIA baseball team.jpg,2.9939
+1,Antropologo social.jpg,2.901
+1,Agassi in argentina.jpg,2.901
+1,Apollo 17 CM Houston.jpg,2.8136
+1,Seaburytablet.JPG,2.7314
+1,Smelowskia americana 4859.JPG,2.7314
+1,Jamestown Virginia ruin.JPG,2.6539
+1,Usina solar de Pirapora 2.gif,2.5806
+1,Spectacled Bear 161 (2).jpg,2.5806
+1,FirstCommitteeGreatSealReverseLossingDrawing.jpg,2.5113
+1,Tobacco cultivation (Virginia, ca. 1670).jpg,2.5113
+1,US Secession map 1863 (BlankMap derived).png,2.4455
+1,Apollo 17 CSM SIM bay.jpg,2.4455
+1,Bermuda in United Kingdom.svg,2.4455
+1,United Kingdom on the globe (Bermuda special) (Americas centered).svg,2.4455
+1,Wild animals of North America, intimate studies of big and little creatures of the mammal kingdom (Page 410) (white background).jpg,2.4455
+1,Amerigo Vespucci (with turban).jpg,2.3655
+1,The_able_doctor,_or_America_swallowing_the_bitter_draught_(NYPL_Hades-248165-425086)_(cropped).jpg,2.3655
+1,Tam.a330-200.pt-mvl.arp.jpg,2.2692
+1,Map_of_territorial_growth_1775.svg,2.2692
+1,President-Jefferson-Davis.jpg,2.2138
+1,Utdrag ur Gesta Hammaburgensis ecclesiae pontificum.jpg,2.1626
+1,Vespucci arrives in New World.jpg,1.9384
+1,Benjamin West, English (born America) - Benjamin Franklin Drawing Electricity from the Sky - Google Art Project.jpg,1.9384
+1,Norse-world.png,1.899
+1,Grace Church Newark plaque.jpg,1.8612
+1,The iconic Van Wickle Gates at Brown University, one of America's prestigious &quot;Ivy League&quot; colleges, in Providence, the capital of, and largest city in, Rhode Island.jpg,1.7562
+1,Entrance to the John Carter Brown Library (cropped).jpg,1.6487
+1,NorthAmerica1762-83.png,1.5925
+1,The Bell Homestead National Historic Site, Brantford, Ontario, Canada, incl. Visitor Ctr, Henderson Home, Carriage House and Dreaming Place IMG 0039 09.JPG,1.5783
+1,AS17-147-22465 (21678759595).jpg,1.5521
+1,Union Army brigadier general rank insignia.svg,1.4554
+1,Commissioned Officer All Other Departments Brigadier General.svg,1.4554
+1,Confederate States of America General-collar.svg,1.4554
+1,Share-of-the-population-living-in-extreme-poverty-in-selected-parts-of-the-world.png,1.3707
+1,31 White-headed Eagle.jpg,1.331
+1,FrenchPeriodicalPills-January61845,BostonDailyTimes.jpg,1.1368
+1,Soldiers_at_the_siege_of_Yorktown_(1781),_by_Jean-Baptiste-Antoine_DeVerger_(cropped).png,1.1098
+1,Circulacion termohalina.jpg,1.0595
+1,AS08-16-2593 remastered.jpg,0.9714
+1,AUA Arrivals building.JPG,0.9282
+1,The Cliffs at DUMBO.jpg,0.8883
+1,USMA01 Major Campaigns of the American Revolutionary War.jpg,0.8112
+1,Pichblende.jpg,0.5907
+1,Star and Crescent.svg,0.5523
+1,Christian cross.svg,0.5523
+1,The Glorious Appearing of Jesus to the Nephites by William Armitage.PNG,0.4622
+1,Baltic-amber-fossils-inclusions.jpg,0.4404
+1,Apatosaurus ajax sacrum.jpg,0.4095
+1,EBGrandinPrintingPress.jpg,0.3923
+1,Ayahuasca and chacruna cocinando.jpg,0.2905
+1,Women in bikinis at an aerobics class at Hietaniemi beach.jpg,0.2172
+2,Ring of Allah, from a grave in Birka Sweden.jpg,9.8403
 2,Birka Karte 2008.jpg,5.7756
-2,Tortoise brooches from a grave in Birka.jpg,5.5271
-2,Allah name in different languages.png,5.3752
-2,Mjöllnir pendant from Birka grave.jpg,5.1921
-2,Entry in a defensive wall on Birka September 2015.jpg,5.0893
-2,BirkaExcavation2.png,5.0814
-2,Dcp7323-Edirne-Eski Camii Allah.jpg,5.0494
-2,Birka hus 2008a.JPG,4.8881
-2,Birka Boot 2008.JPG,4.8881
-2,Istanbul, Hagia Sophia, Allah.jpg,4.6719
-2,Birka Svarta jorden 1991.jpg,4.5425
-2,Allah3.svg,4.4177
-2,Khalili Collection Islamic Art txt 0222.1.jpg,3.5413
-2,Seremban-Annunciation-feast-3808.jpg,3.4437
-2,Component letters in Allah.svg,3.225
-2,GKKA Banjarmasin.jpg,2.9932
-2,Arabic components (letters) in the word Allah only black.png,2.2618
-2,François-Joseph Navez - Agar et Ismaël dans le désert.jpg,1.0564
+2,Tortoise brooches from a grave in Birka.jpg,5.5265
+2,Allah name in different languages.png,5.3747
+2,Mjöllnir pendant from Birka grave.jpg,5.1908
+2,Entry in a defensive wall on Birka September 2015.jpg,5.0877
+2,BirkaExcavation2.png,5.0817
+2,Dcp7323-Edirne-Eski Camii Allah.jpg,5.0482
+2,Birka hus 2008a.JPG,4.8879
+2,Birka Boot 2008.JPG,4.8879
+2,Istanbul, Hagia Sophia, Allah.jpg,4.6699
+2,Birka Svarta jorden 1991.jpg,4.5415
+2,Allah3.svg,4.4167
+2,Khalili Collection Islamic Art txt 0222.1.jpg,3.5388
+2,Seremban-Annunciation-feast-3808.jpg,3.4411
+2,Component letters in Allah.svg,3.2214
+2,GKKA Banjarmasin.jpg,2.9896
+2,Arabic components (letters) in the word Allah only black.png,2.2583
+2,François-Joseph Navez - Agar et Ismaël dans le désert.jpg,1.0542

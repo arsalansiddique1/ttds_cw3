@@ -26,7 +26,7 @@ end_time = time.perf_counter()  # End timing
 duration = end_time - start_time  # Calculate duration
 print(f"Index creation Time: {duration:.6f} seconds")
 # Save the positional inverted index to a file
-save_index_to_file(positional_index, 'index.txt')
+#save_index_to_file(positional_index, 'index.txt')
 
 save_index_to_json(positional_index, 'index.json')
 
@@ -34,8 +34,8 @@ save_index_to_json(positional_index, 'index.json')
 #positional_index = load_index_from_file('index.txt')
 # Load from json file
 json_data = read_json_file('index.json')
-positional_index = load_index_from_json(json_data)
 
+positional_index = json_data
 
 
 
@@ -44,6 +44,8 @@ produce_tfidf_results(inverted_index = positional_index, queries_filename="queri
 #Testing BM25 Scoring
 produce_bm25_results(inverted_index = positional_index, queries_filename='queries.txt', results_filename='results.bm25.txt')
 
+
+'''
 # Testing queries
 start_time = time.perf_counter()  # Start timing
 simple_result = perform_search('wilhelm', positional_index)
@@ -75,4 +77,4 @@ duration = end_time - start_time  # Calculate duration
 print(f"Prase Search Time: {duration:.6f} seconds")
 
 
-
+'''

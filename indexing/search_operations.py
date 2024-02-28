@@ -48,33 +48,28 @@ def preprocess_query_term(term, stopwords):
 
 
 def proximity_search(query, dist, inverted_index):
-#def proximity_search(query, dist, inverted_index, stopword):
-    '''
-    Performs a proximity search over the inverted index. Finds documents where the 
-    distance between term1 and term2 is less than or equal to dist (after stop words removal).
-    '''
-    
     terms = query.strip().split(',')
-    term1 = terms[0].strip()
-    term2 = terms[1].strip()
-    #term1 = preprocess_query_term(terms[0], stopwords)[0]
-    #term2 = preprocess_query_term(terms[1], stopwords)[0]
-    term1_positions = inverted_index.get(term1, {})
-    term2_positions = inverted_index.get(term2, {})
-    # Assuming doc_id is the document identifier, and positions are lists of (caption_index, word_position) tuples
+    term1, term2 = [term.strip() for term in terms]
+    # Extract postings lists for both terms
+    term1_postings = inverted_index.get(term1, {}).get('postings', {})
+    term2_postings = inverted_index.get(term2, {}).get('postings', {})
     result_docs = []
-    for doc_id in term1_positions:
-        if doc_id in term2_positions:
-            for pos1 in term1_positions[doc_id]:
-                for pos2 in term2_positions[doc_id]:
-                    # Check if the terms are in the same caption before comparing positions
-                    #if pos1[0] == pos2[0]:  # pos1[0] and pos2[0] are caption_indices
-                        # Now compare the word positions within the same caption
-                    if abs(pos1 - pos2) <= dist:  # pos1[1] and pos2[1] are word_positions
-                        result_docs.append(doc_id)
-                        break  # Found a valid pair, no need to check more positions for pos2
-                if doc_id in result_docs:
-                    break  # Found a valid pair, no need to check more positions for pos1
+
+    # Iterate over documents that contain both terms
+    for doc_id in set(term1_postings.keys()) & set(term2_postings.keys()):
+        positions1 = term1_postings[doc_id]
+        positions2 = term2_postings[doc_id]
+
+        # Check proximity for each position pair within the same document
+        found = False
+        for pos1 in positions1:
+            for pos2 in positions2:
+                if abs(pos1 - pos2) <= dist:
+                    result_docs.append(doc_id)
+                    found = True
+                    break  # Found a match, no need to check further positions for this pair
+            if found:
+                break  # Found a match, no need to check further for this document
 
     return result_docs
 def and_search(query, inverted_index):
@@ -95,7 +90,7 @@ def and_search(query, inverted_index):
     else:
         term1 = terms[0]
         #term1 = preprocess_query_term(terms[0], stopwords)[0]
-        term1_docs = inverted_index.get(term1, {}).keys()
+        term1_docs = inverted_index.get(term1, {}).get('postings', {}).keys()
         term1_docs = [doc for doc in term1_docs]
 
 
@@ -104,7 +99,7 @@ def and_search(query, inverted_index):
         term2_docs = phrase_search(terms[1], inverted_index)
     else:
         term2 = terms[1]
-        term2_docs = inverted_index.get(term2, {}).keys()
+        term2_docs = inverted_index.get(term2, {}).get('postings', {}).keys()
         term2_docs = [doc for doc in term2_docs]
     
     if "AND NOT" in query:
@@ -130,7 +125,7 @@ def or_search(query, inverted_index):
     else:
         term1 = terms[0]
         #term1 = preprocess_query_term(terms[0], stopwords)[0]
-        term1_docs = inverted_index.get(term1, {}).keys()
+        term1_docs = inverted_index.get(term1, {}).get('postings', {}).keys()
         term1_docs = [doc for doc in term1_docs]
    
 
@@ -140,13 +135,18 @@ def or_search(query, inverted_index):
     else:
         term2 = terms[1]
         #term2 = preprocess_query_term(terms[1], stopwords)[0]
-        term2_docs = inverted_index.get(term2, {}).keys()
+        term2_docs = inverted_index.get(term2, {}).get('postings', {}).keys()
         term2_docs = [doc for doc in term2_docs]
 
     
-    all_docs = []
-    for posting in inverted_index.values():
-        all_docs.extend(posting.keys())
+    all_docs = set()  # Use a set to automatically avoid duplicate document IDs
+
+    for term_data in inverted_index.values():
+        if 'postings' in term_data:  # Ensure there is a 'postings' dictionary
+            all_docs.update(term_data['postings'].keys())
+
+    # Convert the set to a list if necessary, or keep it as a set if you only need unique values
+    all_docs = list(all_docs)
 
     if "OR NOT" in query: 
         # I think this will probably will not be used since unless term2 is very common, it will return almost all docs
@@ -166,8 +166,8 @@ def phrase_search(query, inverted_index):
     terms = query.replace('"', '').split()  # Assuming query is a phrase wrapped in quotes
     term1, term2 = terms[0], terms[1]
 
-    term1_docs_positions = inverted_index.get(term1, {})
-    term2_docs_positions = inverted_index.get(term2, {})
+    term1_docs_positions = inverted_index.get(term1, {}).get('postings', {})
+    term2_docs_positions = inverted_index.get(term2, {}).get('postings', {})
 
     result_docs = []
 
@@ -184,13 +184,19 @@ def phrase_search(query, inverted_index):
     return sorted(result_docs)
 
 
+
 def simple_search(query, inverted_index):
-#def simple_search(query, inverted_index, stopwords):
-    '''
-    Performs a simple search over the inverted index
-    '''
-    docs = inverted_index.get(query, {}).keys()
-    #preprocessed_query = preprocess_query_term(query, stopwords)[0]
-    return sorted([doc for doc in docs])
+    """
+    Performs a simple search over the inverted index to find documents containing the query term.
+    """
+    result_docs = []
+    # Retrieve postings list for the query term
+    postings = inverted_index.get(query, {}).get('postings', {})
+
+    # The keys of the postings dictionary are the document identifiers (image names)
+    result_docs = list(postings.keys())
+
+    return result_docs
+
 
 ## All of the functions above were helper functions of perform_search.

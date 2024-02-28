@@ -12,17 +12,25 @@ from memory_profiler import profile
 #@profile #Meauring memory consumption for creating indices
 # Index creation (image/file)
 def create_positional_inverted_index(text_dict):
+    # Initialize the inverted index and document length storage
     inverted_index = {}
+    doc_lengths = {}  # Stores total number of tokens in each document
+    
     for file, captions in text_dict.items():
+        doc_length = sum(len(caption_tokens) for caption_tokens in captions)  # Calculate document length
+        doc_lengths[file] = doc_length  # Store document length
+        
         for caption_tokens in captions:
             for position, token in enumerate(caption_tokens):
-                if token in inverted_index:
-                    if file in inverted_index[token]:
-                        inverted_index[token][file].append(position)
-                    else:
-                        inverted_index[token][file] = [position]
-                else:
-                    inverted_index[token] = {file: [position]}
+                if token not in inverted_index:
+                    inverted_index[token] = {'df': 0, 'postings': {}}
+                if file not in inverted_index[token]['postings']:
+                    inverted_index[token]['df'] += 1  # Increment document frequency
+                    inverted_index[token]['postings'][file] = []
+                inverted_index[token]['postings'][file].append(position)
+
+    # Save document lengths into the inverted index for easy access
+    inverted_index['_doc_lengths'] = doc_lengths
     return inverted_index
 
 # save index dict to json file (for postgresql)
@@ -84,16 +92,3 @@ def read_json_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as json_file:
         return json.load(json_file)
 
-def load_index_from_json(json_data):
-    inverted_index = {}
-    for token, file_positions in json_data.items():
-        for file_name, positions in file_positions.items():
-            for position in positions:
-                if token in inverted_index:
-                    if file_name in inverted_index[token]:
-                        inverted_index[token][file_name].append(position)
-                    else:
-                        inverted_index[token][file_name] = [position]
-                else:
-                    inverted_index[token] = {file_name: [position]}
-    return inverted_index

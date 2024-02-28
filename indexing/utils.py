@@ -37,4 +37,12 @@ def write_results_to_file(results, filename):
         for query_num, doc_ids in results.items():
             for doc_id in doc_ids:
                 f.write(f"{query_num},{doc_id}\n")
+                
+                
+def write_ranked_results_to_file(results, filename):
+    with open(filename, 'w', encoding='utf-8') as f:  # Specify UTF-8 encoding here
+        for query_num, doc_data in results.items():
+            for doc_id, score in doc_data:
+                f.write(f"{query_num},{doc_id},{round(score, 4)}\n")
+
 
