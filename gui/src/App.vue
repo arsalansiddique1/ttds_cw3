@@ -33,7 +33,7 @@ export default {
   name: 'app',
   data() {
     return {
-      title: 'WIKI IMAGE SEARCH',
+      title: 'Wikimage Search',
       searchTerm: '',
       images: [],
       loading: false,
@@ -148,4 +148,8 @@ img {
   justify-content: center;
   align-items: center;
 }
+
+/* to set font */
+@import '../font.css';
+
 </style>
