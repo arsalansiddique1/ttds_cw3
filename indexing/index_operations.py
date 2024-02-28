@@ -2,6 +2,7 @@ import re
 import string
 import csv
 import time
+import json
 from itertools import filterfalse
 from collections import defaultdict
 from nltk.stem import PorterStemmer
@@ -9,23 +10,27 @@ from memory_profiler import profile
 
 
 #@profile #Meauring memory consumption for creating indices
-# Index creation
+# Index creation (image/file)
 def create_positional_inverted_index(text_dict):
     inverted_index = {}
-    for title, captions in text_dict.items():
-        for caption_index, caption_tokens in enumerate(captions):
+    for file, captions in text_dict.items():
+        for caption_tokens in captions:
             for position, token in enumerate(caption_tokens):
                 if token in inverted_index:
-                    if title in inverted_index[token]:
-                        inverted_index[token][title].append((caption_index, position))
+                    if file in inverted_index[token]:
+                        inverted_index[token][file].append(position)
                     else:
-                        inverted_index[token][title] = [(caption_index, position)]
+                        inverted_index[token][file] = [position]
                 else:
-                    inverted_index[token] = {title: [(caption_index, position)]}
+                    inverted_index[token] = {file: [position]}
     return inverted_index
 
+# save index dict to json file (for postgresql)
+def save_index_to_json(positional_index, file_path):
+    with open(file_path, 'w', encoding='utf-8') as index_file:
+        json.dump(positional_index, index_file, ensure_ascii=False, indent=4)
 
-
+# save index dict to txt file
 def save_index_to_file(positional_index, file_path):
     with open(file_path, 'w', encoding='utf-8') as index_file:
         for term, postings in positional_index.items():
@@ -38,8 +43,9 @@ def save_index_to_file(positional_index, file_path):
                 for position in positions:
                     index_file.write(f'Position: {position}\n')
             index_file.write('\n')
-            
-            #load index
+ 
+
+# load index from text file
 def load_index_from_file(file_path):
     positional_index = {}
     with open(file_path, 'r', encoding='utf-8') as index_file:
@@ -62,7 +68,8 @@ def load_index_from_file(file_path):
                 doc_id = line.split(': ')[1].strip()
                 current_postings[doc_id] = []  # Prepare to collect positions for this document
             elif line.startswith('Position:'):
-                position = tuple(map(int, line.split(': ')[1].strip()[1:-1].split(', ')))
+                #position = tuple(map(int, line.split(': ')[1].strip()[1:-1].split(', ')))
+                position = int(line.split(': ')[1])
                 if doc_id in current_postings:  # Safety check, though doc_id should always be in current_postings at this point
                     current_postings[doc_id].append(position)
         
@@ -71,3 +78,22 @@ def load_index_from_file(file_path):
             positional_index[current_term] = current_postings
 
     return positional_index
+
+# load index from json file
+def read_json_file(file_path):
+    with open(file_path, 'r', encoding='utf-8') as json_file:
+        return json.load(json_file)
+
+def load_index_from_json(json_data):
+    inverted_index = {}
+    for token, file_positions in json_data.items():
+        for file_name, positions in file_positions.items():
+            for position in positions:
+                if token in inverted_index:
+                    if file_name in inverted_index[token]:
+                        inverted_index[token][file_name].append(position)
+                    else:
+                        inverted_index[token][file_name] = [position]
+                else:
+                    inverted_index[token] = {file_name: [position]}
+    return inverted_index
