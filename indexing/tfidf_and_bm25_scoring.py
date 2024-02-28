@@ -1,3 +1,4 @@
+from utils import read_queries_from_file
 from utils import *
 import math
 from index_operations import load_index_from_file
@@ -114,6 +115,7 @@ def produce_bm25_results(inverted_index, queries_filename='queries.txt', results
     Given the query and the index, performs the BM25 ranking search and writes the results to a file.
     """
     queries = read_queries_from_file(queries_filename)
+    print(queries)
     results = {}
     
     for idx, query in enumerate(queries, 1):
