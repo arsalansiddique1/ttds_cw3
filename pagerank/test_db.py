@@ -8,5 +8,6 @@ with db.connect() as conn:
         "INSERT INTO test VALUES (1, 'Joe')"
     )
     conn.execute(stmt)
+    conn.commit()
 
 
