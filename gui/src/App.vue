@@ -8,11 +8,7 @@
     <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
     <div class="portfolio" id = "portfolio">
       <div class="portfolio__item" v-for="(image, index) in displayedImages" :key="image.url">
-        <img :src="image.url">
-        <div class="portfolio__desc">
-          <!-- <h3 class="portfolio__title">This is the title</h3> -->
-          <a :href="'#lightbox-' + index">More Info</a>
-        </div>
+        <img :src="image.url" @click="openLightbox(index)">
       </div>
     </div>
     <div class="portfolio-lightboxes">
@@ -65,6 +61,13 @@ export default {
     },
   },
   methods: {
+      // Other methods...
+    openLightbox(index) {
+      // Construct the lightbox ID
+      const lightboxId = 'lightbox-' + index;
+      // Set the location hash to trigger the :target pseudo-class
+      location.hash = lightboxId;
+    },
     formSubmitted() {
       this.loading = true;
       this.currentPage = 1; // Reset currentPage to 1
