@@ -6,6 +6,8 @@ import os
 from dotenv import load_dotenv
 import time
 
+from tqdm import tqdm
+
 # Specify the absolute path to the .env file
 #dotenv_path = './.env'
 
@@ -52,6 +54,7 @@ def create_postgres_database(data):
     # Create table
     cursor.execute('''CREATE TABLE IF NOT EXISTS your_table_name
                     (id SERIAL PRIMARY KEY,
+                    title TEXT,
                     url TEXT,
                     caption TEXT)''')
 
@@ -59,9 +62,9 @@ def create_postgres_database(data):
     start_time = time.time()
 
     # Insert data into table
-    for row in data:
-        cursor.execute('''INSERT INTO your_table_name (url, caption)
-                        VALUES (%s, %s)''', (row["filenames"], row["captions"]))
+    for row in tqdm(data):
+        cursor.execute('''INSERT INTO your_table_name (title, url, caption)
+                        VALUES (%s, %s, %s)''', (row["title"], row["filenames"], row["captions"]))
         
     end_time = time.time()
     execution_time = end_time - start_time
@@ -73,40 +76,41 @@ def create_postgres_database(data):
 
     print("Database created and populated successfully.")
 
+
 # csv_file = 'images_with_captions.csv'
-# raw_data = load_csv_to_dict_list(f".\caption_extraction\{csv_file}")
+# raw_data = load_csv_to_dict_list(f"..\caption_extraction\{csv_file}")
 # data = url_from_filenames(raw_data)
 # create_postgres_database(data)
 
 
 #simple example
-# Read database credentials from environment variables
-# DB_NAME = os.getenv("DBNAME")
-# DB_USER = os.getenv("DBUSER")
-# DB_PASSWORD = os.getenv("DBPASSWORD")
-# DB_HOST = os.getenv("DBHOST")
+#Read database credentials from environment variables
+DB_NAME = os.getenv("DBNAME")
+DB_USER = os.getenv("DBUSER")
+DB_PASSWORD = os.getenv("DBPASSWORD")
+DB_HOST = os.getenv("DBHOST")
 
-# # # Function to search PostgreSQL database
-# def search_db(query):
-#     conn = psycopg2.connect(
-#         dbname=DB_NAME,
-#         user=DB_USER,
-#         password=DB_PASSWORD,
-#         host=DB_HOST
-#     )
-#     cursor = conn.cursor()
+# # Function to search PostgreSQL database
+def search_db(query):
+    conn = psycopg2.connect(
+        dbname=DB_NAME,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        host=DB_HOST
+    )
+    cursor = conn.cursor()
 
-#     # Query PostgreSQL database
-#     cursor.execute('''SELECT * FROM your_table_name WHERE caption ILIKE %s''', ('%' + query + '%',))
-#     columns = [desc[0] for desc in cursor.description]  # Get column names
-#     results = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    # Query PostgreSQL database
+    cursor.execute('''SELECT * FROM your_table_name WHERE caption ILIKE %s''', ('%' + query + '%',))
+    columns = [desc[0] for desc in cursor.description]  # Get column names
+    results = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-#     # Close connection
-#     conn.close()
+    # Close connection
+    conn.close()
 
-#     return results
+    return results
 
-# print(search_db("flag of pakistan"))
+print(search_db("flag of pakistan"))
 
 #returns
 #[{'id': 17, 'url': 'https://upload.wikimedia.org/wikipedia/commons/3/32/Flag_of_Pakistan.svg', 'caption': 'Flag of Pakistan'},

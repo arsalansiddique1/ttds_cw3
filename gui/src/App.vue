@@ -1,9 +1,13 @@
 <template>
   <div id="app">
     <h1>{{ title }}</h1>
-    <form @submit.prevent="formSubmitted()">
+    <!-- <form @submit.prevent="formSubmitted()">
       <input v-model="searchTerm" class="u-full-width" type="text" id="searchTerm" name="searchTerm">
       <button type="submit">Search</button>
+    </form> -->
+    <form @submit.prevent="formSubmitted()" class="search-bar">
+      <input v-model="searchTerm" type="text" id="searchTerm" name="searchTerm" placeholder="search anything">
+      <button type="submit"><img src="../images/search.png" alt=""></button>
     </form>
     <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
     <section class="images">
@@ -33,7 +37,7 @@ export default {
   name: 'app',
   data() {
     return {
-      title: 'WIKI IMAGE SEARCH',
+      title: 'Wikimage Search',
       searchTerm: '',
       images: [],
       loading: false,
@@ -110,6 +114,8 @@ export default {
 <style>
 #app {
   text-align: center;
+  font-family: 'Montserrat';
+  font-size: 30px;
 }
 
 body {
@@ -119,6 +125,7 @@ body {
 
 .images {
   column-count: 5;
+  margin-top: 20px;
 }
 
 .loading-image {
@@ -134,6 +141,7 @@ img {
 
 .pagination {
   margin-top: 20px;
+  font-size: medium;
 }
 
 .circular-btn {
@@ -148,4 +156,47 @@ img {
   justify-content: center;
   align-items: center;
 }
+.search-bar{
+  width: 100%;
+  max-width: 700px;
+  background: rgba(25, 25, 25, 0.15);
+  display: flex;
+  align-items: center;
+  border-radius: 60px;
+  padding: 10px 20px;
+  backdrop-filter: blur(4px) saturate(180%);
+  margin: 0 auto; /* Center align the search bar */
+}
+
+.search-bar input{
+  background: transparent;
+  flex: 1;
+  border: 0;
+  outline: none;
+  padding: 24px 20px;
+  font-size: 20px;
+  color:  rgba(25, 25, 25, 0.5);
+}
+
+::placeholder{
+  color:  rgba(25, 25, 25, 0.5);
+}
+
+.search-bar button img{
+  width: 25px;
+}
+
+.search-bar button {
+  border: 0;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  background: rgba(150, 150, 150, 0.8);
+  cursor: pointer;
+
+}
+
+/* to set font */
+@import '../font.css';
+
 </style>
