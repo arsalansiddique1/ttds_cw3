@@ -145,7 +145,7 @@ body {
 }
 
 img {
-  max-width: 200px;
+  max-width: 100%;
   cursor: pointer; /* Add cursor pointer to indicate image clickability */
 }
 
@@ -248,11 +248,12 @@ img {
 }
 
 .portfolio-lightbox__content {
-  max-width: 80vw;
+  max-width: 25vw;
   max-height: 80vh;
-  background: black;
+  background: rgba(150, 150, 150, 0.95);
   padding: 1em;
   position: relative;
+  font-size: 0.5em;
 }
 
 .close {
