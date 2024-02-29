@@ -13,10 +13,10 @@ from utils import *
 
 ####### Main method for loading indexes and perfomring searches #######
 
-stopwords_file = "ttds_2023_english_stop_words.txt"
+stopwords = extract_stopwords("ttds_2023_english_stop_words.txt")
 
 file_path = 'images_with_captions.csv'
-captions_by_file = read_csv_file(file_path)
+captions_by_file = read_csv_file(file_path, stopwords)
 
 
 # Create positional inverted index and measure execution time
