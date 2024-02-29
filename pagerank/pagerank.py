@@ -7,6 +7,9 @@ from tqdm import tqdm
 
 from mwparserfromhtml import HTMLDump
 
+import connect_connector
+import sqlalchemy
+
 
 # this function scrapes all the links from the wiki file
 def scrape_links(wiki_file, id_file, links_file):
@@ -75,10 +78,10 @@ def page_rank(id_file, links_file, results_file):
     # write page rank results with original page names
     with open(results_file, 'w') as results_writer:
         for page in tqdm(results, desc='Writing results file'):
-            results_writer.write('"' + ids[page] + '",' + str(results[page]) + '\n')
+            results_writer.write('"' + ids[page] + '"\t' + str(results[page]) + '\n')
 
 
-def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10):
+def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
     n = len(graph)
     initial = 1 / n
     for node in graph.nodes:
@@ -91,12 +94,17 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10):
             current_value = graph.nodes[node]['pr'][current]
             previous_value = graph.nodes[node]['pr'][not current]
             total += (current_value - previous_value) ** 2
-        return math.sqrt(total) < stopping
+        current_error = math.sqrt(total)
+
+        print("Current error:", current_error)
+        print("Target error:", stopping)
+
+        return current_error < stopping
 
     # apply page rank algorithm until convergence
     current = True
     iteration = 0
-    while not stop():
+    while not stop() and iteration < max_iter:
         iteration += 1
         print("Running page rank iteration", iteration)
 
@@ -117,6 +125,21 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10):
 
     return results
 
+def write_to_db(results_file):
+    # see this page for instructions to connect to DB:
+    # https://cloud.google.com/compute/docs/instances/change-service-account
+    # IMPORTANT: MUST SET ENVIRONMENT VARIABLES FOR THIS TO WORK
+    db: sqlalchemy.engine.base.Engine = connect_connector.connect_with_connector()
+
+    with open(results_file) as results_reader, db.connect() as conn:
+        stmt = sqlalchemy.text(
+            "INSERT INTO pagerank (title, score) VALUES (:title, :score)"
+        )
+        for line in results_file:
+            title, score = line.split('\t')
+            conn.execute(stmt, parameters={"title": title, "score": score})
+            conn.commit()
+
 
 def main():
     try:
@@ -130,6 +153,7 @@ def main():
 
     scrape_links(wiki_file, id_file, links_file)
     page_rank(id_file, links_file, results_file)
+    write_to_db(results_file)
 
 
 if __name__ == "__main__":
