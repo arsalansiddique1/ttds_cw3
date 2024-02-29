@@ -1,13 +1,18 @@
+import sys
+
 from mwparserfromhtml import HTMLDump
-import csv
 import re
 from itertools import filterfalse
 from nltk.stem import PorterStemmer
+from tqdm import tqdm
 
-html_file_path = "/Users/Ivibae/enwiki-NS0-20240201-ENTERPRISE-HTML.json.tar.gz"
+html_file_path = sys.argv[1]
 html_dump = HTMLDump(html_file_path)
 
-csv_file_path = 'try.csv'
+import connect_connector
+import sqlalchemy
+
+db: sqlalchemy.engine.base.Engine = connect_connector.connect_with_connector()
 
 
 def extract_stopwords(stopwords_file):
@@ -36,22 +41,27 @@ image_id = 0
 
 stopwords = extract_stopwords("ttds_2023_english_stop_words.txt")
 
-with open(csv_file_path, 'w', newline='', encoding='utf-8') as csv_file:
+with db.connect() as conn:
 
-    csv_writer = csv.writer(csv_file, delimiter='\t')
-    csv_writer.writerow(['title', 'filenames', 'image id', 'captions'])
+    stmt = sqlalchemy.text(
+        "INSERT INTO captions (id, filename, title, caption) VALUES (:id, :filename, :title, :caption)"
+    )
 
-    for article in html_dump:
+    for article in tqdm(html_dump):
         title = article.get_title()
         for image in article.html.wikistew.get_images():
 
             if image.caption != "":     #only include images with a caption
                 filename = image.title
-            
-                cleaned_caption = preprocess_text(image.caption, stopwords)
-                csv_writer.writerow([title, filename, image_id, ' '.join(cleaned_caption)])
-                print(f'Filename: {filename}, Caption: {image.caption}')
+
+                cleaned_caption = ' '.join(preprocess_text(image.caption, stopwords))
+
+                conn.execute(stmt, parameters=
+                    {"id": image_id, "filename": filename, "title": title, "caption": cleaned_caption}
+                )
+                conn.commit()
+
                 image_id += 1
 
-        if image_id == 10000:
-            break
+        # if image_id == 10000:
+        #     break
