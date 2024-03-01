@@ -1,15 +1,43 @@
 import csv
 import re
+from nltk.stem import PorterStemmer
+from itertools import filterfalse
+
+# Moving the stopwords, tokenisation and stemming from caption_extraction to indxing
+# Take UNPROCESSED caption and PROCESS it
+def extract_stopwords(stopwords_file):
+    '''
+    Helper function to extract stopwords from a stopwords file
+    '''
+    if stopwords_file is None:
+        return []
+    with open(stopwords_file, 'r', encoding="utf-8") as s:
+        text = s.read().lower()
+        pattern = r'\b[\w\']+\b'
+        stopwords = re.findall(pattern, text)
+    return stopwords
+
+def preprocess_text(text, stopwords):
+    '''
+    Preprocess a single text: tokenization, stopping, case folding, stemming
+    '''
+    tokens = re.findall(r'\b[\w\']+\b', re.sub(r'_', ' ', text).lower())
+    tokens = list(filterfalse(stopwords.__contains__, tokens)) 
+    stemmer = PorterStemmer()
+    return [stemmer.stem(token) for token in tokens]
+
+
 # Reading the csv file
-def read_csv_file(file_path):
+def read_csv_file(file_path, stopwords):
     text_dict = {}
     with open(file_path, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
             file = row['filenames']
             caption = row['captions']
-            # Tokenize the caption
-            cap_tokens = re.findall(r'\b[\w\']+\b', caption)
+            # Preprocess the caption
+            # cap_tokens = re.findall(r'\b[\w\']+\b', caption)
+            cap_tokens = preprocess_text(caption, stopwords)
             if file in text_dict:
                 text_dict[file].append(cap_tokens)
             else:
