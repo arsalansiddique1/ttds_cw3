@@ -21,7 +21,7 @@ image_id = 0
 with db.connect() as conn:
 
     stmt = sqlalchemy.text(
-        "INSERT INTO captions (id, filename, title, caption) VALUES (:id, :filename, :title, :caption)"
+        "INSERT INTO captions2 (id, filename, title, caption) VALUES (:id, :filename, :title, :caption)"
     )
 
     for article in tqdm(html_dump):
