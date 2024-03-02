@@ -14,32 +14,9 @@ import sqlalchemy
 
 db: sqlalchemy.engine.base.Engine = connect_connector.connect_with_connector()
 
-
-def extract_stopwords(stopwords_file):
-    '''
-    Helper function to extract stopwords from a stopwords file
-    '''
-    if stopwords_file is None:
-        return []
-    with open(stopwords_file, 'r', encoding="utf-8") as s:
-        text = s.read().lower()
-        pattern = r'\b[\w\']+\b'
-        stopwords = re.findall(pattern, text)
-    return stopwords
-
-def preprocess_text(text, stopwords):
-    '''
-    Preprocess a single text: tokenization, stopping, case folding, stemming
-    '''
-    tokens = re.findall(r'\b[\w\']+\b', re.sub(r'_', ' ', text).lower())
-    tokens = list(filterfalse(stopwords.__contains__, tokens)) 
-    stemmer = PorterStemmer()
-    return [stemmer.stem(token) for token in tokens]
+from hashlib import md5
 
 image_id = 0
-
-
-stopwords = extract_stopwords("ttds_2023_english_stop_words.txt")
 
 with db.connect() as conn:
 
@@ -53,11 +30,13 @@ with db.connect() as conn:
 
             if image.caption != "":     #only include images with a caption
                 filename = image.title
+                f_hash = md5(filename.encode()).hexdigest()
+                file_loc = f_hash[0:1] + '/' + f_hash[0:2] + '/' + filename
 
-                cleaned_caption = ' '.join(preprocess_text(image.caption, stopwords))
+                caption = image.caption
 
                 conn.execute(stmt, parameters=
-                    {"id": image_id, "filename": filename, "title": title, "caption": cleaned_caption}
+                    {"id": image_id, "filename": file_loc, "title": title, "caption": caption}
                 )
                 conn.commit()
 
