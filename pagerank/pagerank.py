@@ -5,6 +5,11 @@ import sys
 import networkx as nx
 from tqdm import tqdm
 
+from mwparserfromhtml import HTMLDump
+
+import connect_connector
+import sqlalchemy
+
 
 # this function scrapes all the links from the wiki file
 def scrape_links(wiki_file, id_file, links_file):
@@ -22,68 +27,37 @@ def scrape_links(wiki_file, id_file, links_file):
                 self.ids[title_] = self.counter
                 self.counter += 1
 
-            return self.ids[title_]
+            return str(self.ids[title_])
 
     # holds the translation between titles and id numbers.
     # numbers take up less space in memory than titles
     ids = Ids()
 
-    with (open(wiki_file) as wiki_reader,
-          open(links_file, 'w') as links_writer):
+    # wiki parser object
+    wiki = HTMLDump(wiki_file)
 
-        for j, line in enumerate(tqdm(wiki_reader, desc='Reading Wikipedia')):
+    with open(links_file, 'w') as links_writer:
+
+        # iterate over each article
+        for i, article in enumerate(tqdm(wiki, desc='Reading Wikipedia')):
 
             # set this true if wanting quick test
             early_stop = False
-            if early_stop and j > 10000:
+            if early_stop and i > 10000:
                 break
 
-            # find out if there's a title on this line
-            if "<title>" in line and "</title>" in line:
-                start_tag_pos = line.find("<title>")
-                end_tag_pos = line.find("</title>")
-                title = line[start_tag_pos + 7: end_tag_pos]
-                title_id = ids.get(title)
+            # get the title of current article
+            title = article.get_title()
 
-            # we now want to check if there's a link on this line.
-            #
-            # iterate over the characters in the line:
-            #   - once we encounter matching "[[" and "]]",
-            #     we process this link (if it's not a file)
-            #   - if we encounter nested brackets, we reset the
-            #     count as links cannot be nested
-            counter = 0
-            start_pos = 0
-            for i, char in enumerate(line):
-                if char == '[':
-                    if counter == 2:
-                        # we found nested brackets, start again
-                        counter = 0
-                    if counter == 0:
-                        start_pos = i
-                    counter += 1
-                if char == ']':
-                    counter -= 1
-                    if counter == 0:
-                        # we found a matching pair of brackets!
-
-                        # strip the brackets
-                        link = line[start_pos: i+1]
-                        link = link[2: -2]
-
-                        # if there's a display name, remove it
-                        if '|' in link:
-                            link = link.split('|')[0]
-
-                        # check this isn't a file!
-                        if link and "File:" not in link:
-                            link_id = ids.get(link)
-                            links_writer.write(str(title_id) + ',' + str(link_id) + '\n')
+            # iterate over all the links in the article
+            for wikilink in article.html.wikistew.get_wikilinks():
+                link = wikilink.title
+                links_writer.write(ids.get(title) + ',' + ids.get(link) + '\n')
 
     # finally, write save all the IDs with corresponding page names
     with open(id_file, 'w') as ids_writer:
         for _id in tqdm(ids.ids, desc='Writing IDs file'):
-            ids_writer.write('"' + _id + '",' + str(ids.get(_id)) + "\n")
+            ids_writer.write('"' + _id + '"\t' + ids.get(_id) + "\n")
 
 
 def page_rank(id_file, links_file, results_file):
@@ -97,17 +71,17 @@ def page_rank(id_file, links_file, results_file):
     # read ids file
     ids = dict()
     with open(id_file) as id_reader:
-        csv_reader = csv.reader(id_reader, delimiter=',')
+        csv_reader = csv.reader(id_reader, delimiter='\t')
         for title, _id in csv_reader:
             ids[str(_id)] = title
 
     # write page rank results with original page names
     with open(results_file, 'w') as results_writer:
         for page in tqdm(results, desc='Writing results file'):
-            results_writer.write('"' + ids[page] + '",' + str(results[page]) + '\n')
+            results_writer.write('"' + ids[page] + '"\t' + str(results[page]) + '\n')
 
 
-def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10):
+def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
     n = len(graph)
     initial = 1 / n
     for node in graph.nodes:
@@ -120,12 +94,17 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10):
             current_value = graph.nodes[node]['pr'][current]
             previous_value = graph.nodes[node]['pr'][not current]
             total += (current_value - previous_value) ** 2
-        return math.sqrt(total) < stopping
+        current_error = math.sqrt(total)
+
+        print("Current error:", current_error)
+        print("Target error:", stopping)
+
+        return current_error < stopping
 
     # apply page rank algorithm until convergence
     current = True
     iteration = 0
-    while not stop():
+    while not stop() and iteration < max_iter:
         iteration += 1
         print("Running page rank iteration", iteration)
 
@@ -146,6 +125,21 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10):
 
     return results
 
+def write_to_db(results_file):
+    # see this page for instructions to connect to DB:
+    # https://cloud.google.com/compute/docs/instances/change-service-account
+    # IMPORTANT: MUST SET ENVIRONMENT VARIABLES FOR THIS TO WORK
+    db: sqlalchemy.engine.base.Engine = connect_connector.connect_with_connector()
+
+    with open(results_file) as results_reader, db.connect() as conn:
+        stmt = sqlalchemy.text(
+            "INSERT INTO pagerank (title, score) VALUES (:title, :score)"
+        )
+        for line in results_file:
+            title, score = line.split('\t')
+            conn.execute(stmt, parameters={"title": title, "score": score})
+            conn.commit()
+
 
 def main():
     try:
@@ -159,6 +153,7 @@ def main():
 
     scrape_links(wiki_file, id_file, links_file)
     page_rank(id_file, links_file, results_file)
+    write_to_db(results_file)
 
 
 if __name__ == "__main__":

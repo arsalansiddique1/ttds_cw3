@@ -1,17 +1,27 @@
 <template>
   <div id="app">
     <h1>{{ title }}</h1>
-    <form @submit.prevent="formSubmitted()">
-      <input v-model="searchTerm" class="u-full-width" type="text" id="searchTerm" name="searchTerm">
-      <button type="submit">Search</button>
+    <form @submit.prevent="formSubmitted()" class="search-bar">
+      <input v-model="searchTerm" type="text" id="searchTerm" name="searchTerm" placeholder="search anything">
+      <button type="submit"><img src="../images/search.png" alt=""></button>
     </form>
     <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
-    <section class="images">
-      <div v-for="image in displayedImages" :key="image.url">
-        <img :src="image.url" @click="toggleCaption(image)">
-        <div v-if="image.showCaption">{{ image.caption }}</div> <!-- Display the caption if showCaption is true -->
+    <div class="portfolio" id = "portfolio">
+      <div class="portfolio__item" v-for="(image, index) in displayedImages" :key="image.url">
+        <img :src="image.url" @click="openLightbox(index)">
       </div>
-    </section>
+    </div>
+    <div class="portfolio-lightboxes">
+      <div  class="portfolio-lightbox" v-for="(image, index) in displayedImages" :key="image.url" :id="'lightbox-' + index">
+        <div class="portfolio-lightbox__content">
+          <a href="#portfolio" class="close"></a>
+          <img :src="image.url">
+          <h3 class="portfolio-lightbox__title">This would be the title within the lightbox</h3>
+          <p class="portfolio-lightbox__body">{{ image.caption }}</p>
+        </div>
+      </div>
+    </div>
+    
     <div class="pagination" v-if="images.length > 0">
       <button @click="prevPage" :disabled="currentPage === 1" class="circular-btn">
         <span>&#9664;</span> <!-- Unicode character for left arrow -->
@@ -33,7 +43,7 @@ export default {
   name: 'app',
   data() {
     return {
-      title: 'WIKI IMAGE SEARCH',
+      title: 'Wikimage Search',
       searchTerm: '',
       images: [],
       loading: false,
@@ -51,6 +61,13 @@ export default {
     },
   },
   methods: {
+      // Other methods...
+    openLightbox(index) {
+      // Construct the lightbox ID
+      const lightboxId = 'lightbox-' + index;
+      // Set the location hash to trigger the :target pseudo-class
+      location.hash = lightboxId;
+    },
     formSubmitted() {
       this.loading = true;
       this.currentPage = 1; // Reset currentPage to 1
@@ -68,10 +85,7 @@ export default {
           this.preloadNextPageImages(); // Preload images for next page after search
         });
     },
-    toggleCaption(image) {
-      // Toggle the showCaption property of the clicked image
-      image.showCaption = !image.showCaption;
-    },
+
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;
@@ -110,6 +124,8 @@ export default {
 <style>
 #app {
   text-align: center;
+  font-family: 'Montserrat';
+  font-size: 30px;
 }
 
 body {
@@ -119,6 +135,7 @@ body {
 
 .images {
   column-count: 5;
+  margin-top: 20px;
 }
 
 .loading-image {
@@ -128,12 +145,13 @@ body {
 }
 
 img {
-  width: 100%;
+  max-width: 100%;
   cursor: pointer; /* Add cursor pointer to indicate image clickability */
 }
 
 .pagination {
   margin-top: 20px;
+  font-size: medium;
 }
 
 .circular-btn {
@@ -148,4 +166,114 @@ img {
   justify-content: center;
   align-items: center;
 }
+.search-bar{
+  width: 100%;
+  max-width: 700px;
+  background: rgba(25, 25, 25, 0.15);
+  display: flex;
+  align-items: center;
+  border-radius: 60px;
+  padding: 10px 20px;
+  backdrop-filter: blur(4px) saturate(180%);
+  margin: 0 auto; /* Center align the search bar */
+}
+
+.search-bar input{
+  background: transparent;
+  flex: 1;
+  border: 0;
+  outline: none;
+  padding: 24px 20px;
+  font-size: 20px;
+  color:  rgba(25, 25, 25, 0.5);
+}
+
+::placeholder{
+  color:  rgba(25, 25, 25, 0.5);
+}
+
+.search-bar button img{
+  width: 25px;
+}
+
+.search-bar button {
+  border: 0;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  background: rgba(150, 150, 150, 0.8);
+  cursor: pointer;
+
+}
+
+/* to set font */
+@import '../font.css';
+
+.portfolio {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-gap: 1em;
+  padding: 5em;
+  background-color: white;
+}
+
+.portfolio__item {
+  background: white;
+}
+
+.portfolio__desc{
+  margin-top: 0;
+  font-size: 0.5em;
+}
+
+.portfolio-lightbox{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0,1);
+  transform-origin: right;
+  transition: transform ease-in-out 500ms;
+}
+
+.portfolio-lightbox:target {
+  transform: scale(1,1);
+  transform-origin: left;
+}
+
+.portfolio-lightbox__content {
+  max-width: 25vw;
+  max-height: 80vh;
+  background: rgba(150, 150, 150, 0.95);
+  padding: 1em;
+  position: relative;
+  font-size: 0.5em;
+}
+
+.close {
+  position: absolute;
+  width: 1em;
+  height: 1em;
+  background: red;
+  top: -1em;
+  right: -1em;
+  border-radius: 50%;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.close::after {
+  content: 'X';
+  color: white;
+  font-weight: 700;
+  
+}
+
 </style>
