@@ -1,66 +1,86 @@
 <template>
-    <div class="vue-root">
-      <div class="demo-description">
-        
-      </div>
-      <smart-query-builder id="queryBuilder"></smart-query-builder>
+  <div class="boolean-search">
+    <div v-for="(condition, index) in conditions" :key="index" class="condition">
+      <template v-if="index === 0">
+        <select v-model="condition.type">
+          <option value="free">Free Text</option>
+          <option value="prox">Proximity Search</option>
+        </select>
+        <!-- Conditionally render input fields based on the selected type -->
+        <template v-if="condition.type === 'free'">
+          <input type="text" v-model="condition.value" placeholder="Free Text">
+        </template>
+        <template v-else-if="condition.type === 'prox'">
+          <input type="text" v-model="condition.value" placeholder="Free Text">
+          <input type="text" v-model="condition.value" placeholder="Free Text">
+          <input type="number" v-model="condition.distance" placeholder="Distance">
+        </template>
+      </template>
+      <template v-else>
+        <!-- Render both field dropdown and value input for other rows -->
+        <select v-model="condition.logic">
+          <option value="AND">AND</option>
+          <option value="OR">OR</option>
+          <option value="AND_NOT">AND NOT</option>
+          <option value="OR_NOT">OR NOT</option>
+        </select>
+        <select v-model="condition.type">
+          <option value="free">Free Text</option>
+          <option value="prox">Proximity Search</option>
+        </select>
+        <!-- Conditionally render input fields based on the selected type -->
+        <template v-if="condition.type === 'free'">
+          <input type="text" v-model="condition.value" placeholder="Free Text">
+        </template>
+        <template v-else-if="condition.type === 'prox'">
+          <input type="text" v-model="condition.value" placeholder="Free Text">
+          <input type="text" v-model="condition.value" placeholder="Free Text">
+          <input type="number" v-model="condition.distance" placeholder="Distance">
+        </template>
+        <button @click="removeCondition(index)">-</button>
+      </template>
     </div>
-  </template>
-  
-  <script>
-  import { onMounted } from "vue";
-  import "smart-webcomponents/source/styles/smart.default.css";
-  import "smart-webcomponents/source/modules/smart.querybuilder.js";
-  
-  export default {
-    name: "app",
-    setup() {
-      onMounted(() => {
-        window.Smart(
-          "#queryBuilder",
-          class {
-            get properties() {
-              return {
-                allowDrag: true,
-                fields: [
-                  {
-                    label: "Id",
-                    dataField: "id",
-                    dataType: "number"
-                  },
-                  {
-                    label: "Product",
-                    dataField: "productName",
-                    dataType: "string"
-                  },
-                  {
-                    label: "Unit Price",
-                    dataField: "price",
-                    dataType: "number"
-                  },
-                  {
-                    label: "Purchased",
-                    dataField: "purchased",
-                    dataType: "datetime"
-                  },
-                  {
-                    label: "Available",
-                    dataField: "available",
-                    dataType: "boolean"
-                  }
-                ]
-              };
-            }
-          }
-        );
-      });
+    <button @click="addCondition">Add Condition</button>
+    <button @click="constructQuery" class="button-primary">Search</button> <!-- Add button-primary class -->
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'BooleanSearch',
+  data() {
+    return {
+      conditions: [{ field: 'AND', type:'free', value: '' }] // Set default condition to "AND"
+    };
+  },
+  methods: {
+    addCondition() {
+      this.conditions.push({ field: 'AND', type:'free', value: '' });
+    },
+    removeCondition(index) {
+      this.conditions.splice(index, 1);
+    },
+    constructQuery() {
+      const query = this.conditions.map(condition => `${condition.field}:${condition.value}`).join(' AND ');
+      this.$emit('query-constructed', query);
     }
-  };
-  </script>
-  
-  <style>
-  body {
-    height: 800px;
-   
   }
-  </style>
+};
+</script>
+
+<style scoped>
+
+.search-container{
+  width: 100%;
+  max-width: 700px;
+  background: rgba(25, 25, 25, 0.15);
+  display: flex;
+  align-items: center;
+  border-radius: 60px;
+  padding: 10px 20px;
+  backdrop-filter: blur(4px) saturate(180%);
+  margin: 0 auto; /* Center align the search bar */
+}
+
+.button,button,input[type=button],input[type=reset],input[type=submit]{display:inline-block;height:38px;padding:0 30px;color:#555;text-align:center;font-size:11px;font-weight:600;line-height:38px;letter-spacing:.1rem;text-transform:uppercase;text-decoration:none;white-space:nowrap;background-color:transparent;border-radius:4px;border:1px solid #bbb;cursor:pointer;box-sizing:border-box}.button:focus,.button:hover,button:focus,button:hover,input[type=button]:focus,input[type=button]:hover,input[type=reset]:focus,input[type=reset]:hover,input[type=submit]:focus,input[type=submit]:hover{color:#333;border-color:#888;outline:0}.button.button-primary,button.button-primary,input[type=button].button-primary,input[type=reset].button-primary,input[type=submit].button-primary{color:#FFF;background-color:rgb(67, 100, 152);border-color:rgb(67, 100, 152)}.button.button-primary:focus,.button.button-primary:hover,button.button-primary:focus,button.button-primary:hover,input[type=button].button-primary:focus,input[type=button].button-primary:hover,input[type=reset].button-primary:focus,input[type=reset].button-primary:hover,input[type=submit].button-primary:focus,input[type=submit].button-primary:hover{color:#FFF;background-color:rgb(67, 100, 152);border-color:rgb(67, 100, 152)}input[type=email],input[type=number],input[type=password],input[type=search],input[type=tel],input[type=text],input[type=url],select,textarea{height:38px;padding:6px 10px;background-color:#fff;border:1px solid #D1D1D1;border-radius:4px;box-shadow:none;box-sizing:border-box}input[type=email],input[type=number],input[type=password],input[type=search],input[type=tel],input[type=text],input[type=url],textarea{-webkit-appearance:none;-moz-appearance:none;appearance:none}textarea{min-height:65px;padding-top:6px;padding-bottom:6px}input[type=email]:focus,input[type=number]:focus,input[type=password]:focus,input[type=search]:focus,input[type=tel]:focus,input[type=text]:focus,input[type=url]:focus,select:focus,textarea:focus{border:1px solid #33C3F0;outline:0}label,legend{display:block;margin-bottom:.5rem;font-weight:600}fieldset{padding:0;border-width:0}input[type=checkbox],input[type=radio]{display:inline}label>.label-body{display:inline-block;margin-left:.5rem;font-weight:400}ul{list-style:circle inside}ol{list-style:decimal inside}ol,ul{padding-left:0;margin-top:0}ol ol,ol ul,ul ol,ul ul{margin:1.5rem 0 1.5rem 3rem;font-size:90%}li{margin-bottom:1rem}code{padding:.2rem .5rem;margin:0 .2rem;font-size:90%;white-space:nowrap;background:#F1F1F1;border:1px solid #E1E1E1;border-radius:4px}pre>code{display:block;padding:1rem 1.5rem;white-space:pre}td,th{padding:12px 15px;text-align:left;border-bottom:1px solid #E1E1E1}td:first-child,th:first-child{padding-left:0}td:last-child,th:last-child{padding-right:0}.button,button{margin-bottom:1rem}fieldset,input,select,textarea{margin-bottom:1.5rem}blockquote,dl,figure,form,ol,p,pre,table,ul{margin-bottom:2.5rem}.u-full-width{width:100%;box-sizing:border-box}.u-max-full-width{max-width:100%;box-sizing:border-box}.u-pull-right{float:right}.u-pull-left{float:left}hr{margin-top:3rem;margin-bottom:3.5rem;border-width:0;border-top:1px solid #E1E1E1}.container:after,.row:after,.u-cf{content:"";display:table;clear:both}
+</style>

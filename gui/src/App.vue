@@ -2,7 +2,7 @@
   <div id="app">
     <h1>{{ title }}</h1>
     <form class="search-bar">
-      <input v-model="searchTerm" type="text" id="searchTerm" name="searchTerm" placeholder="search anything or use dropdown for advanced search">
+      <input v-model="searchTerm" type="text" id="searchTerm" name="searchTerm" placeholder="search anything or use dropdown for advanced search" :readonly="showQueryBuilder">
       <button class="search-button1" @click.prevent="toggleQueryBuilder()">
         <img v-if="!showQueryBuilder" src="../images/down.png" alt=""> <!-- Original icon when showQueryBuilder is false -->
         <img v-else src="../images/up.png" alt=""> <!-- New icon when showQueryBuilder is true -->
@@ -188,6 +188,9 @@ img {
   padding: 10px 20px;
   backdrop-filter: blur(4px) saturate(180%);
   margin: 0 auto; /* Center align the search bar */
+}
+.search-bar input[readonly] {
+  pointer-events: none; /* Set to none to make it unclickable */
 }
 
 .search-bar input{
