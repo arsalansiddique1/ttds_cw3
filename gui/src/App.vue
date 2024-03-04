@@ -1,13 +1,13 @@
 <template>
   <div id="app">
     <h1>{{ title }}</h1>
-    <form @submit.prevent="formSubmitted()" class="search-bar">
-      <input v-model="searchTerm" type="text" id="searchTerm" name="searchTerm" placeholder="search anything">
-      <button type="submit" class="search-button1"><img src="../images/dropdown4.png" alt=""></button>
-      <button type="submit" class="search-button2"><img src="../images/search.png" alt=""></button>
+    <form class="search-bar">
+      <input v-model="searchTerm" type="text" id="searchTerm" name="searchTerm" placeholder="search anything or use dropdown for advanced search">
+      <button class="search-button1" @click.prevent="toggleQueryBuilder()"><img src="../images/dropdown4.png" alt=""></button>
+      <button type="submit" class="search-button2" @click.prevent="formSubmitted()"><img src="../images/search.png" alt=""></button>
     </form>
     <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
-    <QueryBuilder></QueryBuilder>
+    <QueryBuilder v-if="showQueryBuilder" ></QueryBuilder>
     <div class="portfolio" id = "portfolio">
       <div class="portfolio__item" v-for="(image, index) in displayedImages" :key="image.url">
         <img :src="image.url" @click="openLightbox(index)">
@@ -23,7 +23,6 @@
         </div>
       </div>
     </div>
-    
     <div class="pagination" v-if="images.length > 0">
       <button @click="prevPage" :disabled="currentPage === 1" class="circular-btn">
         <span>&#9664;</span> <!-- Unicode character for left arrow -->
@@ -54,6 +53,7 @@ export default {
       totalPages: 1,
       pageSize: 30, // Number of images per page
       preloadedImages: [],
+      showQueryBuilder: false, // Add a boolean data property to control visibility
     };
   },
   components: {
@@ -90,6 +90,9 @@ export default {
           this.loading = false;
           this.preloadNextPageImages(); // Preload images for next page after search
         });
+    },
+    toggleQueryBuilder() {
+      this.showQueryBuilder = !this.showQueryBuilder;
     },
 
     nextPage() {
@@ -206,7 +209,7 @@ img {
   border-radius: 50%;
   width: 60px;
   height: 60px;
-  background: darkblue; /* Change color as desired */
+  background: rgba(150, 150, 150, 0.8);
   cursor: pointer;
   margin-left: 5px;
 }
@@ -216,7 +219,7 @@ img {
   border-radius: 50%;
   width: 60px;
   height: 60px;
-  background: rgba(150, 150, 150, 0.8); /* Different color for the second button */
+  background: rgb(67, 100, 152); /* Change color as desired */ /* Different color for the second button */
   cursor: pointer;
   margin-left: 5px;
 }
