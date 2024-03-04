@@ -16,9 +16,12 @@ db: sqlalchemy.engine.base.Engine = connect_connector.connect_with_connector()
 
 from hashlib import md5
 
-image_id = 0
-
 curr_max = 2606841  # == select max(id) from captions2;
+
+image_id = curr_max + 1 # start counting after last index.
+
+last_db_title = "Glencoe Station"
+add_to_db = False
 
 with db.connect() as conn:
 
@@ -28,25 +31,23 @@ with db.connect() as conn:
 
     for article in tqdm(html_dump):
         title = article.get_title()
-        for image in article.html.wikistew.get_images():
+        
+        if add_to_db:
+            for image in article.html.wikistew.get_images():
 
-            if image.caption != "":     #only include images with a caption
-                if image_id <= curr_max:
+                if image.caption != "":     #only include images with a caption
+                    filename = image.title
+                    f_hash = md5(filename.encode()).hexdigest()
+                    file_loc = f_hash[0:1] + '/' + f_hash[0:2] + '/' + filename
+
+                    caption = image.caption
+
+                    conn.execute(stmt, parameters=
+                        {"id": image_id, "filename": file_loc, "title": title, "caption": caption}
+                    )
+                    conn.commit()
+
                     image_id += 1
-                    continue
-
-                filename = image.title
-                f_hash = md5(filename.encode()).hexdigest()
-                file_loc = f_hash[0:1] + '/' + f_hash[0:2] + '/' + filename
-
-                caption = image.caption
-
-                conn.execute(stmt, parameters=
-                    {"id": image_id, "filename": file_loc, "title": title, "caption": caption}
-                )
-                conn.commit()
-
-                image_id += 1
-
-        # if image_id == 10000:
-        #     break
+        
+        if title == last_db_title:    #start adding articles after last article
+            add_to_db = True
