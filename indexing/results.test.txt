@@ -1,0 +1,19 @@
+1,Alfonso XIII,2.6028
+1,American Revolution,2.6028
+1,Ansbach,2.6028
+1,Artist,2.6028
+1,Austria-Hungary,2.6028
+1,Alexanderplatz,2.0006
+1,Alfonso XII,2.0006
+1,Alkaloid,2.0006
+1,Anarchism,2.0006
+1,Andreas Schlüter,2.0006
+1,Battle of Stalingrad,2.0006
+1,Berlin,2.0006
+1,Bifröst,2.0006
+1,Bonn,2.0006
+1,House of Ascania,2.0006
+2,Birka,10.1672
+2,Allah,5.4426
+2,Arabic alphabet,3.3496
+2,Arabs,2.5746
