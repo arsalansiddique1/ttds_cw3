@@ -3,8 +3,11 @@
     <h1>{{ title }}</h1>
     <form class="search-bar">
       <input v-model="searchTerm" type="text" id="searchTerm" name="searchTerm" placeholder="search anything or use dropdown for advanced search">
-      <button class="search-button1" @click.prevent="toggleQueryBuilder()"><img src="../images/dropdown4.png" alt=""></button>
-      <button type="submit" class="search-button2" @click.prevent="formSubmitted()"><img src="../images/search.png" alt=""></button>
+      <button class="search-button1" @click.prevent="toggleQueryBuilder()">
+        <img v-if="!showQueryBuilder" src="../images/down.png" alt=""> <!-- Original icon when showQueryBuilder is false -->
+        <img v-else src="../images/up.png" alt=""> <!-- New icon when showQueryBuilder is true -->
+      </button>
+      <button type="submit" class="search-button2" :class="{ 'active': showQueryBuilder }" @click.prevent="formSubmitted()"><img src="../images/search.png" alt=""></button>
     </form>
     <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
     <QueryBuilder v-if="showQueryBuilder" ></QueryBuilder>
@@ -212,6 +215,12 @@ img {
   background: rgba(150, 150, 150, 0.8);
   cursor: pointer;
   margin-left: 5px;
+}
+
+
+.search-bar button.search-button2.active {
+  pointer-events: none;
+  background-color: rgba(150, 150, 150, 0.8);
 }
 
 .search-bar button.search-button2 {

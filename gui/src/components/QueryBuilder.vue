@@ -1,8 +1,7 @@
 <template>
     <div class="vue-root">
       <div class="demo-description">
-        The Query Builder component allows you to build complex quieries through
-        UI. The output of the component is a JSON object with the query.
+        
       </div>
       <smart-query-builder id="queryBuilder"></smart-query-builder>
     </div>
