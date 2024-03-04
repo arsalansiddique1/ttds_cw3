@@ -3,9 +3,11 @@
     <h1>{{ title }}</h1>
     <form @submit.prevent="formSubmitted()" class="search-bar">
       <input v-model="searchTerm" type="text" id="searchTerm" name="searchTerm" placeholder="search anything">
-      <button type="submit"><img src="../images/search.png" alt=""></button>
+      <button type="submit" class="search-button1"><img src="../images/dropdown4.png" alt=""></button>
+      <button type="submit" class="search-button2"><img src="../images/search.png" alt=""></button>
     </form>
     <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
+    <QueryBuilder></QueryBuilder>
     <div class="portfolio" id = "portfolio">
       <div class="portfolio__item" v-for="(image, index) in displayedImages" :key="image.url">
         <img :src="image.url" @click="openLightbox(index)">
@@ -38,6 +40,7 @@
 
 <script>
 import API from './API';
+import QueryBuilder from './components/QueryBuilder'
 
 export default {
   name: 'app',
@@ -52,6 +55,9 @@ export default {
       pageSize: 30, // Number of images per page
       preloadedImages: [],
     };
+  },
+  components: {
+    QueryBuilder
   },
   computed: {
     displayedImages() {
@@ -195,16 +201,26 @@ img {
 .search-bar button img{
   width: 25px;
 }
-
-.search-bar button {
+.search-bar button.search-button1 {
   border: 0;
   border-radius: 50%;
   width: 60px;
   height: 60px;
-  background: rgba(150, 150, 150, 0.8);
+  background: darkblue; /* Change color as desired */
   cursor: pointer;
-
+  margin-left: 5px;
 }
+
+.search-bar button.search-button2 {
+  border: 0;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  background: rgba(150, 150, 150, 0.8); /* Different color for the second button */
+  cursor: pointer;
+  margin-left: 5px;
+}
+
 
 /* to set font */
 @import '../font.css';
