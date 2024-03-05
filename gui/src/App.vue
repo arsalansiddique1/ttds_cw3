@@ -1,11 +1,19 @@
 <template>
   <div id="app">
     <h1>{{ title }}</h1>
-    <form @submit.prevent="formSubmitted()" class="search-bar">
-      <input v-model="searchTerm" type="text" id="searchTerm" name="searchTerm" placeholder="search anything">
-      <button type="submit"><img src="../images/search.png" alt=""></button>
+    <form class="search-bar">
+      <input v-model="searchTerm" type="text" id="searchTerm" name="searchTerm" placeholder="search anything or use dropdown for advanced search" :readonly="showQueryBuilder">
+      <button type="submit" class="search-button2" :class="{ 'active': showQueryBuilder }" @click.prevent="formSubmitted()"><img src="../images/search.png" alt=""></button>
+      <button class="search-button1" @click.prevent="toggleQueryBuilder()">
+        <img v-if="!showQueryBuilder" src="../images/down.png" alt=""> <!-- Original icon when showQueryBuilder is false -->
+        <img v-else src="../images/up.png" alt=""> <!-- New icon when showQueryBuilder is true -->
+      </button>
     </form>
     <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
+    <QueryBuilder v-if="showQueryBuilder" @clicked="onClickChild"></QueryBuilder>
+    <div class="retrieval-time" v-if="retrievalTime > 0">
+      Retrieval time: {{ retrievalTime }} seconds
+    </div>
     <div class="portfolio" id = "portfolio">
       <div class="portfolio__item" v-for="(image, index) in displayedImages" :key="image.url">
         <img :src="image.url" @click="openLightbox(index)">
@@ -21,7 +29,6 @@
         </div>
       </div>
     </div>
-    
     <div class="pagination" v-if="images.length > 0">
       <button @click="prevPage" :disabled="currentPage === 1" class="circular-btn">
         <span>&#9664;</span> <!-- Unicode character for left arrow -->
@@ -38,6 +45,7 @@
 
 <script>
 import API from './API';
+import QueryBuilder from './components/QueryBuilder'
 
 export default {
   name: 'app',
@@ -51,7 +59,12 @@ export default {
       totalPages: 1,
       pageSize: 30, // Number of images per page
       preloadedImages: [],
+      showQueryBuilder: false, // Add a boolean data property to control visibility
+      retrievalTime: 0,
     };
+  },
+  components: {
+    QueryBuilder
   },
   computed: {
     displayedImages() {
@@ -68,7 +81,13 @@ export default {
       // Set the location hash to trigger the :target pseudo-class
       location.hash = lightboxId;
     },
+    onClickChild (value) {
+          console.log(value) // someValue
+          this.searchTerm = value
+          this.formSubmitted();
+      },
     formSubmitted() {
+      const startTime = performance.now();
       this.loading = true;
       this.currentPage = 1; // Reset currentPage to 1
       this.images = [];
@@ -83,7 +102,12 @@ export default {
           this.totalPages = Math.ceil(this.images.length / this.pageSize);
           this.loading = false;
           this.preloadNextPageImages(); // Preload images for next page after search
+          const endTime = performance.now(); // Get the current timestamp when the response is received
+          this.retrievalTime = ((endTime - startTime) / 1000).toFixed(2); // Calculate the retrieval time in seconds and update retrievalTime
         });
+    },
+    toggleQueryBuilder() {
+      this.showQueryBuilder = !this.showQueryBuilder;
     },
 
     nextPage() {
@@ -177,6 +201,9 @@ img {
   backdrop-filter: blur(4px) saturate(180%);
   margin: 0 auto; /* Center align the search bar */
 }
+.search-bar input[readonly] {
+  pointer-events: none; /* Set to none to make it unclickable */
+}
 
 .search-bar input{
   background: transparent;
@@ -195,16 +222,32 @@ img {
 .search-bar button img{
   width: 25px;
 }
-
-.search-bar button {
+.search-bar button.search-button1 {
   border: 0;
   border-radius: 50%;
   width: 60px;
   height: 60px;
   background: rgba(150, 150, 150, 0.8);
   cursor: pointer;
-
+  margin-left: 5px;
 }
+
+
+.search-bar button.search-button2.active {
+  pointer-events: none;
+  background-color: rgba(150, 150, 150, 0.8);
+}
+
+.search-bar button.search-button2 {
+  border: 0;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  background: rgb(67, 100, 152); /* Change color as desired */ /* Different color for the second button */
+  cursor: pointer;
+  margin-left: 5px;
+}
+
 
 /* to set font */
 @import '../font.css';
@@ -256,6 +299,12 @@ img {
   font-size: 0.5em;
 }
 
+.portfolio-lightbox__content img {
+  max-width: 100%; /* Ensure the image fits within its container */
+  max-height: 50vh; /* Limit the maximum height of the image */
+  object-fit: contain; /* Maintain aspect ratio while fitting the image within the specified dimensions */
+}
+
 .close {
   position: absolute;
   width: 1em;
@@ -274,6 +323,11 @@ img {
   color: white;
   font-weight: 700;
   
+}
+
+.retrieval-time {
+  margin-top: 10px;
+  font-size: 18px;
 }
 
 </style>
