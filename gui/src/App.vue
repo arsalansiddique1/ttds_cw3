@@ -3,14 +3,14 @@
     <h1>{{ title }}</h1>
     <form class="search-bar">
       <input v-model="searchTerm" type="text" id="searchTerm" name="searchTerm" placeholder="search anything or use dropdown for advanced search" :readonly="showQueryBuilder">
+      <button type="submit" class="search-button2" :class="{ 'active': showQueryBuilder }" @click.prevent="formSubmitted()"><img src="../images/search.png" alt=""></button>
       <button class="search-button1" @click.prevent="toggleQueryBuilder()">
         <img v-if="!showQueryBuilder" src="../images/down.png" alt=""> <!-- Original icon when showQueryBuilder is false -->
         <img v-else src="../images/up.png" alt=""> <!-- New icon when showQueryBuilder is true -->
       </button>
-      <button type="submit" class="search-button2" :class="{ 'active': showQueryBuilder }" @click.prevent="formSubmitted()"><img src="../images/search.png" alt=""></button>
     </form>
     <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
-    <QueryBuilder v-if="showQueryBuilder" ></QueryBuilder>
+    <QueryBuilder v-if="showQueryBuilder" @clicked="onClickChild"></QueryBuilder>
     <div class="portfolio" id = "portfolio">
       <div class="portfolio__item" v-for="(image, index) in displayedImages" :key="image.url">
         <img :src="image.url" @click="openLightbox(index)">
@@ -77,6 +77,11 @@ export default {
       // Set the location hash to trigger the :target pseudo-class
       location.hash = lightboxId;
     },
+    onClickChild (value) {
+          console.log(value) // someValue
+          this.searchTerm = value
+          this.formSubmitted();
+      },
     formSubmitted() {
       this.loading = true;
       this.currentPage = 1; // Reset currentPage to 1
@@ -285,6 +290,12 @@ img {
   padding: 1em;
   position: relative;
   font-size: 0.5em;
+}
+
+.portfolio-lightbox__content img {
+  max-width: 100%; /* Ensure the image fits within its container */
+  max-height: 50vh; /* Limit the maximum height of the image */
+  object-fit: contain; /* Maintain aspect ratio while fitting the image within the specified dimensions */
 }
 
 .close {

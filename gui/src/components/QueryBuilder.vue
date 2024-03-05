@@ -84,7 +84,8 @@ export default {
       }
       
       ).join('');
-      console.log(query);
+      //console.log(query);
+      this.$emit('clicked', query)
     }
   }
 };
