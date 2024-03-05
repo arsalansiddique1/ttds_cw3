@@ -41,8 +41,10 @@
           <button class="remove-button" @click="removeCondition(index)">Remove</button>
         </template>
       </div>
-      <button @click="addCondition">Add Condition</button>
-      <button @click="constructQuery" class="button-primary">Search</button> <!-- Add button-primary class -->
+      <div class="buttons-container">
+        <button @click="addCondition">Add Condition</button>
+        <button @click="constructQuery" class="button-primary">Search</button>
+      </div>
     </div>
   </div>
   
@@ -84,6 +86,12 @@ export default {
   backdrop-filter: blur(4px) saturate(180%);
   margin: 20px auto; /* Center align the search bar */
   justify-content: center; /* Center align horizontally */
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px; /* Push the buttons to the bottom of the container */
 }
 
 .logic-dropdown, .remove-button {
