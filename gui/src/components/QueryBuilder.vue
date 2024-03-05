@@ -8,18 +8,18 @@
             <option value="prox">Proximity Search</option>
           </select>
           <!-- Conditionally render input fields based on the selected type -->
-          <template v-if="condition.type === 'free'">
-            <input type="text" v-model="condition.value" placeholder="Free Text">
+          <template  v-if="condition.type === 'free'">
+            <input class="free-text-container" type="text" v-model="condition.value" placeholder="Free Text">
           </template>
           <template v-else-if="condition.type === 'prox'">
-            <input type="text" v-model="condition.value" placeholder="Free Text">
-            <input type="text" v-model="condition.value" placeholder="Free Text">
-            <input type="number" v-model="condition.distance" placeholder="Distance">
+            <input class="prox-free-text-container" type="text" v-model="condition.value1" placeholder="Free Text">
+            <input class="prox-free-text-container" type="text" v-model="condition.value2" placeholder="Free Text">
+            <input class="prox-digit-container" type="number" v-model="condition.distance" placeholder="Distance" min="1">
           </template>
         </template>
         <template v-else>
           <!-- Render both field dropdown and value input for other rows -->
-          <select v-model="condition.logic" >
+          <select v-model="condition.logic" class="logic-dropdown" >
             <option value="AND">AND</option>
             <option value="OR">OR</option>
             <option value="AND_NOT">AND NOT</option>
@@ -31,14 +31,14 @@
           </select>
           <!-- Conditionally render input fields based on the selected type -->
           <template v-if="condition.type === 'free'">
-            <input type="text" v-model="condition.value" placeholder="Free Text">
+            <input class="free-text-container" type="text" v-model="condition.value" placeholder="Free Text">
           </template>
           <template v-else-if="condition.type === 'prox'">
-            <input type="text" v-model="condition.value1" placeholder="Free Text">
-            <input type="text" v-model="condition.value2" placeholder="Free Text">
-            <input type="number" v-model="condition.distance" placeholder="Distance">
+            <input class="prox-free-text-container" type="text" v-model="condition.value1" placeholder="Free Text">
+            <input class="prox-free-text-container" type="text" v-model="condition.value2" placeholder="Free Text">
+            <input class="prox-digit-container" type="number" v-model="condition.distance" placeholder="Distance" min="1">
           </template>
-          <button @click="removeCondition(index)">-</button>
+          <button class="remove-button" @click="removeCondition(index)">Remove</button>
         </template>
       </div>
       <button @click="addCondition">Add Condition</button>
@@ -75,7 +75,7 @@ export default {
 
 .boolean-search-container {
   width: 100%;
-  max-width: 500px;
+  max-width: 800px;
   background: rgba(25, 25, 25, 0.15);
   display: flex;
   align-items: center;
@@ -85,6 +85,20 @@ export default {
   margin: 20px auto; /* Center align the search bar */
   justify-content: center; /* Center align horizontally */
 }
+
+.logic-dropdown, .remove-button {
+  width: 120px;
+}
+.free-text-container {
+  width: 400px;
+}
+.prox-free-text-container {
+  width: 150px;
+}
+.prox-digit-container {
+  width: 100px;
+}
+
 
 .button, button, input[type=button], input[type=reset], input[type=submit] {
   display: inline-block;
@@ -104,10 +118,6 @@ export default {
   border: 1px solid #bbb;
   cursor: pointer;
   box-sizing: border-box;
-}
-
-.boolean-search-container .logic-dropdown {
-  width: 150px; /* Adjust the width as needed */
 }
 
 .button:focus, .button:hover, button:focus, button:hover, input[type=button]:focus, input[type=button]:hover, input[type=reset]:focus, input[type=reset]:hover, input[type=submit]:focus, input[type=submit]:hover {
