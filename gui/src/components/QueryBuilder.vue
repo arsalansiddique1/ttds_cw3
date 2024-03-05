@@ -55,7 +55,7 @@ export default {
   name: 'BooleanSearch',
   data() {
     return {
-      conditions: [{ logic: 'AND', type:'free', value: '' }] // Set default condition to "AND"
+      conditions: [{ logic: '', type:'free', value: '' }]
     };
   },
   methods: {
@@ -65,9 +65,26 @@ export default {
     removeCondition(index) {
       this.conditions.splice(index, 1);
     },
+
     constructQuery() {
-      const query = this.conditions.map(condition => `${condition.field}:${condition.value}`).join(' AND ');
-      this.$emit('query-constructed', query);
+      // const query = this.conditions.map(condition => condition.logic ? `${condition.logic} ${condition.value}` : condition.value).join(' ');
+      const query = this.conditions.map(condition => {
+        if (condition.type === 'prox') {
+          const value1 = condition.value1;
+          const value2 = condition.value2;
+          const distance = condition.distance;
+          if (value1 && value2 && distance) {
+            return `${condition.logic} #${distance}(${value1}, ${value2}) `;
+          } else {
+            return '';
+          }
+        } else {
+          return `${condition.logic} ${condition.value} `;
+        }
+      }
+      
+      ).join('');
+      console.log(query);
     }
   }
 };
