@@ -109,7 +109,7 @@ export default {
 .buttons-container {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px; /* Push the buttons to the bottom of the container */
+  margin-top: 20px;
 }
 
 .logic-dropdown, .remove-button {

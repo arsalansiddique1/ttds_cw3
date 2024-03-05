@@ -11,6 +11,9 @@
     </form>
     <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
     <QueryBuilder v-if="showQueryBuilder" @clicked="onClickChild"></QueryBuilder>
+    <div class="retrieval-time" v-if="retrievalTime > 0">
+      Retrieval time: {{ retrievalTime }} seconds
+    </div>
     <div class="portfolio" id = "portfolio">
       <div class="portfolio__item" v-for="(image, index) in displayedImages" :key="image.url">
         <img :src="image.url" @click="openLightbox(index)">
@@ -57,6 +60,7 @@ export default {
       pageSize: 30, // Number of images per page
       preloadedImages: [],
       showQueryBuilder: false, // Add a boolean data property to control visibility
+      retrievalTime: 0,
     };
   },
   components: {
@@ -83,6 +87,7 @@ export default {
           this.formSubmitted();
       },
     formSubmitted() {
+      const startTime = performance.now();
       this.loading = true;
       this.currentPage = 1; // Reset currentPage to 1
       this.images = [];
@@ -97,6 +102,8 @@ export default {
           this.totalPages = Math.ceil(this.images.length / this.pageSize);
           this.loading = false;
           this.preloadNextPageImages(); // Preload images for next page after search
+          const endTime = performance.now(); // Get the current timestamp when the response is received
+          this.retrievalTime = ((endTime - startTime) / 1000).toFixed(2); // Calculate the retrieval time in seconds and update retrievalTime
         });
     },
     toggleQueryBuilder() {
@@ -316,6 +323,11 @@ img {
   color: white;
   font-weight: 700;
   
+}
+
+.retrieval-time {
+  margin-top: 10px;
+  font-size: 18px;
 }
 
 </style>
