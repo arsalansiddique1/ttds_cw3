@@ -11,7 +11,7 @@ from connect_connector import connect_with_connector
 db: sqlalchemy.engine.base.Engine = connect_connector.connect_with_connector()
 stopwords = extract_stopwords("ttds_2023_english_stop_words.txt")
 
-### Read captions2; process and index to JSON
+### Read captions2; process and index
 def read_database_file(stopwords):
     with db.connect() as conn:
         # Query the captions2 table
@@ -32,11 +32,38 @@ def read_database_file(stopwords):
 
 captions_by_file = read_database_file(stopwords)
 positional_index = create_positional_inverted_index(captions_by_file)
-save_index_to_json(positional_index, 'index.json')
+# Save index dict straight to database
+#save_index_to_json(positional_index, 'index.json')
 
-### Store the JSON index in database
+### Store the index in database
+# Function to insert index(dict) into database tables
+def insert_data_from_dict(data, conn):
+    try:
+        # Insert into 'documents' table first
+        if '_doc_lengths' in data:
+            for file, length in data['_doc_lengths'].items():
+                conn.execute("INSERT INTO documents (file, length) VALUES (%s, %s) ON CONFLICT (file) DO NOTHING;", (file, length))
 
-# Function to insert data into PostgreSQL
+        # Then insert into 'terms' table and 'postings' table
+        for term, info in data.items():
+            if term != '_doc_lengths':
+                df = info['df']
+                conn.execute("INSERT INTO terms (term, document_frequency) VALUES (%s, %s) ON CONFLICT (term) DO NOTHING;", (term, df))
+                
+                for file, positions in info['postings'].items():
+                    positions_array = '{' + ','.join(map(str, positions)) + '}'
+                    conn.execute("INSERT INTO postings (term, file, positions) VALUES (%s, %s, %s) ON CONFLICT (term, file) DO NOTHING;", (term, file, positions_array))
+
+        conn.commit()
+        conn.close()
+        print("Data inserted successfully into PostgreSQL")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        conn.rollback()  # Rollback the transaction on error
+
+
+
+# Function to insert JSON data into PostgreSQL
 def insert_data_from_json(json_data, conn):
     try:
         #cur = conn.cursor()
@@ -115,7 +142,7 @@ b_tree_idx_file = sqlalchemy.text("""
 CREATE INDEX idx_documents_file ON documents(file);
 """)
 
-json_data = read_json_file('index.json')
+
 
 
 
@@ -130,7 +157,7 @@ try:
         conn.execute(create_postings_table)
 
         # Insert data into PostgreSQL
-        insert_data_from_json(json_data, conn)
+        insert_data_from_dict(positional_index, conn)
         
         #Creates b-tree indexes for term column to optimise df lookups
         conn.execute(b_tree_idx_terms)
