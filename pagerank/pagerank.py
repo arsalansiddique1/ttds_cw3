@@ -7,8 +7,8 @@ from tqdm import tqdm
 
 from mwparserfromhtml import HTMLDump
 
-import connect_connector
-import sqlalchemy
+# import connect_connector
+# import sqlalchemy
 
 
 # this function scrapes all the links from the wiki file
@@ -125,20 +125,20 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
 
     return results
 
-def write_to_db(results_file):
-    # see this page for instructions to connect to DB:
-    # https://cloud.google.com/compute/docs/instances/change-service-account
-    # IMPORTANT: MUST SET ENVIRONMENT VARIABLES FOR THIS TO WORK
-    db: sqlalchemy.engine.base.Engine = connect_connector.connect_with_connector()
-
-    with open(results_file) as results_reader, db.connect() as conn:
-        stmt = sqlalchemy.text(
-            "INSERT INTO pagerank (title, score) VALUES (:title, :score)"
-        )
-        for line in results_file:
-            title, score = line.split('\t')
-            conn.execute(stmt, parameters={"title": title, "score": score})
-            conn.commit()
+# def write_to_db(results_file):
+#     # see this page for instructions to connect to DB:
+#     # https://cloud.google.com/compute/docs/instances/change-service-account
+#     # IMPORTANT: MUST SET ENVIRONMENT VARIABLES FOR THIS TO WORK
+#     db: sqlalchemy.engine.base.Engine = connect_connector.connect_with_connector()
+#
+#     with open(results_file) as results_reader, db.connect() as conn:
+#         stmt = sqlalchemy.text(
+#             "INSERT INTO pagerank (title, score) VALUES (:title, :score)"
+#         )
+#         for line in results_file:
+#             title, score = line.split('\t')
+#             conn.execute(stmt, parameters={"title": title, "score": score})
+#             conn.commit()
 
 
 def main():
@@ -151,9 +151,9 @@ def main():
         print('Usage: python [wiki file] [id file] [links file] [results file]')
         sys.exit(1)
 
-    scrape_links(wiki_file, id_file, links_file)
+    # scrape_links(wiki_file, id_file, links_file)
     page_rank(id_file, links_file, results_file)
-    write_to_db(results_file)
+    # write_to_db(results_file)
 
 
 if __name__ == "__main__":
