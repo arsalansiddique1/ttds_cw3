@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "lazyload": "^2.0.0-rc.2",
     "smart-webcomponents": "^18.0.26",
     "vue": "^3.2.13",
+    "vue-lazyload": "^3.0.0",
     "vue-lightbox-advanced": "^2.0.1"
   },
   "devDependencies": {

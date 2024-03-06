@@ -15,12 +15,12 @@
       Retrieval time: {{ retrievalTime }} seconds
     </div>
     <div class="portfolio" id = "portfolio">
-      <div class="portfolio__item" v-for="(image, index) in displayedImages" :key="image.url">
-        <img :src="image.url" @click="openLightbox(index)">
+      <div class="portfolio__item" v-for="(image, index) in loadedImages" :key="image.url">
+        <img :src="image.url" v-if="image.valid" @click="openLightbox(index)">
       </div>
     </div>
     <div class="portfolio-lightboxes">
-      <div  class="portfolio-lightbox" v-for="(image, index) in displayedImages" :key="image.url" :id="'lightbox-' + index">
+      <div  class="portfolio-lightbox" v-for="(image, index) in loadedImages" :key="image.url" :id="'lightbox-' + index">
         <div class="portfolio-lightbox__content">
           <a href="#portfolio" class="close"></a>
           <img :src="image.url">
@@ -57,24 +57,51 @@ export default {
       loading: false,
       currentPage: 1,
       totalPages: 1,
-      pageSize: 30, // Number of images per page
+      pageSize: 15, // Number of images per page
       preloadedImages: [],
       showQueryBuilder: false, // Add a boolean data property to control visibility
       retrievalTime: 0,
+      loadedImages: [],
     };
   },
   components: {
     QueryBuilder
   },
   computed: {
-    displayedImages() {
+  //   displayedImages() {
+  //     const startIndex = (this.currentPage - 1) * this.pageSize;
+  //     const endIndex = this.currentPage * this.pageSize;
+      
+  //     return this.loadedImages.slice(startIndex, endIndex);
+  //   },
+  
+  },
+  
+  methods: {
+    loadImages() {
+      //let myArray = []; // Reset loaded images array
+      
       const startIndex = (this.currentPage - 1) * this.pageSize;
       const endIndex = this.currentPage * this.pageSize;
-      return this.images.slice(startIndex, endIndex);
+
+      let imageArray = this.images.slice(startIndex, endIndex)
+      let outputImages = []
+
+      for (let i = 0; i < imageArray.length; i++) {
+        const image = imageArray[i];
+        const img = new Image();
+        img.src = image.url;
+        img.valid = true;
+        imageArray[i].valid = true;
+        outputImages.push(img)
+        img.onerror = () => {
+          imageArray[i].valid = false;
+        };
+        
+      }  
+      this.loadedImages = imageArray;
     },
-  },
-  methods: {
-      // Other methods...
+      
     openLightbox(index) {
       // Construct the lightbox ID
       const lightboxId = 'lightbox-' + index;
@@ -101,7 +128,9 @@ export default {
           }));
           this.totalPages = Math.ceil(this.images.length / this.pageSize);
           this.loading = false;
-          this.preloadNextPageImages(); // Preload images for next page after search
+          this.loadImages();
+          // this.displayedImages;
+          //this.preloadNextPageImages(); // Preload images for next page after search
           const endTime = performance.now(); // Get the current timestamp when the response is received
           this.retrievalTime = ((endTime - startTime) / 1000).toFixed(2); // Calculate the retrieval time in seconds and update retrievalTime
         });
@@ -113,34 +142,41 @@ export default {
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;
-        this.preloadNextPageImages(); // Preload images for next page when navigating to next page
+        this.loadImages();
+        //this.preloadNextPageImages(); // Preload images for next page when navigating to next page
       }
     },
     prevPage() {
       if (this.currentPage > 1) {
         this.currentPage--;
-        this.preloadPrevPageImages(); // Preload images for previous page when navigating to previous page
+        this.loadImages();
+        //this.preloadPrevPageImages(); // Preload images for previous page when navigating to previous page
       }
     },
-    preloadNextPageImages() {
-      const nextPageStartIndex = this.currentPage * this.pageSize;
-      const nextPageEndIndex = nextPageStartIndex + this.pageSize;
-      const nextPageImages = this.images.slice(nextPageStartIndex, nextPageEndIndex);
-      this.preloadImages(nextPageImages);
-    },
-    preloadPrevPageImages() {
-      const prevPageStartIndex = (this.currentPage - 2) * this.pageSize;
-      const prevPageEndIndex = prevPageStartIndex + this.pageSize;
-      const prevPageImages = this.images.slice(prevPageStartIndex, prevPageEndIndex);
-      this.preloadImages(prevPageImages);
-    },
-    preloadImages(images) {
-      for (const image of images) {
-        const img = new Image();
-        img.src = image.url;
-        this.preloadedImages.push(img);
-      }
-    },
+    // preloadNextPageImages() {
+    //   const nextPageStartIndex = this.currentPage * this.pageSize;
+    //   const nextPageEndIndex = nextPageStartIndex + this.pageSize;
+    //   const nextPageImages = this.images.slice(nextPageStartIndex, nextPageEndIndex);
+    //   this.preloadImages(nextPageImages);
+    // },
+    // preloadPrevPageImages() {
+    //   const prevPageStartIndex = (this.currentPage - 2) * this.pageSize;
+    //   const prevPageEndIndex = prevPageStartIndex + this.pageSize;
+    //   const prevPageImages = this.images.slice(prevPageStartIndex, prevPageEndIndex);
+    //   this.preloadImages(prevPageImages);
+    // },
+    // preloadImages(images) {
+    //   for (const image of images) {
+    //     const img = new Image();
+    //     img.src = image.url;
+    //     img.onload = () => {
+    //       this.preloadedImages.push(img);
+    //     };
+    //     img.onerror = () => {
+    //       console.error('Error loading image:', image.url);
+    //     };
+    //   }
+    // },
   },
 };
 </script>
