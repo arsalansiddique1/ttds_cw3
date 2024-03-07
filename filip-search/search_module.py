@@ -49,7 +49,7 @@ def query_handler(query):
     return output
 
 #given locations of two terms identify where they appear closer to each other that dist 
-def proximity_2_terms(term1_locs, term2_locs, dist):
+def proximity_2_terms(term1_locs, term2_locs, dist, phrase=False):
     results = []
     for key in term1_locs:   
             term1_doc = key
@@ -62,7 +62,9 @@ def proximity_2_terms(term1_locs, term2_locs, dist):
                     if term1_doc == term2_doc:
                         for p in term1_pos:
                             for p2 in term2_pos:
-                                if abs(p-p2) <= dist:
+                                if abs(p-p2) <= dist and not phrase:
+                                    results.append(key)
+                                elif p-p2 == -1 and phrase:
                                     results.append(key)
     return results
 
@@ -75,7 +77,7 @@ def phrasesearch(query):
         term1_locs = pos_inverted_index.get(terms[i], no_hits_placeholder)['postings']
         term2_locs = pos_inverted_index.get(terms[i+1], no_hits_placeholder)['postings']
 
-        results_two_terms = set(proximity_2_terms(term1_locs, term2_locs, 1))
+        results_two_terms = set(proximity_2_terms(term1_locs, term2_locs, 1, phrase=True))
 
         if i == 0: output = output.union(results_two_terms)
         else: output = output.intersection(results_two_terms)
