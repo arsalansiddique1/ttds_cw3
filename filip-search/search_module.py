@@ -68,16 +68,19 @@ def proximity_2_terms(term1_locs, term2_locs, dist):
 
 #phrase search by using proximity_2_terms with distance 1
 def phrasesearch(query):
-    phrase = re.sub('"', '', query)
-    term1, term2 = phrase.split(' ')
+    terms = preprocess_text(query, stopwords)
 
-    processed_term1 = preprocess_text(term1, stopwords).pop()
-    processed_term2 = preprocess_text(term2, stopwords).pop()
+    output = set()
+    for i in range(len(terms)-1):
+        term1_locs = pos_inverted_index.get(terms[i], no_hits_placeholder)['postings']
+        term2_locs = pos_inverted_index.get(terms[i+1], no_hits_placeholder)['postings']
 
-    term1_locs = pos_inverted_index.get(processed_term1, no_hits_placeholder)['postings']
-    term2_locs = pos_inverted_index.get(processed_term2, no_hits_placeholder)['postings']
+        results_two_terms = set(proximity_2_terms(term1_locs, term2_locs, 1))
+
+        if i == 0: output = output.union(results_two_terms)
+        else: output = output.intersection(results_two_terms)
     
-    return proximity_2_terms(term1_locs, term2_locs, 1)
+    return output
 
 #get the documents for the different search cases after splitting for AND or OR or operators
 def getDocs(searchTerm):
@@ -94,7 +97,7 @@ def getDocs(searchTerm):
         searchResult = set(proximity_2_terms(term1_locs, term2_locs, int(proximity_args[0])))
         return searchResult
     elif searchTerm[0] == '"':  #if quotation marks phrase seach
-        searchResult = set(phrasesearch(searchTerm))
+        searchResult = phrasesearch(searchTerm)
         return searchResult
     elif "NOT " in searchTerm:  #if NOT get complement
         searchTerm = searchTerm[4:]
@@ -113,7 +116,7 @@ def bool_search(query):
     docs = set() 
     for ors in formatted_query:
         andDocs = getDocs(ors[0])
-        for ands in ors:
+        for ands in ors[1:]:    #before just ors, double check
             retrieved_docs = getDocs(ands)
             andDocs = andDocs.intersection(retrieved_docs)
         docs = docs.union(andDocs)
