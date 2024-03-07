@@ -2,7 +2,7 @@
   <div id="app">
     <h1>{{ title }}</h1>
     <form class="search-bar">
-      <input v-model="searchTerm" type="text" id="searchTerm" name="searchTerm" placeholder="search anything or use dropdown for advanced search" :readonly="showQueryBuilder">
+      <input v-model="searchTerm" type="text" id="searchTerm" name="searchTerm" placeholder="search anything or use dropdown for advanced search" :readonly="showQueryBuilder" spellcheck="true" >
       <button type="submit" class="search-button2" :class="{ 'active': showQueryBuilder }" @click.prevent="formSubmitted()"><img src="../images/search.png" alt=""></button>
       <button class="search-button1" @click.prevent="toggleQueryBuilder()">
         <img v-if="!showQueryBuilder" src="../images/down.png" alt=""> <!-- Original icon when showQueryBuilder is false -->
