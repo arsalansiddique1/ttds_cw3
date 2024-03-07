@@ -57,7 +57,7 @@ export default {
       loading: false,
       currentPage: 1,
       totalPages: 1,
-      pageSize: 15, // Number of images per page
+      pageSize: 10, // Number of images per page
       preloadedImages: [],
       showQueryBuilder: false, // Add a boolean data property to control visibility
       retrievalTime: 0,
@@ -67,16 +67,7 @@ export default {
   components: {
     QueryBuilder
   },
-  computed: {
-  //   displayedImages() {
-  //     const startIndex = (this.currentPage - 1) * this.pageSize;
-  //     const endIndex = this.currentPage * this.pageSize;
-      
-  //     return this.loadedImages.slice(startIndex, endIndex);
-  //   },
-  
-  },
-  
+
   methods: {
     loadImages() {
       //let myArray = []; // Reset loaded images array
@@ -129,8 +120,6 @@ export default {
           this.totalPages = Math.ceil(this.images.length / this.pageSize);
           this.loading = false;
           this.loadImages();
-          // this.displayedImages;
-          //this.preloadNextPageImages(); // Preload images for next page after search
           const endTime = performance.now(); // Get the current timestamp when the response is received
           this.retrievalTime = ((endTime - startTime) / 1000).toFixed(2); // Calculate the retrieval time in seconds and update retrievalTime
         });
@@ -143,40 +132,14 @@ export default {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;
         this.loadImages();
-        //this.preloadNextPageImages(); // Preload images for next page when navigating to next page
       }
     },
     prevPage() {
       if (this.currentPage > 1) {
         this.currentPage--;
         this.loadImages();
-        //this.preloadPrevPageImages(); // Preload images for previous page when navigating to previous page
       }
     },
-    // preloadNextPageImages() {
-    //   const nextPageStartIndex = this.currentPage * this.pageSize;
-    //   const nextPageEndIndex = nextPageStartIndex + this.pageSize;
-    //   const nextPageImages = this.images.slice(nextPageStartIndex, nextPageEndIndex);
-    //   this.preloadImages(nextPageImages);
-    // },
-    // preloadPrevPageImages() {
-    //   const prevPageStartIndex = (this.currentPage - 2) * this.pageSize;
-    //   const prevPageEndIndex = prevPageStartIndex + this.pageSize;
-    //   const prevPageImages = this.images.slice(prevPageStartIndex, prevPageEndIndex);
-    //   this.preloadImages(prevPageImages);
-    // },
-    // preloadImages(images) {
-    //   for (const image of images) {
-    //     const img = new Image();
-    //     img.src = image.url;
-    //     img.onload = () => {
-    //       this.preloadedImages.push(img);
-    //     };
-    //     img.onerror = () => {
-    //       console.error('Error loading image:', image.url);
-    //     };
-    //   }
-    // },
   },
 };
 </script>
@@ -294,6 +257,7 @@ img {
   grid-gap: 1em;
   padding: 5em;
   background-color: white;
+  align-content: start;
 }
 
 .portfolio__item {
