@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import numpy as np
 from nltk.stem import PorterStemmer
 import pandas as pd
 from utils import preprocess_text, extract_stopwords
@@ -12,31 +13,6 @@ with open('index.json') as f:
 doc_ids = pd.read_csv("images_with_captions.csv").filenames.values
 
 stopwords = extract_stopwords("ttds_2023_english_stop_words.txt")
-
-# STOP_STEM = True
-# #FILENAME = "../cw1collection/trec.5000.xml"
-# FILENAME = "./trec.sample.xml"
-# STOPWORDS_FILENAME = "./ttds_2023_english_stop_words.txt"
-
-# # Load stopwords
-# with open(file=STOPWORDS_FILENAME, mode="r") as stopwords_file:
-#     stopwords = set(stopwords_file.read().splitlines())
-
-
-# #tokenise text
-# def tokeniser(text):
-#     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
-#     return text.split()
-
-# #preprocess text by case folding and 
-# def preprocess(text, stem_stop):
-#     tokens = tokeniser(text)
-#     if stem_stop:
-#         stemmer = PorterStemmer()
-#         tokens = [
-#             stemmer.stem(token) for token in tokens if token.lower() not in stopwords
-#         ]
-#     return tokens
 
 no_hits_placeholder = dict({'postings':{}})
 #treat query by splitting it into parts by identifying AND or OR
@@ -123,3 +99,29 @@ def bool_search(query):
             andDocs = andDocs.intersection(retrieved_docs)
         docs = docs.union(andDocs)
     return docs
+
+#implement ranked search
+def rankedir_search(query):
+    query = preprocess_text(query, stopwords)
+    N = len(doc_ids)
+    tfidfs = {} # Dictionary to store {docnumber: tfidf score}
+
+    #tfidf implemented like in lectures
+    def tfidf(tf, df):
+        return (1 + np.log10(tf)) * (np.log10(N/df))
+    for term in query:
+        #term = preprocess_text(term, STOP_STEM).pop()
+        positions = pos_inverted_index.get(term, no_hits_placeholder)['postings']
+        docfreq = len(positions)
+
+        for doc in positions:
+            vals = positions[doc]
+            termfreq = len(vals)
+            t = tfidf(termfreq, docfreq)
+
+            if doc not in tfidfs.keys():
+                tfidfs[doc] = t
+            else:
+                newval = tfidfs[doc].__add__(t)
+                tfidfs[doc] = newval
+    return tfidfs

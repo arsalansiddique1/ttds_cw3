@@ -2,6 +2,7 @@ import csv
 import re
 from nltk.stem import PorterStemmer
 from itertools import filterfalse
+import string
 
 # Moving the stopwords, tokenisation and stemming from caption_extraction to indxing
 # Take UNPROCESSED caption and PROCESS it
@@ -17,14 +18,25 @@ def extract_stopwords(stopwords_file):
         stopwords = re.findall(pattern, text)
     return stopwords
 
+
+# def preprocess_text(text, stopwords):
+#     '''
+#     Preprocess a single text: tokenization, stopping, case folding, stemming
+#     '''
+#     text_np = "".join([i for i in text if i not in string.punctuation]) # punctuation removal
+#     tokens = re.findall(r'\b[\w\']+\b', re.sub(r'_', ' ', text_np).lower())
+#     tokens = list(filterfalse(stopwords.__contains__, tokens)) 
+#     stemmer = PorterStemmer()
+#     return [stemmer.stem(token) for token in tokens]
+
 def preprocess_text(text, stopwords):
-    '''
-    Preprocess a single text: tokenization, stopping, case folding, stemming
-    '''
-    tokens = re.findall(r'\b[\w\']+\b', re.sub(r'_', ' ', text).lower())
-    tokens = list(filterfalse(stopwords.__contains__, tokens)) 
+    text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
+    tokens = text.split()
     stemmer = PorterStemmer()
-    return [stemmer.stem(token) for token in tokens]
+    tokens = [
+        stemmer.stem(token) for token in tokens if token.lower() not in stopwords
+    ]
+    return tokens
 
 
 # Reading the csv file
