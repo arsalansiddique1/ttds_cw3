@@ -19,14 +19,13 @@ def extract_stopwords(stopwords_file):
     return stopwords
 
 def preprocess_text(text, stopwords):
-    '''
-    Preprocess a single text: tokenization, stopping, case folding, stemming
-    '''
-    text_np = "".join([i for i in text if i not in string.punctuation]) # punctuation removal
-    tokens = re.findall(r'\b[\w\']+\b', re.sub(r'_', ' ', text_np).lower())
-    tokens = list(filterfalse(stopwords.__contains__, tokens)) 
+    text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
+    tokens = text.split()
     stemmer = PorterStemmer()
-    return [stemmer.stem(token) for token in tokens]
+    tokens = [
+        stemmer.stem(token) for token in tokens if token.lower() not in stopwords
+    ]
+    return tokens
 
 
 # Reading the csv file
