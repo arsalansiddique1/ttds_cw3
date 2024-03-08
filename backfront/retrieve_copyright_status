@@ -38,18 +38,25 @@ def extract_image_license_and_date(image_name):
     return license, cleaned_date
 
 
-print(extract_image_license_and_date('WilhelmWeitling.jpg'))
+# print(extract_image_license_and_date('Water reflectivity.jpg'))
+print(extract_image_license_and_date('Fight_the_state,_not_wars.jpg'))
+print(extract_image_license_and_date('Greenland_Albedo_Change.png'))
+# print(extract_image_license_and_date('water reflectivity.jpg'))
+print(extract_image_license_and_date('Phoenician_aleph.svg'))
 
-i = 0
-with open('images_with_captions.csv', 'r', encoding='utf-8') as f:
-    csv_reader = csv.reader(f)
-    next(csv_reader)  # Skip the header row
-    for row in csv_reader:
-        image_name = row[0]
-        try:
-            print(extract_image_license_and_date(image_name))
-        except Exception as e:  
-            print(f'Error in image {i} {image_name}: {e}')
-        i += 1
+
+
+
+# i = 0
+# with open('images_with_captions.csv', 'r', encoding='utf-8') as f:
+#     csv_reader = csv.reader(f)
+#     next(csv_reader)  # Skip the header row
+#     for row in csv_reader:
+#         image_name = row[0]
+#         try:
+#             print(extract_image_license_and_date(image_name))
+#         except Exception as e:  
+#             print(f'Error in image {i} {image_name}: {e}')
+#         i += 1
         
         
