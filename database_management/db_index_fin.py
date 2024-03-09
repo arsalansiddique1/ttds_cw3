@@ -28,6 +28,7 @@ with psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=D
         # Fetch data from the caption table
         cursor.execute("SELECT id, caption FROM captions2_copy ORDER BY id")
 
+        current_id = 0
         while True:
             rows = cursor.fetchmany(1000)  # Fetch 1000 rows at a time
             if not rows:
@@ -65,6 +66,9 @@ with psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=D
             
             # Commit after processing each chunk
             conn.commit()
+
+            current_id += 1000
+            print("Id processed:", current_id)
 
 conn.commit()
 cursor.close()
