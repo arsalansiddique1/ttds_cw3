@@ -5,7 +5,7 @@ import re
 from nltk.stem import PorterStemmer
 import pandas as pd
 import sys
-from search_module import *
+import numpy as np
 from utils import *
 #import config
 
@@ -18,12 +18,6 @@ DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASS")
 DB_HOST = os.getenv("DB_HOST")
-
-print(DB_NAME)
-print(DB_USER)
-print(DB_PASSWORD)
-print(DB_HOST)
-
 
 conn = psycopg2.connect(
     dbname=DB_NAME,
@@ -63,7 +57,7 @@ def get_matching_rows(terms):
 #implement ranked search
 def rankedir_search(query):
     query = preprocess_text(query, stopwords)
-    N = len(doc_ids)
+    #N = len(doc_ids)
     tfidfs = {} # Dictionary to store {docnumber: tfidf score}
 
     #tfidf implemented like in lectures
