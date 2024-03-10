@@ -50,9 +50,10 @@ def read_root():
     return {"message": "Welcome to your FastAPI app"}
 
 @app.get("/search")
-def search(query: str):
+#def search(query: str):
+def search():
     # Implement search logic here
-    results = ranked_search(query)
+    results = ranked_search("cat")
     return {"results": results}
 
 # @app.get("/test")
