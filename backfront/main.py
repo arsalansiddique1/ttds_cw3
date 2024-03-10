@@ -5,8 +5,8 @@ import psycopg2
 from dotenv import load_dotenv
 from ranked_search_db import ranked_tfidf_search, retrieve_image_data
 
-# Load environment variables from the .env file
-load_dotenv()
+# # Load environment variables from the .env file
+# load_dotenv()
 
 #backend
 app = FastAPI()
