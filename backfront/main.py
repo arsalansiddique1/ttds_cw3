@@ -26,6 +26,13 @@ DB_USER = os.getenv("DBUSER")
 DB_PASSWORD = os.getenv("DBPASSWORD")
 DB_HOST = os.getenv("DBHOST")
 
+print("xxxx")
+print(DB_NAME)
+print(DB_USER)
+print(DB_PASSWORD)
+print(DB_HOST)
+
+
 MAX_NUM_RESULTS = 500
 
 # Function to search PostgreSQL database
@@ -48,8 +55,8 @@ def search(query: str):
     results = ranked_search(query)
     return {"results": results}
 
-@app.get("/tests")
-def search(query: str):
+@app.get("/test")
+def test():
     conn = psycopg2.connect(
         dbname=DB_NAME,
         user=DB_USER,
