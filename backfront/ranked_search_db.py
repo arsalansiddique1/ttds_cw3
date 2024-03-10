@@ -31,6 +31,7 @@ def get_matching_rows(terms):
         password=DB_PASSWORD,
         host=DB_HOST
     )
+    print(conn)
     cursor = conn.cursor()
     print("connected")
     sql = """ 
