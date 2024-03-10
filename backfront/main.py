@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from ranked_search_db import ranked_tfidf_search, retrieve_image_data
 
 # # Load environment variables from the .env file
-# load_dotenv()
+load_dotenv()
 
 #backend
 app = FastAPI()
@@ -55,26 +55,26 @@ def search(query: str):
     results = ranked_search(query)
     return {"results": results}
 
-@app.get("/test")
-def test():
-    conn = psycopg2.connect(
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        host=DB_HOST
-    )
-    cursor = conn.cursor()
-    sql = "SELECT * FROM captions2 WHERE id=1;"
+# @app.get("/test")
+# def test():
+#     conn = psycopg2.connect(
+#         dbname=DB_NAME,
+#         user=DB_USER,
+#         password=DB_PASSWORD,
+#         host=DB_HOST
+#     )
+#     cursor = conn.cursor()
+#     sql = "SELECT * FROM captions2 WHERE id=1;"
 
-    # Execute the query with the list of terms as a parameter
-    cursor.execute(sql)
+#     # Execute the query with the list of terms as a parameter
+#     cursor.execute(sql)
 
-    # Fetch all rows
-    matching_rows = cursor.fetchall()
+#     # Fetch all rows
+#     matching_rows = cursor.fetchall()
 
-    # Close connection
-    conn.close()
+#     # Close connection
+#     conn.close()
 
-    results = matching_rows
+#     results = matching_rows
 
-    return {"results": results}
+#     return {"results": results}

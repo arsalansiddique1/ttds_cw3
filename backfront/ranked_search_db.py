@@ -31,6 +31,7 @@ def get_matching_rows(terms):
         host=DB_HOST
     )
     cursor = conn.cursor()
+    print("connected")
     sql = """ 
     SELECT term,
         json_object_agg(id, positions) AS id_positions
@@ -47,6 +48,7 @@ def get_matching_rows(terms):
 
     # Execute the query with the list of terms as a parameter
     cursor.execute(sql, (terms,))
+    print("execution failed")
 
     # Fetch all rows
     matching_rows = cursor.fetchall()
