@@ -1,0 +1,102 @@
+import csv
+import json, requests
+from bs4 import BeautifulSoup
+import requests
+
+# # Replace 'YOUR_ACCESS_TOKEN' with your actual personal API token
+# access_token = 'ASK_IVAN_FOR_ACCESS_TOKEN_IF_NEEDED' # But I think it is not needed
+
+# # Set up the request headers with your authorization token
+# headers = {
+#     'Authorization': f'Bearer {access_token}'
+# }
+
+
+def write_unknown_file():
+    return 'Unknown license', 'Unknown date', 'Unknown size', 'Unknown width', 'Unknown height'
+
+
+def fetch_image_metadata_bulk(file_names):
+    api_base_url = 'https://commons.wikimedia.org/w/api.php'
+    titles = '|'.join([f'File:{name}' for name in file_names])
+    params = {
+        'action': 'query',
+        'titles': titles,
+        'prop': 'imageinfo',
+        'iiprop': 'url|size|width|height|extmetadata',
+        'format': 'json'
+    }
+    response = requests.get(api_base_url, params=params).json() # Add headers=headers if using with authentification
+    pages = response['query']['pages']
+    
+    # Initialize a dictionary to hold the image information keyed by file name
+    images_info = {}
+    for page_id in pages:
+        page = pages[page_id]
+        # Some images might not have imageinfo if, for example, the file does not exist
+        if 'imageinfo' in page:
+            title = page['title'].replace('File:', '')
+            images_info[title] = page['imageinfo']
+        else:
+            title = page['title'].replace('File:', '')
+            print(f'Skipped {title} !!!!!!!!!!!!!!!!!!!!!!!')
+    
+    return images_info
+
+
+
+
+def process_batch(file_names):
+    images_info = fetch_image_metadata_bulk(file_names)
+    for file_name in file_names:
+        if file_name in images_info:
+            try:
+                license, date, file_size, width, height = extract_image_license_date_size_bulk(file_name, images_info)
+                print(f"{file_name}: License: {license}, Date: {date}, Size: {file_size} bytes, Dimensions: {width}x{height} pixels")
+            except Exception as e:
+                license, date, file_size, width, height = write_unknown_file()
+                print(f'Error in image {file_name}: {e}')
+        else:
+            license, date, file_size, width, height = write_unknown_file()
+            print(f'Image info not found for {file_name}')
+
+
+def extract_image_license_date_size_bulk(image_name, images_info):
+    image_info = images_info[image_name][0]  # Assuming there's always at least one imageinfo entry
+    license = image_info.get('extmetadata', {}).get('LicenseShortName', {}).get('value', 'Unknown license')
+    date_original = image_info['extmetadata'].get('DateTimeOriginal', {}).get('value', 'Unknown date')
+    file_size = image_info.get('size', 'Unknown size')
+    width = image_info.get('width', 'Unknown width')
+    height = image_info.get('height', 'Unknown height')
+
+    # Clean up the date
+    cleaned_date = BeautifulSoup(date_original, 'html.parser').text
+    cleaned_date = cleaned_date.replace('\xa0', ' ').strip()
+    cleaned_date = cleaned_date.split('date QS:P', 1)[0].strip()
+    
+    # To solve a problem with Unknown date appearing twice in the date
+    if 'Unknown dateUnknown date' in cleaned_date:
+        cleaned_date = 'Unknown date'
+
+    return license, cleaned_date, file_size, width, height
+
+
+with open('images_with_captions.csv', 'r', encoding='utf-8') as f:
+    csv_reader = csv.reader(f)
+    next(csv_reader)  # Skip the header row
+    
+    batch = []
+    i = 0
+    for row in csv_reader:
+        i+= 1
+        batch.append(row[0])
+        if len(batch) == 50:  # 50 is the maximum we can query at a time without getting any errors
+            print(i)
+            process_batch(batch)
+            batch = []  
+        
+    
+    if batch:  # remaining images in the last batch
+        process_batch(batch)
+        
+    

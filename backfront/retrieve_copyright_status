@@ -1,0 +1,62 @@
+import csv
+import json, requests
+from bs4 import BeautifulSoup
+import requests
+
+def extract_image_info(file_name):
+    api_base_url = 'https://commons.wikimedia.org/w/api.php'
+    # Params that we use the API
+    params = {
+        'action': 'query',
+        'titles': f'File:{file_name}',
+        'prop': 'imageinfo',
+        'iiprop': 'user|userid|canonicaltitle|url|extmetadata',
+        'format': 'json'
+    }
+    response = requests.get(api_base_url, params=params).json()
+    page_id = next(iter(response['query']['pages']))
+    image_info = response['query']['pages'][page_id]['imageinfo']
+    return image_info
+
+
+
+def extract_image_license_and_date(image_name):
+    image_info = extract_image_info(image_name)
+
+    license = image_info[0]['extmetadata']['LicenseShortName']['value']
+    date_original = image_info[0]['extmetadata'].get('DateTimeOriginal', {}).get('value', 'Unknown date')
+
+    # Cleaning up the date and removing HTML content
+    cleaned_date = BeautifulSoup(date_original, 'html.parser').text
+    cleaned_date = cleaned_date.replace('\xa0', ' ').strip()
+    cleaned_date = cleaned_date.split('date QS:P', 1)[0].strip()
+    
+    # To solve a problem with Unknown date appearing twice in the date
+    if 'Unknown dateUnknown date' in cleaned_date:
+        cleaned_date = cleaned_date[12:].strip()
+
+    return license, cleaned_date
+
+
+# print(extract_image_license_and_date('Water reflectivity.jpg'))
+print(extract_image_license_and_date('Fight_the_state,_not_wars.jpg'))
+print(extract_image_license_and_date('Greenland_Albedo_Change.png'))
+# print(extract_image_license_and_date('water reflectivity.jpg'))
+print(extract_image_license_and_date('Phoenician_aleph.svg'))
+
+
+
+
+# i = 0
+# with open('images_with_captions.csv', 'r', encoding='utf-8') as f:
+#     csv_reader = csv.reader(f)
+#     next(csv_reader)  # Skip the header row
+#     for row in csv_reader:
+#         image_name = row[0]
+#         try:
+#             print(extract_image_license_and_date(image_name))
+#         except Exception as e:  
+#             print(f'Error in image {i} {image_name}: {e}')
+#         i += 1
+        
+        
