@@ -2,8 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
 import psycopg2
-from dotenv import load_dotenv
-from ranked_search_db import ranked_tfidf_search, retrieve_image_data
 
 # Read database credentials from environment variables
 DB_NAME = os.getenv("DB_NAME")
