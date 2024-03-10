@@ -90,7 +90,7 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
     for node in graph.nodes:
         graph.nodes[node]['pr'] = [initial, -1]
 
-    thread_count = 4
+    thread_count = 8
     segment_sizes = [n // thread_count + (1 if x < n % thread_count else 0) for x in range(thread_count)]
     pos = 0
     segments = []
