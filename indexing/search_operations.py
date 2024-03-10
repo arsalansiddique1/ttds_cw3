@@ -197,6 +197,4 @@ def simple_search(query, inverted_index):
     result_docs = list(postings.keys())
 
     return result_docs
-
-
 ## All of the functions above were helper functions of perform_search.

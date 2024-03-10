@@ -17,21 +17,13 @@ DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASS")
 DB_HOST = os.getenv("DB_HOST")
 
-print("yyyy")
-
-
 def get_matching_rows(terms):
-    print(DB_NAME)
-    print(DB_USER)
-    print(DB_PASSWORD)
-    print(DB_HOST)
     conn = psycopg2.connect(
         dbname=DB_NAME,
         user=DB_USER,
         password=DB_PASSWORD,
         host=DB_HOST
     )
-    print(conn)
     cursor = conn.cursor()
     print("connected")
     sql = """ 

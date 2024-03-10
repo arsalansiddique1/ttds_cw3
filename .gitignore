@@ -1,1 +1,11 @@
 indexing/index.txt
+filip-search/*.xml
+filip-search/*.txt
+filip-search/*.csv
+filip-search/*.json
+filip-search/*.xml
+filip-search/*.ipynb
+filip-search/config.py
+config.txt
+**/__pycache__/
+*ipynb
