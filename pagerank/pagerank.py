@@ -1,7 +1,9 @@
 import csv
 import math
+import random
 import sys
 import threading
+import time
 
 import networkx as nx
 from tqdm import tqdm
@@ -88,29 +90,42 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
     for node in graph.nodes:
         graph.nodes[node]['pr'] = [initial, -1]
 
-    threads = 8
-    segment_sizes = [n // threads + (1 if x < n % threads else 0) for x in range(threads)]
+    thread_count = 4
+    segment_sizes = [n // thread_count + (1 if x < n % thread_count else 0) for x in range(thread_count)]
     pos = 0
     segments = []
     for size in segment_sizes:
         segments.append((pos, pos+size))
         pos += size
 
-
+    graph_nodes = list(graph.nodes)
+    node_lists = [graph_nodes[start:end] for start, end in segments]
 
     # this function checks if the stopping requirement has been reached
     def stop():
-        total = 0
-        for node in graph:
-            current_value = graph.nodes[node]['pr'][current]
-            previous_value = graph.nodes[node]['pr'][not current]
-            total += (current_value - previous_value) ** 2
-        current_error = math.sqrt(total)
+        results = [0 for _ in range(thread_count)]
+
+        def error_thread(nodes, i):
+            total = 0
+            for node in nodes:
+                current_value = graph.nodes[node]['pr'][current]
+                previous_value = graph.nodes[node]['pr'][not current]
+                total += (current_value - previous_value) ** 2
+            results[i] = total
+
+        threads = [threading.Thread(target=error_thread, args=(node_lists[i], i)) for i in range(thread_count)]
+
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+
+        current_error = math.sqrt(sum(results)) / n
 
         print("Current error:", current_error)
         print("Target error:", stopping)
 
-        return current_error < stopping
+        return (current_error) < stopping
 
     # apply page rank algorithm until convergence
     current = True
@@ -120,9 +135,9 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
         print("Running page rank iteration", iteration)
 
         threads = [threading.Thread(
-            target=process_node_thread(graph, current, d, n, segments[i][0], segments[i][1])
+            target=process_node_thread, args=(graph, current, d, n, node_lists[i])
         )
-                   for i in range(threads)]
+                   for i in range(thread_count)]
 
         for thread in threads:
             thread.start()
@@ -140,9 +155,9 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
     return results
 
 
-def process_node_thread(graph, current, d, n, start, end):
+def process_node_thread(graph, current, d, n, nodes):
     # this is algorithm from the Web Search 1 lecture slides
-    for node in graph[start:end]:
+    for node in nodes:
         graph.nodes[node]['pr'][current] = \
             ((1 - d) / n
              +
@@ -151,7 +166,7 @@ def process_node_thread(graph, current, d, n, start, end):
 
 # def write_to_db(results_file):
 #     # see this page for instructions to connect to DB:
-#     # https://cloud.google.com/compute/docs/instances/change-service-account
+#     # https://cloud.google.com/sql/docs/postgres/connect-instance-compute-engine#python
 #     # IMPORTANT: MUST SET ENVIRONMENT VARIABLES FOR THIS TO WORK
 #     db: sqlalchemy.engine.base.Engine = connect_connector.connect_with_connector()
 #
