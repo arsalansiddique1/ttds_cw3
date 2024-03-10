@@ -15,17 +15,18 @@
       Retrieval time: {{ retrievalTime }} seconds
     </div>
     <div class="portfolio" id = "portfolio">
-      <div class="portfolio__item" v-for="(image, index) in loadedImages" :key="image.url">
-        <img :src="image.url" v-if="image.valid" @click="openLightbox(index)">
+      <div class="portfolio__item" v-for="(image, index) in loadedImages" :key="image.id">
+        <!-- <img :src="image.url" v-if="image.valid" @click="openLightbox(index)"> -->
+        <img :src="image.url" @click="openLightbox(index)"> <!-- change to line above to filter invalid images -->
       </div>
     </div>
     <div class="portfolio-lightboxes">
-      <div  class="portfolio-lightbox" v-for="(image, index) in loadedImages" :key="image.url" :id="'lightbox-' + index">
+      <div  class="portfolio-lightbox" v-for="(image, index) in loadedImages" :key="image.id" :id="'lightbox-' + index">
         <div class="portfolio-lightbox__content">
           <a href="#portfolio" class="close"></a>
           <img :src="image.url">
-          <h3 class="portfolio-lightbox__title">This would be the title within the lightbox</h3>
           <p class="portfolio-lightbox__body">{{ image.caption }}</p>
+          <a :href="'https://en.wikipedia.org/wiki/' + image.title.replace(/\s+/g, '_')" class="portfolio-lightbox__website" target="_blank" style="color: white ;">Full article: {{ image.title }}</a>
         </div>
       </div>
     </div>
@@ -113,6 +114,8 @@ export default {
       API.search(this.searchTerm)
         .then(images => {
           this.images = images.map(image => ({
+            id: image.id,
+            title: image.title,
             url: image.url,
             caption: image.caption,
             showCaption: false, // Initialize showCaption to false

@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 import psycopg2
 from dotenv import load_dotenv
+from ranked_search_db import ranked_tfidf_search, retrieve_image_data
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -25,23 +26,14 @@ DB_USER = os.getenv("DBUSER")
 DB_PASSWORD = os.getenv("DBPASSWORD")
 DB_HOST = os.getenv("DBHOST")
 
+MAX_NUM_RESULTS = 500
+
 # Function to search PostgreSQL database
-def search_db(query):
-    conn = psycopg2.connect(
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        host=DB_HOST
-    )
-    cursor = conn.cursor()
-
-    # Query PostgreSQL database
-    cursor.execute('''SELECT * FROM your_table_name WHERE caption ILIKE %s''', ('%' + query + '%',))
-    columns = [desc[0] for desc in cursor.description]  # Get column names
-    results = [dict(zip(columns, row)) for row in cursor.fetchall()]
-
-    # Close connection
-    conn.close()
+def ranked_search(query):
+    tfidfs = ranked_tfidf_search(query)
+    sorted_results = sorted(tfidfs, key=tfidfs.get, reverse=True)[:MAX_NUM_RESULTS]
+    image_data = retrieve_image_data(sorted_results)
+    results = [image_data[int(i)] for i in sorted_results if int(i) in image_data]
 
     return results
 
@@ -53,28 +45,5 @@ def read_root():
 @app.get("/search")
 def search(query: str):
     # Implement search logic here
-    results = search_db(query)
+    results = ranked_search(query)
     return {"results": results}
-
-
-# sample_data = [
-#     {"title": "Sample Result 1", "description": "Description of Sample Result 1", "url": "https://example.com/sample1"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"}
-# ]
