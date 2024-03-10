@@ -3,8 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 import psycopg2
 from dotenv import load_dotenv
+from ranked_search_db import ranked_tfidf_search, retrieve_image_data
 
-# Load environment variables from the .env file
+# # Load environment variables from the .env file
 load_dotenv()
 
 #backend
@@ -20,28 +21,26 @@ app.add_middleware(
 )
 
 # Read database credentials from environment variables
-DB_NAME = os.getenv("DBNAME")
-DB_USER = os.getenv("DBUSER")
-DB_PASSWORD = os.getenv("DBPASSWORD")
-DB_HOST = os.getenv("DBHOST")
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASS")
+DB_HOST = os.getenv("DB_HOST")
+
+print("xxxx")
+print(DB_NAME)
+print(DB_USER)
+print(DB_PASSWORD)
+print(DB_HOST)
+
+
+MAX_NUM_RESULTS = 500
 
 # Function to search PostgreSQL database
-def search_db(query):
-    conn = psycopg2.connect(
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        host=DB_HOST
-    )
-    cursor = conn.cursor()
-
-    # Query PostgreSQL database
-    cursor.execute('''SELECT * FROM your_table_name WHERE caption ILIKE %s''', ('%' + query + '%',))
-    columns = [desc[0] for desc in cursor.description]  # Get column names
-    results = [dict(zip(columns, row)) for row in cursor.fetchall()]
-
-    # Close connection
-    conn.close()
+def ranked_search(query):
+    tfidfs = ranked_tfidf_search(query)
+    sorted_results = sorted(tfidfs, key=tfidfs.get, reverse=True)[:MAX_NUM_RESULTS]
+    image_data = retrieve_image_data(sorted_results)
+    results = [image_data[int(i)] for i in sorted_results if int(i) in image_data]
 
     return results
 
@@ -51,30 +50,32 @@ def read_root():
     return {"message": "Welcome to your FastAPI app"}
 
 @app.get("/search")
-def search(query: str):
+#def search(query: str):
+def search():
     # Implement search logic here
-    results = search_db(query)
+    results = ranked_search("cat")
     return {"results": results}
 
+# @app.get("/test")
+# def test():
+#     conn = psycopg2.connect(
+#         dbname=DB_NAME,
+#         user=DB_USER,
+#         password=DB_PASSWORD,
+#         host=DB_HOST
+#     )
+#     cursor = conn.cursor()
+#     sql = "SELECT * FROM captions2 WHERE id=1;"
 
-# sample_data = [
-#     {"title": "Sample Result 1", "description": "Description of Sample Result 1", "url": "https://example.com/sample1"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"},
-#     {"title": "Sample Result 2", "description": "Description of Sample Result 2", "url": "https://example.com/sample2"}
-# ]
+#     # Execute the query with the list of terms as a parameter
+#     cursor.execute(sql)
+
+#     # Fetch all rows
+#     matching_rows = cursor.fetchall()
+
+#     # Close connection
+#     conn.close()
+
+#     results = matching_rows
+
+#     return {"results": results}
