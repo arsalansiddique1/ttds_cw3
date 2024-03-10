@@ -1,6 +1,7 @@
 import csv
 import math
 import sys
+import threading
 
 import networkx as nx
 from tqdm import tqdm
@@ -87,6 +88,16 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
     for node in graph.nodes:
         graph.nodes[node]['pr'] = [initial, -1]
 
+    threads = 8
+    segment_sizes = [n // threads + (1 if x < n % threads else 0) for x in range(threads)]
+    pos = 0
+    segments = []
+    for size in segment_sizes:
+        segments.append((pos, pos+size))
+        pos += size
+
+
+
     # this function checks if the stopping requirement has been reached
     def stop():
         total = 0
@@ -108,13 +119,16 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
         iteration += 1
         print("Running page rank iteration", iteration)
 
-        # this is algorithm from the Web Search 1 lecture slides
-        for node in graph:
-            graph.nodes[node]['pr'][current] = \
-                ((1-d)/n
-                 +
-                 d * sum([graph.nodes[y]['pr'][not current]/len(list(graph.successors(y)))
-                          for y in graph.predecessors(node)]))
+        threads = [threading.Thread(
+            target=process_node_thread(graph, current, d, n, segments[i][0], segments[i][1])
+        )
+                   for i in range(threads)]
+
+        for thread in threads:
+            thread.start()
+
+        for thread in threads:
+            thread.join()
 
         current = not current
 
@@ -124,6 +138,16 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
         results[node] = graph.nodes[node]['pr'][not current]
 
     return results
+
+
+def process_node_thread(graph, current, d, n, start, end):
+    # this is algorithm from the Web Search 1 lecture slides
+    for node in graph[start:end]:
+        graph.nodes[node]['pr'][current] = \
+            ((1 - d) / n
+             +
+             d * sum([graph.nodes[y]['pr'][not current] / len(list(graph.successors(y)))
+                      for y in graph.predecessors(node)]))
 
 # def write_to_db(results_file):
 #     # see this page for instructions to connect to DB:
