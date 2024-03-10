@@ -2,6 +2,10 @@ import csv
 import json, requests
 from bs4 import BeautifulSoup
 import requests
+from tqdm import tqdm
+import sqlalchemy
+import connect_connector
+import os
 
 # # Replace 'YOUR_ACCESS_TOKEN' with your actual personal API token
 # access_token = 'ASK_IVAN_FOR_ACCESS_TOKEN_IF_NEEDED' # But I think it is not needed
@@ -12,6 +16,8 @@ import requests
 # }
 
 
+
+# If we don't have info of a file, write unknown everything instead of failing
 def write_unknown_file():
     return 'Unknown license', 'Unknown date', 'Unknown size', 'Unknown width', 'Unknown height'
 
@@ -29,7 +35,7 @@ def fetch_image_metadata_bulk(file_names):
     response = requests.get(api_base_url, params=params).json() # Add headers=headers if using with authentification
     pages = response['query']['pages']
     
-    # Initialize a dictionary to hold the image information keyed by file name
+    # Dictionary to hold the image information keyed by file name
     images_info = {}
     for page_id in pages:
         page = pages[page_id]
@@ -46,18 +52,61 @@ def fetch_image_metadata_bulk(file_names):
 
 
 
-def process_batch(file_names):
+def process_batch(batch, conn):
+    file_names = [file_name for _, file_name in batch]
     images_info = fetch_image_metadata_bulk(file_names)
-    for file_name in file_names:
+    
+    for document_id, file_name in batch:
         if file_name in images_info:
             try:
                 license, date, file_size, width, height = extract_image_license_date_size_bulk(file_name, images_info)
-                print(f"{file_name}: License: {license}, Date: {date}, Size: {file_size} bytes, Dimensions: {width}x{height} pixels")
+                insert_stmt = sqlalchemy.text("""
+                    INSERT INTO wikimage (image_id, filename, license, date, size, width, height) 
+                    VALUES (:image_id, :filename, :license, :date, :size, :width, :height)
+                """)
+                
+                conn.execute(insert_stmt, {
+                    "image_id": document_id,
+                    "filename": file_name,
+                    "license": license,
+                    "date": date,
+                    "size": file_size,
+                    "width": width,
+                    "height": height
+                })
             except Exception as e:
                 license, date, file_size, width, height = write_unknown_file()
+                insert_stmt = sqlalchemy.text("""
+                    INSERT INTO wikimage (image_id, filename, license, date, size, width, height) 
+                    VALUES (:image_id, :filename, :license, :date, :size, :width, :height)
+                """)
+                
+                conn.execute(insert_stmt, {
+                    "image_id": document_id,
+                    "filename": file_name,
+                    "license": license,
+                    "date": date,
+                    "size": file_size,
+                    "width": width,
+                    "height": height
+                })
                 print(f'Error in image {file_name}: {e}')
         else:
             license, date, file_size, width, height = write_unknown_file()
+            insert_stmt = sqlalchemy.text("""
+                INSERT INTO wikimage (image_id, filename, license, date, size, width, height) 
+                VALUES (:image_id, :filename, :license, :date, :size, :width, :height)
+            """)
+            
+            conn.execute(insert_stmt, {
+                "image_id": document_id,
+                "filename": file_name,
+                "license": license,
+                "date": date,
+                "size": file_size,
+                "width": width,
+                "height": height
+            })
             print(f'Image info not found for {file_name}')
 
 
@@ -81,22 +130,50 @@ def extract_image_license_date_size_bulk(image_name, images_info):
     return license, cleaned_date, file_size, width, height
 
 
-with open('images_with_captions.csv', 'r', encoding='utf-8') as f:
-    csv_reader = csv.reader(f)
-    next(csv_reader)  # Skip the header row
-    
-    batch = []
-    i = 0
-    for row in csv_reader:
-        i+= 1
-        batch.append(row[0])
-        if len(batch) == 50:  # 50 is the maximum we can query at a time without getting any errors
-            print(i)
-            process_batch(batch)
-            batch = []  
         
-    
-    if batch:  # remaining images in the last batch
-        process_batch(batch)
+db_engine = connect_connector.connect_with_connector()
+
+def fetch_and_process_images(db_engine):
+    with db_engine.connect() as conn:
+        fetch_stmt = sqlalchemy.text("SELECT id, image_name FROM captions2_copy ORDER BY id")
+        result = conn.execute(fetch_stmt)
         
-    
+        batch = []
+        for row in result:
+            document_id, file_name = row['id'], row['image_name']
+            batch.append((document_id, file_name))
+            if len(batch) == 50:  # 50 is the maximum we can query at a time without getting any errors
+                process_batch(batch, conn)
+                batch = []
+        
+        if batch:  # remaining images in the last batch
+            process_batch(batch, conn)
+            
+          
+if __name__ == "__main__":
+    fetch_and_process_images(db_engine)          
+            
+        
+        
+        
+        
+        
+# OLD FUNCTION FOR CSV
+# if __name__ == "__main__":
+#     # Connect to the database
+#     db_engine = connect_connector.connect_with_connector()
+
+#     with open('images_with_captions.csv', 'r', encoding='utf-8') as f:
+#         csv_reader = csv.reader(f)
+#         next(csv_reader)  # Skip the header row
+        
+#         batch = []
+#         for i, row in tqdm(enumerate(csv_reader)):
+#             batch.append(row[0])
+#             if len(batch) == 50:  # 50 is the maximum we can query at a time without getting any errors
+#                 process_batch(batch, db_engine)
+#                 batch = []  
+            
+#         if batch:  # remaining images in the last batch
+#             process_batch(batch, db_engine)
+        
