@@ -7,58 +7,39 @@ import pandas as pd
 import sys
 import numpy as np
 from utils import *
+import connect_connector
+import sqlalchemy
+
+db: sqlalchemy.engine.base.Engine = connect_connector.connect_with_connector()
 
 stopwords = extract_stopwords("ttds_2023_english_stop_words.txt")
 N = 8566975 #should be recalculated every now and then
 
-# Connect to PostgreSQL database
-DB_NAME = os.getenv("DB_NAME")
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASS")
-DB_HOST = os.getenv("DB_HOST")
-
-print("yyyy")
-
 
 def get_matching_rows(terms):
-    print(DB_NAME)
-    print(DB_USER)
-    print(DB_PASSWORD)
-    print(DB_HOST)
-    conn = psycopg2.connect(
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        host=DB_HOST
-    )
-    print(conn)
-    cursor = conn.cursor()
-    print("connected")
-    sql = """ 
-    SELECT term,
-        json_object_agg(id, positions) AS id_positions
-    FROM (
+    with db.connect() as conn:
+        sql =f"""
         SELECT term,
-            id,
-            ARRAY_AGG(position ORDER BY position) AS positions
-        FROM middle
-        WHERE term = ANY(%s)
-        GROUP BY term, id
-    ) AS subquery
-    GROUP BY term;
-    """
+            json_object_agg(id, positions) AS id_positions
+        FROM (
+            SELECT term,
+                id,
+                ARRAY_AGG(position ORDER BY position) AS positions
+            FROM middle
+            WHERE term = ANY(:terms)
+            GROUP BY term, id
+        ) AS subquery
+        GROUP BY term;
+        """
 
-    # Execute the query with the list of terms as a parameter
-    cursor.execute(sql, (terms,))
-    print("execution failed")
+        stmt = sqlalchemy.text(sql)
+        # Bind the term parameter to the statement
+        stmt = stmt.bindparams(terms=terms)
+        result = conn.execute(stmt)
 
-    # Fetch all rows
-    matching_rows = cursor.fetchall()
+        matching_rows = result.fetchall()
 
-    # Close connection
-    conn.close()
-
-    return matching_rows
+        return matching_rows
 
 #implement ranked search
 def ranked_tfidf_search(query):
@@ -87,25 +68,34 @@ def ranked_tfidf_search(query):
     return tfidfs
 
 def retrieve_image_data(ids):
-    conn = psycopg2.connect(
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        host=DB_HOST
-    )
-    cursor = conn.cursor()
+    with db.connect() as conn:
+        ids_str = ', '.join(ids)
 
-    sql = f"SELECT DISTINCT ON (title, caption) * FROM captions2 WHERE id IN %s;"
+        sql = f"SELECT DISTINCT ON (title, caption) * FROM captions2 WHERE id IN ({ids_str});"
 
-    # Execute the query with the list of IDs as a parameter
-    cursor.execute(sql, (tuple(ids),))
+        stmt = sqlalchemy.text(sql)
+        result = conn.execute(stmt)
 
-    # Fetch all rows
-    output_dict = dict()
-    columns = [desc[0] for desc in cursor.description]  # Get column names
-    output_dict = {row[0]: dict(zip(columns, row)) for row in cursor.fetchall()}
+        # Get column names from the result set's description attribute
+        columns = [desc[0] for desc in result.cursor.description]
 
-    # Close connection
-    conn.close()
+        # Fetch all rows
+        matching_rows = result.fetchall()
+        output_dict = {row[0]: dict(zip(columns, row)) for row in matching_rows}
 
-    return output_dict
+        return output_dict
+    
+# def main():
+#     if len(sys.argv) != 2:
+#         print("Usage: python script.py 'query'")
+#         sys.exit(1)
+
+#     query = sys.argv[1]
+#     tfidfs = ranked_tfidf_search(query)
+#     sorted_results = sorted(tfidfs, key=tfidfs.get, reverse=True)[:500]
+#     image_data = retrieve_image_data(sorted_results)
+#     captions = [image_data[int(i)]["caption"] for i in sorted_results if int(i) in image_data]
+#     print(captions)
+
+# if __name__ == "__main__":
+#     main()
