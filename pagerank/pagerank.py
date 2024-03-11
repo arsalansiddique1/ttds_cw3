@@ -81,7 +81,10 @@ def page_rank(id_file, links_file, results_file):
     # write page rank results with original page names
     with open(results_file, 'w') as results_writer:
         for page in tqdm(results, desc='Writing results file'):
-            results_writer.write('"' + ids[page] + '"\t' + str(results[page]) + '\n')
+            if page in ids:
+                results_writer.write('"' + ids[page] + '"\t' + str(results[page]) + '\n')
+            else:
+                print("No id record for", page)
 
 
 def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
