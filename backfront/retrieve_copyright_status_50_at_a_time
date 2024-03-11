@@ -126,6 +126,8 @@ def fetch_and_process_images(db_engine):
             batch = [(row['id'], row['image_name']) for row in result]
             process_batch(batch, conn)
             offset += batch_size
+            if offset % 1000 == 0:
+                print(f'Processed {offset} images')
             
           
 if __name__ == "__main__":
