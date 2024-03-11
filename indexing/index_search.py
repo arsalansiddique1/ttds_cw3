@@ -10,6 +10,7 @@ from search_operations import *
 from index_operations import *
 from tfidf_and_bm25_scoring import *
 from utils import *
+from prf import *
 
 ####### Main method for loading indexes and perfomring searches #######
 
@@ -43,6 +44,10 @@ positional_index = json_data
 produce_tfidf_results(inverted_index = positional_index, queries_filename="queries.txt", results_filename="tfidf_results.txt")
 #Testing BM25 Scoring
 produce_bm25_results(inverted_index = positional_index, queries_filename='queries.txt', results_filename='results.bm25.txt')
+
+
+# Query Expansion using pseudo_relevance_feedback from lecture 11 & lab 5
+run_pseudo_relevance_feedback(captions_by_file, positional_index, n_d=10, n_t=5,queries_filename='queries.txt', results_filename='results_pseudo.txt')
 
 
 '''

@@ -50,32 +50,7 @@ def read_root():
     return {"message": "Welcome to your FastAPI app"}
 
 @app.get("/search")
-#def search(query: str):
-def search():
+def search(query: str):
     # Implement search logic here
-    results = ranked_search("cat")
+    results = ranked_search(query)
     return {"results": results}
-
-# @app.get("/test")
-# def test():
-#     conn = psycopg2.connect(
-#         dbname=DB_NAME,
-#         user=DB_USER,
-#         password=DB_PASSWORD,
-#         host=DB_HOST
-#     )
-#     cursor = conn.cursor()
-#     sql = "SELECT * FROM captions2 WHERE id=1;"
-
-#     # Execute the query with the list of terms as a parameter
-#     cursor.execute(sql)
-
-#     # Fetch all rows
-#     matching_rows = cursor.fetchall()
-
-#     # Close connection
-#     conn.close()
-
-#     results = matching_rows
-
-#     return {"results": results}
