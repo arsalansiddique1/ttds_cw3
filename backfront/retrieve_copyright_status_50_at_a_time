@@ -69,8 +69,7 @@ def process_batch(batch, conn):
             license, date, file_size, width, height = write_unknown_file()
 
         records_to_insert.append({
-            "image_id": document_id,
-            "filename": file_name,
+            "id": document_id,
             "license": license,
             "date": date,
             "size": file_size,
@@ -79,8 +78,8 @@ def process_batch(batch, conn):
         })
 
     insert_stmt = sqlalchemy.text("""
-        INSERT INTO wikimage (image_id, filename, license, date, size, width, height) 
-        VALUES (:image_id, :filename, :license, :date, :size, :width, :height)
+        INSERT INTO classification_info (id, license, date, size, width, height) 
+        VALUES (:id, :license, :date, :size, :width, :height)
     """)
 
     conn.execute(insert_stmt, records_to_insert)
@@ -115,7 +114,7 @@ def fetch_and_process_images(db_engine):
         
         while True:
             fetch_stmt = sqlalchemy.text("""
-                SELECT id, image_name FROM captions2_copy 
+                SELECT id, filename FROM captions2_copy 
                 ORDER BY id
                 LIMIT :limit OFFSET :offset
             """)
@@ -123,10 +122,10 @@ def fetch_and_process_images(db_engine):
             if not result:
                 break
             
-            batch = [(row['id'], row['image_name']) for row in result]
+            batch = [(row['id'], row['filename']) for row in result]
             process_batch(batch, conn)
             offset += batch_size
-            if offset % 1000 == 0:
+            if offset % 5000 == 0:
                 print(f'Processed {offset} images')
             
           
