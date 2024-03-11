@@ -122,7 +122,7 @@ def fetch_and_process_images(db_engine):
             if not result:
                 break
             
-            batch = [(row[0], row[1]) for row in result]
+            batch = [(row[0], '/'.join(row[1].split('/')[2:])) for row in result] # Weird syntax to ignore hash and make sure that we don't remove any slashes in filename
             process_batch(batch, conn)
             offset += batch_size
             if offset % 5000 == 0:
