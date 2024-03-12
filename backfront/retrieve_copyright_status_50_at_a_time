@@ -34,6 +34,17 @@ def fetch_image_metadata_bulk(file_names):
     }
     response = requests.get(api_base_url, params=params).json() # Add headers=headers if using with authentification
     print(response)
+    
+    name_mapping = {}
+
+    # Populate the mapping based on the response
+    if 'query' in response and 'normalized' in response['query']:
+        for norm in response['query']['normalized']:
+            # Map the normalized 'to' back to the original 'from'
+            normed_name = norm['to'].replace('File:', '')
+            original_name = norm['from'].replace('File:', '')
+            name_mapping[normed_name] = original_name
+            
     pages = response['query']['pages']
     
     # Dictionary to hold the image information keyed by file name
@@ -48,19 +59,22 @@ def fetch_image_metadata_bulk(file_names):
             title = page['title'].replace('File:', '')
             images_info[title] = []
     
-    return images_info
+    return images_info, name_mapping
 
 
 
 # Function with improved efficiency by adding the records 50 at a time instead of 1 at a time
 def process_batch(batch, conn):
     file_names = [file_name for _, file_name in batch]
-    images_info = fetch_image_metadata_bulk(file_names)
+    images_info, name_mapping = fetch_image_metadata_bulk(file_names)
 
     records_to_insert = []
     
     for document_id, file_name in batch:
-        if file_name in images_info:
+        lookup_name = '/'.join(file_name.split('/')[2:])
+        normalized_name = name_mapping.get(lookup_name, lookup_name)
+        
+        if normalized_name in images_info:
             try:
                 license, date, file_size, width, height = extract_image_license_date_size_bulk(file_name, images_info)
                 print(file_name,license, date, file_size, width, height)
