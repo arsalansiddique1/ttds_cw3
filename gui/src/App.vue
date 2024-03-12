@@ -9,12 +9,12 @@
         <img v-else src="../images/up.png" alt=""> <!-- New icon when showQueryBuilder is true -->
       </button>
     </form>
-    <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
     <QueryBuilder v-if="showQueryBuilder" @clicked="onClickChild"></QueryBuilder>
-    <div class="retrieval-time" v-if="retrievalTime > 0">
+    <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
+    <div v-if="!loading" class="retrieval-time" v-if="retrievalTime > 0">
       Retrieval time: {{ retrievalTime }} seconds
     </div>
-    <div class="portfolio" id = "portfolio">
+    <div v-if="!loading" class="portfolio" id = "portfolio">
       <div class="portfolio__item" v-for="(image, index) in loadedImages" :key="image.id">
         <!-- <img :src="image.url" v-if="image.valid" @click="openLightbox(index)"> -->
         <img :src="image.url" @click="openLightbox(index)"> <!-- change to line above to filter invalid images -->
