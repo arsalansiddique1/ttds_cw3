@@ -87,7 +87,7 @@ def page_rank(id_file, links_file, results_file):
                 print("No id record for", page)
 
 
-def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
+def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-14, max_iter=100):
     n = len(graph)
     initial = 1 / n
     for node in graph.nodes:
@@ -131,20 +131,6 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
         results[node] = graph.nodes[node]['pr'][not current]
 
     return results
-
-
-def process_node_thread(graph, current, d, n, nodes, i):
-    print("Thread", i, "started")
-
-    # this is algorithm from the Web Search 1 lecture slides
-    for node in nodes:
-        graph.nodes[node]['pr'][current] = \
-            ((1 - d) / n
-             +
-             d * sum([graph.nodes[y]['pr'][not current] / len(list(graph.successors(y)))
-                      for y in graph.predecessors(node)]))
-
-    print("Thread", i, "ended")
 
 # def write_to_db(results_file):
 #     # see this page for instructions to connect to DB:
