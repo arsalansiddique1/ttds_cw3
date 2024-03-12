@@ -77,6 +77,7 @@ def process_batch(batch, conn):
     
     
     for document_id, file_name in batch:
+        print(file_name)
         lookup_name = '/'.join(file_name.split('/')[2:])
         print( 'lookup_name'+ str(lookup_name))
         normalized_name = name_mapping.get(lookup_name, lookup_name)
