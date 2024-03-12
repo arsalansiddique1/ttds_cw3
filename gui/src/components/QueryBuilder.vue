@@ -23,7 +23,6 @@
             <option value="AND">AND</option>
             <option value="OR">OR</option>
             <option value="AND_NOT">AND NOT</option>
-            <option value="OR_NOT">OR NOT</option>
           </select>
           <select v-model="condition.type">
             <option value="free">Free Text</option>
@@ -79,7 +78,7 @@ export default {
             return '';
           }
         } else {
-          return `${condition.logic} ${condition.value} `;
+          return `${condition.logic} "${condition.value}" `;
         }
       }
       
