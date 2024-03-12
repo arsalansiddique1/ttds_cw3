@@ -77,13 +77,14 @@ def process_batch(batch, conn):
     
     
     for document_id, file_name in batch:
-        print('file_name' + str (file_name))
-        lookup_name = '/'.join(file_name.split('/')[2:])
-        print( 'lookup_name'+ str(lookup_name))
+        print('file_name ' + str (file_name))
+        #lookup_name = '/'.join(file_name.split('/')[2:])
+        lookup_name = file_name
+        print( 'lookup_name '+ str(lookup_name))
         normalized_name = name_mapping.get(lookup_name, lookup_name)
         
         
-        print( 'normalized_name'+ str(normalized_name))
+        print( 'normalized_name '+ str(normalized_name))
         
         if normalized_name in images_info:
             try:
