@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
-from ranked_search_db import ranked_search
+from ranked_search_db import ranked_tfidf_search, ranked_search
 
 # # Load environment variables from the .env file
 load_dotenv()
