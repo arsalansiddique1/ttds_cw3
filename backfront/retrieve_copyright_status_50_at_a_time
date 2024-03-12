@@ -62,11 +62,13 @@ def process_batch(batch, conn):
         if file_name in images_info:
             try:
                 license, date, file_size, width, height = extract_image_license_date_size_bulk(file_name, images_info)
+                print(file_name,license, date, file_size, width, height)
             except Exception as e:
                 license, date, file_size, width, height = write_unknown_file()
                 print(f'Error in image {file_name}: {e}')
         else:
             license, date, file_size, width, height = write_unknown_file()
+            print(file_name,license, date, file_size, width, height)
 
         records_to_insert.append({
             "id": document_id,
