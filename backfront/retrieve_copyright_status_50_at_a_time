@@ -39,7 +39,7 @@ def fetch_image_metadata_bulk(file_names):
 
     # Populate the mapping based on the response
     if 'query' in response and 'normalized' in response['query']:
-        print("query", response['query'])
+        # print("query", response['query'])
         for norm in response['query']['normalized']:
             # print("norm", norm)
             normed_name = norm['to'].replace('File:', '')
