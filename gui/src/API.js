@@ -1,4 +1,4 @@
-const API_URL = 'http://146.148.26.219:8000/search?query=';
+const API_URL = 'http://146.148.26.219:8000/';
 //const API_URL = 'http://127.0.0.1:8000/';
 const BASE_URL = "https://upload.wikimedia.org/wikipedia/commons/";
 
