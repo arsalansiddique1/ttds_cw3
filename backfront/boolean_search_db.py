@@ -83,6 +83,7 @@ def getDocs(searchTerm):
         searchResult = set(fetch_db_single_term(searchTerm)[0][1])
         return searchResult
 
+MAX_NUM_RESULTS = 500
 #boolean search, standard search performed. deals with allqueries even if no AND or OR are identified
 def bool_search(query):
     query = query.strip()
@@ -97,7 +98,10 @@ def bool_search(query):
                 andDocs = andDocs.difference(retrieved_docs)
             else: andDocs = andDocs.intersection(retrieved_docs)
         docs = docs.union(andDocs)
-    return docs
+
+    image_data = retrieve_image_data((list(docs)))
+    results = image_data[MAX_NUM_RESULTS]
+    return results
 
 def main():
     if len(sys.argv) != 2:

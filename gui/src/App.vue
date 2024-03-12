@@ -103,7 +103,26 @@ export default {
     onClickChild (value) {
           console.log(value) // someValue
           this.searchTerm = value
-          this.formSubmitted();
+          const startTime = performance.now();
+          this.loading = true;
+          this.currentPage = 1; // Reset currentPage to 1
+          this.images = [];
+          this.preloadedImages = []; // Reset preloadedImages
+          API.boolean_search(this.searchTerm)
+            .then(images => {
+              this.images = images.map(image => ({
+                id: image.id,
+                title: image.title,
+                url: image.url,
+                caption: image.caption,
+                showCaption: false, // Initialize showCaption to false
+              }));
+              this.totalPages = Math.ceil(this.images.length / this.pageSize);
+              this.loading = false;
+              this.loadImages();
+              const endTime = performance.now(); // Get the current timestamp when the response is received
+              this.retrievalTime = ((endTime - startTime) / 1000).toFixed(2); // Calculate the retrieval time in seconds and update retrievalTime
+          });
       },
     formSubmitted() {
       const startTime = performance.now();
