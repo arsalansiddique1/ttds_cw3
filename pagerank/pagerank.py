@@ -87,7 +87,7 @@ def page_rank(id_file, links_file, results_file):
                 print("No id record for", page)
 
 
-def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-14, max_iter=100):
+def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-14, max_iter=20):
     n = len(graph)
     initial = 1 / n
     for node in graph.nodes:
@@ -95,6 +95,7 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-14, max_iter=100):
 
     # this function checks if the stopping requirement has been reached
     def stop():
+        return False
         total = 0
         for node in graph:
             current_value = graph.nodes[node]['pr'][current]
