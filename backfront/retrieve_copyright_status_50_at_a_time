@@ -45,7 +45,8 @@ def fetch_image_metadata_bulk(file_names):
             # Map the normalized 'to' back to the original 'from'
             normed_name = norm['to'].replace('File:', '')
             original_name = norm['from'].replace('File:', '')
-            name_mapping[normed_name] = original_name
+            #name_mapping[normed_name] = original_name
+            name_mapping[original_name] = normed_name
             
     pages = response['query']['pages']
     
