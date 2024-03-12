@@ -85,7 +85,7 @@ def getDocs(searchTerm):
 
 MAX_NUM_RESULTS = 500
 #boolean search, standard search performed. deals with allqueries even if no AND or OR are identified
-def bool_search(query):
+def bool_search_db(query):
     query = query.strip()
     formatted_query = query_handler(query)
 
@@ -109,7 +109,7 @@ def main():
         sys.exit(1)
 
     query = sys.argv[1]
-    ids = bool_search(query)
+    ids = bool_search_db(query)
     
     image_data = retrieve_image_data(list(ids))
     captions = [i["caption"] for i in image_data.values()]
