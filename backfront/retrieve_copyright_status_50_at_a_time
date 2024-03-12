@@ -99,6 +99,7 @@ def process_batch(batch, conn):
             license, date, file_size, width, height = write_unknown_file()
             print(normalized_name,license, date, file_size, width, height + ' not in images_info')
 
+        print(document_id, license, date, file_size, width, height)
         records_to_insert.append({
             "id": document_id,
             "license": license,
@@ -137,7 +138,7 @@ def extract_image_license_date_size_bulk(image_name, images_info):
     
         # To solve a problem with Unknown date appearing twice in the date
         if 'Unknown dateUnknown date' in cleaned_date:
-            cleaned_date = 'Unknown date'
+            cleaned_date = cleaned_date[12:].strip()
             
     else:
         # print('images_info')
