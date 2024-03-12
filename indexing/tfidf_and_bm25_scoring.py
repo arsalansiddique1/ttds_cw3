@@ -42,7 +42,7 @@ def compute_w_td(tf, idf):
     if tf == 0:
         return 0
     return (1 + math.log10(tf)) * idf
-'''
+
 def rank_docs(query, inverted_index, N):
     scores = {docno: 0 for docno in inverted_index['_doc_lengths']}
     for term in query.split():
@@ -54,35 +54,7 @@ def rank_docs(query, inverted_index, N):
                 w_td = compute_w_td(tf, idf)
                 scores[docno] += w_td
     return sorted(scores.items(), key=lambda x: x[1], reverse=True)
-'''
 
-# rank_docs with error control:
-def rank_docs(query, inverted_index, N):
-    # Initialize scores dictionary with document numbers and initial score of 0
-    scores = {docno: 0 for docno in inverted_index.get('_doc_lengths', [])}
-
-    # Iterate through each term in the query
-    for term in query.split():
-        # Check if the term exists in the inverted index
-        if term in inverted_index:
-            # Extract document frequency (df) from inverted index
-            df = inverted_index[term].get('df', 0)
-            # Calculate inverse document frequency (idf)
-            idf = compute_idf(df, N) if N > 0 else 0
-            
-            # Iterate through postings of the term
-            for docno, positions in inverted_index[term].get('postings', {}).items():
-                # Calculate term frequency (tf)
-                tf = len(positions)
-                # Calculate term weight (w_td)
-                w_td = compute_w_td(tf, idf)
-                # Update score for the document
-                scores[docno] += w_td
-        else:
-            print(f"Term '{term}' not found in the inverted index.")
-
-    # Sort scores in descending order and return as list of tuples
-    return sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
 
 
@@ -105,8 +77,6 @@ def produce_tfidf_results(inverted_index, queries_filename='queries.txt', result
         results[idx] = [doc for doc in ranked_docs if doc[1] > 0][:150][:150]  # Filter docs with score = 0, only store top 150 as required
     write_ranked_results_to_file(results, results_filename)  # Assuming this function correctly writes the results
     
-    return results
-
     ##### BM25 scoring
     
 def compute_bm25(idf, tf, doc_len, avgdl, k1=1.5, b=0.75):
@@ -149,6 +119,3 @@ def produce_bm25_results(inverted_index, queries_filename='queries.txt', results
     
     write_ranked_results_to_file(results, results_filename)
     
-
-
-

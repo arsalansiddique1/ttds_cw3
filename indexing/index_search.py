@@ -47,7 +47,7 @@ produce_bm25_results(inverted_index = positional_index, queries_filename='querie
 
 
 # Query Expansion using pseudo_relevance_feedback from lecture 11 & lab 5
-run_pseudo_relevance_feedback(captions_by_file, positional_index, n_d=6, n_t=3,queries_filename='queries.txt', results_filename='results_pseudo.txt')
+run_pseudo_relevance_feedback(captions_by_file, positional_index, n_d=50, n_t=3,queries_filename='queries.txt', results_filename='results_pseudo.txt')
 
 
 '''

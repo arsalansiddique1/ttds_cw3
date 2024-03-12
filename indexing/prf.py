@@ -7,15 +7,31 @@ from utils import *
 from tfidf_and_bm25_scoring import *
 from collections import defaultdict, Counter
 
+# get valid ranked docs with error control:
+def get_docs(query, inverted_index, N):
+    scores = {docno: 0 for docno in inverted_index['_doc_lengths']}
+    for term in query.split():
+        if term in inverted_index:
+            df = inverted_index[term]['df']  # Correctly extract 'df' as an integer
+            idf = compute_idf(df, N)  # Pass 'df' correctly as an integer
+            count = 0
+            for docno, positions in inverted_index[term]['postings'].items():
+                tf = len(positions)
+                w_td = compute_w_td(tf, idf)
+                scores[docno] += w_td
+ 
+    return sorted(scores.items(), key=lambda x: x[1], reverse=True)[:df] # only retrun the valid one, no longer than df
+
+
 # Pseudo relevance feedback (PRF)
 def process_top_documents(top_docs, captions_by_file, n_t):
     """
     Helper: Append the content of all the n_d documents together
     """
     all_captions = []
-    for filename, tfidf_scor in top_docs:
-        if filename in captions_by_file:
-            captions = captions_by_file[filename] # change to image id!
+    for term, tfidf_scor in top_docs:
+        if term in captions_by_file:
+            captions = captions_by_file[term] # change to image id!
             all_captions.append(captions)
     """
     Helper: For every term in the appended captions, 
@@ -41,7 +57,11 @@ def process_top_documents(top_docs, captions_by_file, n_t):
     
     # Return the top n_t most relevant terms
     if n_t is not None:
-        sorted_terms = sorted_terms[:n_t]
+        if n_t > len(sorted_terms):
+            # Handle the case where n_t is greater than the length of sorted_terms
+            sorted_terms = sorted_terms[:]
+        else:
+            sorted_terms = sorted_terms[:n_t]
     
     return dict(sorted_terms)
 
@@ -52,11 +72,16 @@ def run_pseudo_relevance_feedback(captions_by_file, inverted_index, n_d, n_t, qu
 
     for idx, query in enumerate(queries, 1): # start at 1
         # Retrieve top-ranked documents using original query
-        top_docs = rank_docs(query, inverted_index, len(inverted_index['_doc_lengths']))[:n_d]  # top n_d ranked documents
+        #top_docs = rank_docs(query, inverted_index, len(inverted_index['_doc_lengths']))[:n_d]  # top n_d ranked documents
+        top_docs = get_docs(query, inverted_index, len(inverted_index['_doc_lengths']))
+        if len(top_docs) < n_d:
+            top_docs = [doc for doc in top_docs if doc[0] != '0']
+        else:
+            top_docs = top_docs[:n_d]
+
         # Append the content of all the n_d documents together
         # For every term in the appeneded documents, calcualte the tfidf score. Use the formula tf.log(N/df)
         # Sort the terms by tfidf score. Report the top n_t terms
-        print(top_docs)
         if top_docs:
             processed_docs = process_top_documents(top_docs, captions_by_file, n_t)
             results[idx] = processed_docs
