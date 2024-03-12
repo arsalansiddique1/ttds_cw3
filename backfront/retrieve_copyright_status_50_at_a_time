@@ -58,8 +58,9 @@ def fetch_image_metadata_bulk(file_names):
             title = page['title'].replace('File:', '')
             images_info[title] = page['imageinfo']
         else:
+            print(page)
             title = page['title'].replace('File:', '')
-            images_info[title] = ['hi we are here']
+            images_info[title] = []
             
     #print("Name Mapping:", name_mapping)
     #print("Images Info Keys:", images_info.keys())
