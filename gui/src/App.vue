@@ -11,7 +11,7 @@
     </form>
     <QueryBuilder v-if="showQueryBuilder" @clicked="onClickChild"></QueryBuilder>
     <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
-    <div v-if="!loading" class="retrieval-time" v-if="retrievalTime > 0">
+    <div  v-if="!loading && retrievalTime > 0" class="retrieval-time">
       Retrieval time: {{ retrievalTime }} seconds
     </div>
     <div v-if="!loading" class="portfolio" id = "portfolio">
