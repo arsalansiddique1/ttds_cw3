@@ -20,7 +20,7 @@
         <img :src="image.url" @click="openLightbox(index)"> <!-- change to line above to filter invalid images -->
       </div>
     </div>
-    <div v-if="!loading && images.length === 0">
+    <div v-if="!loading && images.length === 0 && retrievalTime > 0">
       No results found.
     </div>
     <div class="portfolio-lightboxes">

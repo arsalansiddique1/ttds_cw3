@@ -33,7 +33,5 @@ def search(query: str):
 @app.get("/boolean_search")
 def boolean_search(query: str):
     # Implement search logic here
-    print("a", query)
     results = bool_search_db(query)
-    print(results[0])
     return {"results": results}

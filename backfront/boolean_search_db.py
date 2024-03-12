@@ -105,9 +105,11 @@ def bool_search_db(query):
             else: andDocs = andDocs.intersection(retrieved_docs)
         docs = docs.union(andDocs)
 
-    image_data = retrieve_image_data((list(docs)))
-    results = list(image_data.values())[:MAX_NUM_RESULTS]
-    return results
+    if(len(list(docs))>0):
+        image_data = retrieve_image_data((list(docs)))
+        results = list(image_data.values())[:MAX_NUM_RESULTS]
+        return results
+    else: return None
 
 def main():
     if len(sys.argv) != 2:
