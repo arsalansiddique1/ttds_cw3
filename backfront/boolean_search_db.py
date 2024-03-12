@@ -60,6 +60,7 @@ def phrasesearch(query):
 def getDocs(searchTerm):
     searchTerm = searchTerm.strip()
     if searchTerm[0] == '#':    #if hashtag then proximity search
+        print("prox search ", searchTerm)
         proximity_args = re.findall(r"[\w']+", searchTerm)
 
         processed_term1 = preprocess_text(proximity_args[1], stopwords).pop()
