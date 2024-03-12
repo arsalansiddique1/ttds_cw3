@@ -32,4 +32,6 @@ def search(query: str):
 @app.get("/boolean_search")
 def boolean_search(query: str):
     # Implement search logic here
-    return None
+    results = ranked_search(query)
+    print(results[0])
+    return {"results": results}
