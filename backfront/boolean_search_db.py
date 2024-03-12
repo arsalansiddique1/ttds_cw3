@@ -44,6 +44,8 @@ def proximity_2_terms(term1_locs, term2_locs, dist, phrase=False):
 def phrasesearch(query):
     terms = preprocess_text(query, stopwords)
 
+    if(len(terms==1)): return getDocs(terms[0]) #phrase with only one word is term search
+
     output = set()
     for i in range(len(terms)-1):
         term1_locs = fetch_db_single_term[0](terms[i])[1]
