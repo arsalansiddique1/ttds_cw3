@@ -14,11 +14,14 @@
     <div  v-if="!loading && retrievalTime > 0" class="retrieval-time">
       Retrieval time: {{ retrievalTime }} seconds
     </div>
-    <div v-if="!loading" class="portfolio" id = "portfolio">
+    <div v-if="!loading && images.length > 0" class="portfolio" id = "portfolio">
       <div class="portfolio__item" v-for="(image, index) in loadedImages" :key="image.id">
         <!-- <img :src="image.url" v-if="image.valid" @click="openLightbox(index)"> -->
         <img :src="image.url" @click="openLightbox(index)"> <!-- change to line above to filter invalid images -->
       </div>
+    </div>
+    <div v-if="!loading && images.length === 0">
+      No results found.
     </div>
     <div class="portfolio-lightboxes">
       <div  class="portfolio-lightbox" v-for="(image, index) in loadedImages" :key="image.id" :id="'lightbox-' + index">
