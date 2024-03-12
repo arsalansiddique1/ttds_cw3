@@ -74,7 +74,7 @@ export default {
           const value2 = condition.value2;
           const distance = condition.distance;
           if (value1 && value2 && distance) {
-            return `${condition.logic} #${distance}(${value1}, ${value2}) `;
+            return `${condition.logic} ~${distance}(${value1}, ${value2}) `;
           } else {
             return '';
           }
