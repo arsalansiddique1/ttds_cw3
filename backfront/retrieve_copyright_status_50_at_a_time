@@ -140,6 +140,8 @@ def extract_image_license_date_size_bulk(image_name, images_info):
             cleaned_date = 'Unknown date'
             
     else:
+        print('images_info')
+        print(images_info)
         return 'Unknown license extract else', 'Unknown date', 'Unknown size', 'Unknown width', 'Unknown height'
 
     return license, cleaned_date, file_size, width, height
@@ -166,7 +168,7 @@ def fetch_and_process_images(db_engine):
             offset += batch_size
             # if offset % 5000 == 0:
             #     print(f'Processed {offset} images')
-            if offset % 10 == 0:
+            if offset % 100 == 0:
                 break
             
           
