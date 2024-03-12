@@ -99,6 +99,7 @@ def process_batch(batch, conn):
 
     try:
         conn.execute(insert_stmt, records_to_insert)
+        conn.commit()
     except Exception as e:
         print(f"Error inserting records: {e}")
 
