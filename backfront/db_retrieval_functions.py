@@ -16,7 +16,7 @@ conn = psycopg2.connect(
 def fetch_db_single_term(term):
     with conn.cursor() as cursor:
         sql =f"""
-        SELECT * FROM terms_json WHERE term = {term};
+        SELECT * FROM terms_json WHERE term = '{term}';
         """
         cursor.execute(sql)
 
