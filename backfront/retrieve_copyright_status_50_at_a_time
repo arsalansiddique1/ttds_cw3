@@ -75,8 +75,10 @@ def process_batch(batch, conn):
     records_to_insert = []
     print( 'images_info'+ str(images_info))
     
+    
     for document_id, file_name in batch:
         lookup_name = '/'.join(file_name.split('/')[2:])
+        print( 'lookup_name'+ str(lookup_name))
         normalized_name = name_mapping.get(lookup_name, lookup_name)
         
         
