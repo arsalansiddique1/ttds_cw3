@@ -19,19 +19,8 @@ N = 8566975 #should be recalculated every now and then
 def get_matching_rows(terms):
     with db.connect() as conn:
         sql =f"""
-        SELECT term,
-            json_object_agg(id, positions) AS id_positions
-        FROM (
-            SELECT term,
-                id,
-                ARRAY_AGG(position ORDER BY position) AS positions
-            FROM middle
-            WHERE term = ANY(:terms)
-            GROUP BY term, id
-        ) AS subquery
-        GROUP BY term;
+        SELECT * FROM terms_json WHERE term = ANY(:terms);
         """
-
         stmt = sqlalchemy.text(sql)
         # Bind the term parameter to the statement
         stmt = stmt.bindparams(terms=terms)
@@ -85,17 +74,17 @@ def retrieve_image_data(ids):
 
         return output_dict
     
-# def main():
-#     if len(sys.argv) != 2:
-#         print("Usage: python script.py 'query'")
-#         sys.exit(1)
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python script.py 'query'")
+        sys.exit(1)
 
-#     query = sys.argv[1]
-#     tfidfs = ranked_tfidf_search(query)
-#     sorted_results = sorted(tfidfs, key=tfidfs.get, reverse=True)[:500]
-#     image_data = retrieve_image_data(sorted_results)
-#     captions = [image_data[int(i)]["caption"] for i in sorted_results if int(i) in image_data]
-#     print(captions)
+    query = sys.argv[1]
+    tfidfs = ranked_tfidf_search(query)
+    sorted_results = sorted(tfidfs, key=tfidfs.get, reverse=True)[:500]
+    print(sorted_results)
+    image_data = retrieve_image_data(sorted_results)
+    captions = [image_data[int(i)]["caption"] for i in sorted_results if int(i) in image_data]
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
