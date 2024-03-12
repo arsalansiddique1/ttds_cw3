@@ -33,6 +33,17 @@ def fetch_image_metadata_bulk(file_names):
         'format': 'json'
     }
     response = requests.get(api_base_url, params=params).json() # Add headers=headers if using with authentification
+    
+    name_mapping = {}
+
+    # Populate the mapping based on the response
+    if 'query' in response and 'normalized' in response['query']:
+        for norm in response['query']['normalized']:
+            normed_name = norm['to'].replace('File:', '')
+            original_name = norm['from'].replace('File:', '')
+            #name_mapping[normed_name] = original_name
+            name_mapping[original_name] = normed_name
+            
     pages = response['query']['pages']
     
     # Dictionary to hold the image information keyed by file name
@@ -45,29 +56,33 @@ def fetch_image_metadata_bulk(file_names):
             images_info[title] = page['imageinfo']
         else:
             title = page['title'].replace('File:', '')
-            images_info[title] = []
-    
-    return images_info
+            images_info[title] = [] 
+    return images_info, name_mapping
 
 
 
 # Function with improved efficiency by adding the records 50 at a time instead of 1 at a time
 def process_batch(batch, conn):
     file_names = [file_name for _, file_name in batch]
-    images_info = fetch_image_metadata_bulk(file_names)
-
+    images_info, name_mapping = fetch_image_metadata_bulk(file_names)
     records_to_insert = []
-    
     for document_id, file_name in batch:
-        if file_name in images_info:
+        lookup_name = file_name
+        normalized_name = name_mapping.get(lookup_name, lookup_name)
+        
+                
+        if normalized_name in images_info:
             try:
-                license, date, file_size, width, height = extract_image_license_date_size_bulk(file_name, images_info)
+                license, date, file_size, width, height = extract_image_license_date_size_bulk(normalized_name, images_info)
+                #print(normalized_name,license, date, file_size, width, height)
             except Exception as e:
                 license, date, file_size, width, height = write_unknown_file()
-                print(f'Error in image {file_name}: {e}')
+                #print(f'Error in image {file_name}: {e}')
         else:
             license, date, file_size, width, height = write_unknown_file()
+            #print(normalized_name,license, date, file_size, width, height)
 
+        #print(document_id, license, date, file_size, width, height)
         records_to_insert.append({
             "id": document_id,
             "license": license,
@@ -82,26 +97,35 @@ def process_batch(batch, conn):
         VALUES (:id, :license, :date, :size, :width, :height)
     """)
 
-    conn.execute(insert_stmt, records_to_insert)
+    try:
+        conn.execute(insert_stmt, records_to_insert)
+        conn.commit()
+    except Exception as e:
+        print(f"Error inserting records: {e}")
+
 
 
 
 def extract_image_license_date_size_bulk(image_name, images_info):
-    image_info = images_info[image_name][0]  # Assuming there's always at least one imageinfo entry
-    license = image_info.get('extmetadata', {}).get('LicenseShortName', {}).get('value', 'Unknown license')
-    date_original = image_info['extmetadata'].get('DateTimeOriginal', {}).get('value', 'Unknown date')
-    file_size = image_info.get('size', 'Unknown size')
-    width = image_info.get('width', 'Unknown width')
-    height = image_info.get('height', 'Unknown height')
+    if image_name in images_info and images_info[image_name]:
+        image_info = images_info[image_name][0]  # Assuming there's always at least one imageinfo entry
+        license = image_info.get('extmetadata', {}).get('LicenseShortName', {}).get('value', 'Unknown license')
+        date_original = image_info['extmetadata'].get('DateTimeOriginal', {}).get('value', 'Unknown date')
+        file_size = image_info.get('size', 'Unknown size')
+        width = image_info.get('width', 'Unknown width')
+        height = image_info.get('height', 'Unknown height')
 
-    # Clean up the date
-    cleaned_date = BeautifulSoup(date_original, 'html.parser').text
-    cleaned_date = cleaned_date.replace('\xa0', ' ').strip()
-    cleaned_date = cleaned_date.split('date QS:P', 1)[0].strip()
+        # Clean up the date
+        cleaned_date = BeautifulSoup(date_original, 'html.parser').text
+        cleaned_date = cleaned_date.replace('\xa0', ' ').strip()
+        cleaned_date = cleaned_date.split('date QS:P', 1)[0].strip()
     
-    # To solve a problem with Unknown date appearing twice in the date
-    if 'Unknown dateUnknown date' in cleaned_date:
-        cleaned_date = 'Unknown date'
+        # To solve a problem with Unknown date appearing twice in the date
+        if 'Unknown dateUnknown date' in cleaned_date:
+            cleaned_date = cleaned_date[12:].strip()
+            
+    else:
+        return 'Unknown license', 'Unknown date', 'Unknown size', 'Unknown width', 'Unknown height'
 
     return license, cleaned_date, file_size, width, height
 
@@ -122,11 +146,13 @@ def fetch_and_process_images(db_engine):
             if not result:
                 break
             
-            batch = [(row[0], '/'.join(row[1].split('/')[2:])) for row in result] # Weird syntax to ignore hash and make sure that we don't remove any slashes in filename
+            batch = [(row[0], '/'.join(row[1].split('/')[2:])) for row in result] # Weird syntax to ignore hash in title name and make sure that we don't remove any '/' in filename
             process_batch(batch, conn)
             offset += batch_size
-            if offset % 5000 == 0:
+            if offset % 10000 == 0:
                 print(f'Processed {offset} images')
+            # if offset % 1000 == 0:
+            #     break
             
           
 if __name__ == "__main__":

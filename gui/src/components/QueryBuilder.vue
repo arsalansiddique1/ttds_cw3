@@ -22,8 +22,7 @@
           <select v-model="condition.logic" class="logic-dropdown" >
             <option value="AND">AND</option>
             <option value="OR">OR</option>
-            <option value="AND_NOT">AND NOT</option>
-            <option value="OR_NOT">OR NOT</option>
+            <option value="AND NOT">AND NOT</option>
           </select>
           <select v-model="condition.type">
             <option value="free">Free Text</option>
@@ -74,12 +73,12 @@ export default {
           const value2 = condition.value2;
           const distance = condition.distance;
           if (value1 && value2 && distance) {
-            return `${condition.logic} #${distance}(${value1}, ${value2}) `;
+            return `${condition.logic} ~${distance}(${value1}, ${value2}) `;
           } else {
             return '';
           }
         } else {
-          return `${condition.logic} ${condition.value} `;
+          return `${condition.logic} "${condition.value}" `;
         }
       }
       

@@ -9,16 +9,19 @@
         <img v-else src="../images/up.png" alt=""> <!-- New icon when showQueryBuilder is true -->
       </button>
     </form>
-    <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
     <QueryBuilder v-if="showQueryBuilder" @clicked="onClickChild"></QueryBuilder>
-    <div class="retrieval-time" v-if="retrievalTime > 0">
+    <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
+    <div  v-if="!loading && retrievalTime > 0" class="retrieval-time">
       Retrieval time: {{ retrievalTime }} seconds
     </div>
-    <div class="portfolio" id = "portfolio">
+    <div v-if="!loading && images.length > 0" class="portfolio" id = "portfolio">
       <div class="portfolio__item" v-for="(image, index) in loadedImages" :key="image.id">
         <!-- <img :src="image.url" v-if="image.valid" @click="openLightbox(index)"> -->
         <img :src="image.url" @click="openLightbox(index)"> <!-- change to line above to filter invalid images -->
       </div>
+    </div>
+    <div v-if="!loading && images.length === 0 && retrievalTime > 0">
+      No results found.
     </div>
     <div class="portfolio-lightboxes">
       <div  class="portfolio-lightbox" v-for="(image, index) in loadedImages" :key="image.id" :id="'lightbox-' + index">
@@ -103,7 +106,26 @@ export default {
     onClickChild (value) {
           console.log(value) // someValue
           this.searchTerm = value
-          this.formSubmitted();
+          const startTime = performance.now();
+          this.loading = true;
+          this.currentPage = 1; // Reset currentPage to 1
+          this.images = [];
+          this.preloadedImages = []; // Reset preloadedImages
+          API.boolean_search(this.searchTerm)
+            .then(images => {
+              this.images = images.map(image => ({
+                id: image.id,
+                title: image.title,
+                url: image.url,
+                caption: image.caption,
+                showCaption: false, // Initialize showCaption to false
+              }));
+              this.totalPages = Math.ceil(this.images.length / this.pageSize);
+              this.loading = false;
+              this.loadImages();
+              const endTime = performance.now(); // Get the current timestamp when the response is received
+              this.retrievalTime = ((endTime - startTime) / 1000).toFixed(2); // Calculate the retrieval time in seconds and update retrievalTime
+          });
       },
     formSubmitted() {
       const startTime = performance.now();

@@ -16,7 +16,7 @@ from prf import *
 
 stopwords = extract_stopwords("ttds_2023_english_stop_words.txt")
 
-file_path = 'images_with_captions.csv'
+file_path = '../caption_extraction/try.csv' 
 captions_by_file = read_csv_file(file_path, stopwords)
 
 
@@ -47,7 +47,7 @@ produce_bm25_results(inverted_index = positional_index, queries_filename='querie
 
 
 # Query Expansion using pseudo_relevance_feedback from lecture 11 & lab 5
-run_pseudo_relevance_feedback(captions_by_file, positional_index, n_d=10, n_t=5,queries_filename='queries.txt', results_filename='results_pseudo.txt')
+run_pseudo_relevance_feedback(captions_by_file, positional_index, n_d=6, n_t=3,queries_filename='queries.txt', results_filename='results_pseudo.txt')
 
 
 '''

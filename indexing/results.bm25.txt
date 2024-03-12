@@ -1,84 +1,214 @@
-1,Bowen America.png,4.3094
-1,Culinary Institute of America (276631101).jpg,4.2123
-1,British America.png,4.1195
-1,The Bronx - All-America City sign - panoramio.jpg,4.0912
-1,America Online logo.svg,3.9456
-1,Stradanus America.jpg,3.864
-1,Vertical Velocity (Six Flags Great America).jpg,3.7121
-1,First_Baptist_Church_in_America_from_Angell_St_2.jpg,3.6384
-1,76 Virginian Partridge.jpg,3.5689
-1,Military Governors and Staff Officers in British North America and West Indies 1778 and 1784.jpg,3.3157
-1,Nostalgia (7539894906).jpg,3.3122
-1,Aconcagua_(aerial).jpg,3.1988
-1,Denali Mt McKinley.jpg,3.093
-1,OSIA baseball team.jpg,2.9939
-1,Antropologo social.jpg,2.901
-1,Agassi in argentina.jpg,2.901
-1,Apollo 17 CM Houston.jpg,2.8136
-1,Seaburytablet.JPG,2.7314
-1,Smelowskia americana 4859.JPG,2.7314
-1,Jamestown Virginia ruin.JPG,2.6539
-1,Usina solar de Pirapora 2.gif,2.5806
-1,Spectacled Bear 161 (2).jpg,2.5806
-1,FirstCommitteeGreatSealReverseLossingDrawing.jpg,2.5113
-1,Tobacco cultivation (Virginia, ca. 1670).jpg,2.5113
-1,US Secession map 1863 (BlankMap derived).png,2.4455
-1,Apollo 17 CSM SIM bay.jpg,2.4455
-1,Bermuda in United Kingdom.svg,2.4455
-1,United Kingdom on the globe (Bermuda special) (Americas centered).svg,2.4455
-1,Wild animals of North America, intimate studies of big and little creatures of the mammal kingdom (Page 410) (white background).jpg,2.4455
-1,Amerigo Vespucci (with turban).jpg,2.3655
-1,The_able_doctor,_or_America_swallowing_the_bitter_draught_(NYPL_Hades-248165-425086)_(cropped).jpg,2.3655
-1,Tam.a330-200.pt-mvl.arp.jpg,2.2692
-1,Map_of_territorial_growth_1775.svg,2.2692
-1,President-Jefferson-Davis.jpg,2.2138
-1,Utdrag ur Gesta Hammaburgensis ecclesiae pontificum.jpg,2.1626
-1,Vespucci arrives in New World.jpg,1.9384
-1,Benjamin West, English (born America) - Benjamin Franklin Drawing Electricity from the Sky - Google Art Project.jpg,1.9384
-1,Norse-world.png,1.899
-1,Grace Church Newark plaque.jpg,1.8612
-1,The iconic Van Wickle Gates at Brown University, one of America's prestigious &quot;Ivy League&quot; colleges, in Providence, the capital of, and largest city in, Rhode Island.jpg,1.7562
-1,Entrance to the John Carter Brown Library (cropped).jpg,1.6487
-1,NorthAmerica1762-83.png,1.5925
-1,The Bell Homestead National Historic Site, Brantford, Ontario, Canada, incl. Visitor Ctr, Henderson Home, Carriage House and Dreaming Place IMG 0039 09.JPG,1.5783
-1,AS17-147-22465 (21678759595).jpg,1.5521
-1,Union Army brigadier general rank insignia.svg,1.4554
-1,Commissioned Officer All Other Departments Brigadier General.svg,1.4554
-1,Confederate States of America General-collar.svg,1.4554
-1,Share-of-the-population-living-in-extreme-poverty-in-selected-parts-of-the-world.png,1.3707
-1,31 White-headed Eagle.jpg,1.331
-1,FrenchPeriodicalPills-January61845,BostonDailyTimes.jpg,1.1368
-1,Soldiers_at_the_siege_of_Yorktown_(1781),_by_Jean-Baptiste-Antoine_DeVerger_(cropped).png,1.1098
-1,Circulacion termohalina.jpg,1.0595
-1,AS08-16-2593 remastered.jpg,0.9714
-1,AUA Arrivals building.JPG,0.9282
-1,The Cliffs at DUMBO.jpg,0.8883
-1,USMA01 Major Campaigns of the American Revolutionary War.jpg,0.8112
-1,Pichblende.jpg,0.5907
-1,Star and Crescent.svg,0.5523
-1,Christian cross.svg,0.5523
-1,The Glorious Appearing of Jesus to the Nephites by William Armitage.PNG,0.4622
-1,Baltic-amber-fossils-inclusions.jpg,0.4404
-1,Apatosaurus ajax sacrum.jpg,0.4095
-1,EBGrandinPrintingPress.jpg,0.3923
-1,Ayahuasca and chacruna cocinando.jpg,0.2905
-1,Women in bikinis at an aerobics class at Hietaniemi beach.jpg,0.2172
-2,Ring of Allah, from a grave in Birka Sweden.jpg,9.8403
-2,Birka Karte 2008.jpg,5.7756
-2,Tortoise brooches from a grave in Birka.jpg,5.5265
-2,Allah name in different languages.png,5.3747
-2,Mjöllnir pendant from Birka grave.jpg,5.1908
-2,Entry in a defensive wall on Birka September 2015.jpg,5.0877
-2,BirkaExcavation2.png,5.0817
-2,Dcp7323-Edirne-Eski Camii Allah.jpg,5.0482
-2,Birka hus 2008a.JPG,4.8879
-2,Birka Boot 2008.JPG,4.8879
-2,Istanbul, Hagia Sophia, Allah.jpg,4.6699
-2,Birka Svarta jorden 1991.jpg,4.5415
-2,Allah3.svg,4.4167
-2,Khalili Collection Islamic Art txt 0222.1.jpg,3.5388
-2,Seremban-Annunciation-feast-3808.jpg,3.4411
-2,Component letters in Allah.svg,3.2214
-2,GKKA Banjarmasin.jpg,2.9896
-2,Arabic components (letters) in the word Allah only black.png,2.2583
-2,François-Joseph Navez - Agar et Ismaël dans le désert.jpg,1.0542
+1,8871,3.6288
+1,4250,3.2646
+1,4245,2.7188
+1,3351,2.3294
+1,3796,2.0375
+1,3237,1.7152
+1,3247,1.7152
+1,4304,1.7152
+1,9877,1.4164
+1,6073,1.1631
+2,3900,3.0794
+2,5551,3.0794
+2,1968,2.8419
+2,9054,2.8419
+3,9756,2.8284
+3,4094,2.7462
+3,7090,2.7462
+3,9257,2.7171
+3,9724,2.6548
+3,6817,2.6347
+3,4100,2.5319
+3,9779,2.5319
+3,3517,2.5014
+3,3604,2.5014
+3,4097,2.5014
+3,4104,2.5014
+3,6704,2.5014
+3,6720,2.5014
+3,9719,2.5014
+3,9787,2.5014
+3,3612,2.414
+3,9743,2.414
+3,3539,2.2422
+3,3547,2.2422
+3,3560,2.2422
+3,4109,2.2422
+3,4150,2.2422
+3,4162,2.2422
+3,4174,2.2422
+3,7092,2.2422
+3,9734,2.2422
+3,2712,2.1717
+3,7124,2.1717
+3,7758,2.1717
+3,9804,2.1717
+3,4146,2.1317
+3,6820,2.1317
+3,4093,2.0316
+3,2714,1.9736
+3,3573,1.9736
+3,3602,1.9736
+3,4106,1.9736
+3,4156,1.9736
+3,7098,1.9736
+3,7100,1.9736
+3,7110,1.9736
+3,7759,1.9736
+3,8158,1.9736
+3,8886,1.9736
+3,9765,1.9736
+3,6739,1.8572
+3,2715,1.8086
+3,3542,1.8086
+3,3559,1.8086
+3,3950,1.8086
+3,4165,1.8086
+3,6824,1.8086
+3,7109,1.8086
+3,7111,1.8086
+3,7129,1.8086
+3,7132,1.8086
+3,8023,1.8086
+3,9727,1.8086
+3,9730,1.8086
+3,9759,1.8086
+3,9763,1.8086
+3,9815,1.8086
+3,15,1.6691
+3,2557,1.6691
+3,3594,1.6691
+3,3606,1.6691
+3,3727,1.6691
+3,4132,1.6691
+3,4147,1.6691
+3,4152,1.6691
+3,6698,1.6691
+3,6779,1.6691
+3,7122,1.6691
+3,9138,1.6691
+3,9211,1.6691
+3,9741,1.6691
+3,9746,1.6691
+3,9750,1.6691
+3,9751,1.6691
+3,9817,1.6691
+3,3599,1.5496
+3,3601,1.5496
+3,3728,1.5496
+3,4140,1.5496
+3,4749,1.5496
+3,9757,1.5496
+3,9808,1.5496
+3,7083,1.3554
+3,3697,1.2755
+3,6772,1.2755
+3,8563,1.2755
+3,3412,1.2045
+3,7119,1.2045
+3,7139,1.2045
+3,4141,1.141
+3,6633,1.141
+3,8947,1.141
+3,1991,1.1298
+3,6093,1.0838
+3,9032,0.9422
+4,4855,3.2648
+4,4093,3.0423
+4,6734,3.0056
+4,6735,3.0056
+4,6742,3.0056
+4,3528,2.6941
+4,4157,2.6941
+4,9786,2.6941
+4,9793,2.6941
+4,8,2.6094
+4,4146,2.5614
+4,4121,2.4411
+4,9,2.3714
+4,3556,2.3714
+4,4078,2.3714
+4,4085,2.3714
+4,3610,2.3317
+4,168,2.1732
+4,9755,2.1732
+4,6741,2.1397
+4,3525,2.0055
+4,6818,2.0055
+4,7086,2.0055
+4,9787,2.0055
+4,4140,1.8619
+4,4111,1.7375
+4,4159,1.7375
+4,4162,1.7375
+4,7090,1.7375
+4,3608,1.6286
+4,7112,1.6286
+4,9782,1.6286
+4,3605,1.5326
+4,3611,1.5326
+4,4092,1.5326
+4,4154,1.5326
+4,6821,1.5326
+4,4079,1.4473
+4,9761,1.4473
+4,9835,1.2402
+5,5611,3.2916
+5,7629,3.2916
+5,394,2.9613
+5,3041,2.9613
+5,7333,2.9613
+5,5267,2.6911
+5,492,2.2759
+5,1900,2.1129
+5,2026,2.1129
+5,3042,1.9717
+5,8993,1.9717
+5,5286,1.8482
+5,3435,1.7392
+5,5493,1.5558
+5,6633,1.5558
+5,6398,1.4779
+5,5298,1.4074
+5,6661,1.3433
+5,6970,1.1363
+6,1439,2.6337
+6,2444,2.6337
+6,3787,2.6337
+6,4789,2.6337
+6,4790,2.6337
+6,5279,2.6337
+6,5780,2.6337
+6,7252,2.6337
+6,7358,2.6337
+6,8938,2.6337
+6,3130,2.3934
+6,8009,2.3934
+6,6,2.1934
+6,506,2.1934
+6,517,2.1934
+6,9219,2.1934
+6,9664,2.1934
+6,1441,2.0242
+6,2809,2.0242
+6,7429,2.0242
+6,9435,2.0242
+6,5211,1.8792
+6,7419,1.8792
+6,7711,1.8792
+6,6207,1.7536
+6,8400,1.7536
+6,550,1.6437
+6,891,1.6437
+6,3228,1.6437
+6,1,1.5468
+6,890,1.5468
+6,4976,1.5468
+6,6151,1.5468
+6,7211,1.3837
+6,7996,1.3144
+6,8060,1.2517
+6,6968,1.095
+6,6970,1.0106
+7,1985,3.658
+7,9311,2.8721

@@ -32,17 +32,17 @@ def preprocess_text(text, stopwords):
 def read_csv_file(file_path, stopwords):
     text_dict = {}
     with open(file_path, newline='', encoding='utf-8') as csvfile:
-        reader = csv.DictReader(csvfile, delimiter=',')
+        reader = csv.DictReader(csvfile, delimiter='\t') # tab-separated?
         for row in reader:
-            file = row['filenames']
+            image_id = row['imageid']
             caption = row['captions']
             # Preprocess the caption
             # cap_tokens = re.findall(r'\b[\w\']+\b', caption)
             cap_tokens = preprocess_text(caption, stopwords)
-            if file in text_dict:
-                text_dict[file].append(cap_tokens)
+            if image_id in text_dict:
+                text_dict[image_id].append(cap_tokens)
             else:
-                text_dict[file] = [cap_tokens]
+                text_dict[image_id] = [cap_tokens]
     return text_dict
 
 

@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
-import psycopg2
 from dotenv import load_dotenv
-from ranked_search_db import ranked_tfidf_search, retrieve_image_data
+from ranked_search_db import ranked_search_db
+from boolean_search_db import bool_search_db
 
 # # Load environment variables from the .env file
 load_dotenv()
@@ -20,18 +20,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MAX_NUM_RESULTS = 500
-
-# Function to search PostgreSQL database
-def ranked_search(query):
-    tfidfs = ranked_tfidf_search(query)
-    sorted_results = sorted(tfidfs, key=tfidfs.get, reverse=True)[:MAX_NUM_RESULTS]
-    image_data = retrieve_image_data(sorted_results)
-    results = [image_data[int(i)] for i in sorted_results if int(i) in image_data]
-
-    return results
-
-
 @app.get("/")
 def read_root():
     return {"message": "Welcome to your FastAPI app"}
@@ -39,5 +27,11 @@ def read_root():
 @app.get("/search")
 def search(query: str):
     # Implement search logic here
-    results = ranked_search(query)
+    results = ranked_search_db(query)
+    return {"results": results}
+
+@app.get("/boolean_search")
+def boolean_search(query: str):
+    # Implement search logic here
+    results = bool_search_db(query)
     return {"results": results}
