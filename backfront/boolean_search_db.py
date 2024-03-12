@@ -101,7 +101,7 @@ def bool_search_db(query):
 
     image_data = retrieve_image_data((list(docs)))
     print(image_data)
-    results = image_data.values()[:MAX_NUM_RESULTS]
+    results = list(image_data.values())[:MAX_NUM_RESULTS]
     return results
 
 def main():
