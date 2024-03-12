@@ -77,6 +77,8 @@ def produce_tfidf_results(inverted_index, queries_filename='queries.txt', result
         results[idx] = [doc for doc in ranked_docs if doc[1] > 0][:150][:150]  # Filter docs with score = 0, only store top 150 as required
     write_ranked_results_to_file(results, results_filename)  # Assuming this function correctly writes the results
     
+    return results
+
     ##### BM25 scoring
     
 def compute_bm25(idf, tf, doc_len, avgdl, k1=1.5, b=0.75):

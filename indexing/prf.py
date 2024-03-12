@@ -1,7 +1,13 @@
+# Query Expansion:
+# -Dictionary/word embedding
+# -User/pseudo/implicit feedback
+# -Display learnt terms with search
+
 from utils import *
 from tfidf_and_bm25_scoring import *
 from collections import defaultdict, Counter
 
+# Pseudo relevance feedback (PRF)
 def process_top_documents(top_docs, captions_by_file, n_t):
     """
     Helper: Append the content of all the n_d documents together
@@ -9,18 +15,19 @@ def process_top_documents(top_docs, captions_by_file, n_t):
     all_captions = []
     for filename, tfidf_scor in top_docs:
         if filename in captions_by_file:
-            captions = captions_by_file[filename]
+            captions = captions_by_file[filename] # change to image id!
             all_captions.append(captions)
     """
-    For every term in the appended captions, calculate the TF-IDF score, using the formula tf.log(N/df)
+    Helper: For every term in the appended captions, 
+    calculate the TF-IDF score, using the formula tf.log(N/df)
     """
-    # Step 1: Calculate term frequencies (TF) within the captions
+    # Calculate term frequencies (TF) within the all_captions
     term_frequencies = Counter()
     for captions in all_captions:
         for terms in captions:
             term_frequencies.update(terms)  # Update term frequencies
     
-    # Step 2: Calculate TF-IDF scores for each term
+    # Calculate TF-IDF scores for each term
     tfidf_scores = {}
     total_docs = len(all_captions)
     for term, tf in term_frequencies.items():
@@ -29,10 +36,10 @@ def process_top_documents(top_docs, captions_by_file, n_t):
         tfidf_scores[term] = tf * idf  # TF-IDF score
         
     
-    # Step 3: Sort terms by TF-IDF score
+    # Sort terms by TF-IDF score
     sorted_terms = sorted(tfidf_scores.items(), key=lambda x: x[1], reverse=True)
     
-    # Step 4: Return the top n_t terms if specified
+    # Return the top n_t most relevant terms
     if n_t is not None:
         sorted_terms = sorted_terms[:n_t]
     
@@ -49,7 +56,12 @@ def run_pseudo_relevance_feedback(captions_by_file, inverted_index, n_d, n_t, qu
         # Append the content of all the n_d documents together
         # For every term in the appeneded documents, calcualte the tfidf score. Use the formula tf.log(N/df)
         # Sort the terms by tfidf score. Report the top n_t terms
-        results[idx] = process_top_documents(top_docs, captions_by_file, n_t)
+        if top_docs:
+            processed_docs = process_top_documents(top_docs, captions_by_file, n_t)
+            results[idx] = processed_docs
+        else:
+            results[idx] = []  # Or any other indication of no results
+
 
     return print(results)
     #write_ranked_results_to_file(results, results_filename)
