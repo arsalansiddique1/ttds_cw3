@@ -5,6 +5,7 @@ const BASE_URL = "https://upload.wikimedia.org/wikipedia/commons/";
 export default {
   search(searchTerm) {
     const url = `${API_URL}search?query=${searchTerm}`;
+    console.log(url)
     return fetch(url)
       .then(response => response.json())
       .then(result => {
