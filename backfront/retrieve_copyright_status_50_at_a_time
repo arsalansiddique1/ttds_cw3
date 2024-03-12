@@ -149,7 +149,7 @@ def extract_image_license_date_size_bulk(image_name, images_info):
 def fetch_and_process_images(db_engine):
     with db_engine.connect() as conn:
         offset = 0
-        batch_size = 5
+        batch_size = 50
         
         while True:
             fetch_stmt = sqlalchemy.text("""
