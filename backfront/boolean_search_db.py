@@ -58,6 +58,7 @@ def phrasesearch(query):
 
 #get the documents for the different search cases after splitting for AND or OR or operators
 def getDocs(searchTerm):
+    print("x", searchTerm)
     searchTerm = searchTerm.strip()
     if searchTerm[0] == '#':    #if hashtag then proximity search
         print("prox search ", searchTerm)
