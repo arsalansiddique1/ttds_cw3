@@ -59,8 +59,8 @@ def fetch_image_metadata_bulk(file_names):
             title = page['title'].replace('File:', '')
             images_info[title] = []
             
-    # print("Name Mapping:", name_mapping)
-    # print("Images Info Keys:", images_info.keys())
+    print("Name Mapping:", name_mapping)
+    print("Images Info Keys:", images_info.keys())
 
     
     return images_info, name_mapping
@@ -73,12 +73,13 @@ def process_batch(batch, conn):
     images_info, name_mapping = fetch_image_metadata_bulk(file_names)
 
     records_to_insert = []
+    print( 'images_info'+ str(images_info))
     
     for document_id, file_name in batch:
         lookup_name = '/'.join(file_name.split('/')[2:])
         normalized_name = name_mapping.get(lookup_name, lookup_name)
         
-        print( 'images_info'+ str(images_info))
+        
         print( 'normalized_name'+ str(normalized_name))
         
         if normalized_name in images_info:
