@@ -58,6 +58,7 @@ def phrasesearch(query):
 
 #get the documents for the different search cases after splitting for AND or OR or operators
 def getDocs(searchTerm):
+    searchTerm = searchTerm.strip()
     if searchTerm[0] == '#':    #if hashtag then proximity search
         proximity_args = re.findall(r"[\w']+", searchTerm)
 
@@ -79,7 +80,6 @@ def getDocs(searchTerm):
         return searchResult
     else:                       #otherwise just get the docs associated with term
         searchTerm = preprocess_text(searchTerm, stopwords).pop() #preprocess search term
-        print(fetch_db_single_term(searchTerm))
         searchResult = set(fetch_db_single_term(searchTerm)[0][1])
         return searchResult
 
@@ -100,7 +100,6 @@ def bool_search_db(query):
         docs = docs.union(andDocs)
 
     image_data = retrieve_image_data((list(docs)))
-    print(image_data)
     results = list(image_data.values())[:MAX_NUM_RESULTS]
     return results
 
