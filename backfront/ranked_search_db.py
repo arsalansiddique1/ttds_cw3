@@ -10,21 +10,29 @@ from utils import *
 import connect_connector
 import sqlalchemy
 
-db: sqlalchemy.engine.base.Engine = connect_connector.connect_with_connector()
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASS")
+DB_HOST = os.getenv("DB_HOST")
+
+conn = psycopg2.connect(
+    dbname=DB_NAME,
+    user=DB_USER,
+    password=DB_PASSWORD,
+    host=DB_HOST
+)
 
 stopwords = extract_stopwords("ttds_2023_english_stop_words.txt")
 N = 8566975 #should be recalculated every now and then
 
 
 def get_matching_rows(terms):
-    with db.connect() as conn:
+    with conn.cursor() as cursor:
         sql =f"""
         SELECT * FROM terms_json WHERE term = ANY(:terms);
         """
-        stmt = sqlalchemy.text(sql)
         # Bind the term parameter to the statement
-        stmt = stmt.bindparams(terms=terms)
-        result = conn.execute(stmt)
+        result = cursor.execute(sql, (terms,))
 
         matching_rows = result.fetchall()
 
@@ -57,13 +65,12 @@ def ranked_tfidf_search(query):
     return tfidfs
 
 def retrieve_image_data(ids):
-    with db.connect() as conn:
+    with conn.cursor() as cursor:
         ids_str = ', '.join(ids)
 
         sql = f"SELECT DISTINCT ON (title, caption) * FROM captions2 WHERE id IN ({ids_str});"
 
-        stmt = sqlalchemy.text(sql)
-        result = conn.execute(stmt)
+        result = cursor.execute(sql)
 
         # Get column names from the result set's description attribute
         columns = [desc[0] for desc in result.cursor.description]
