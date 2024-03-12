@@ -46,7 +46,7 @@ def process_top_documents(top_docs, captions_by_file, n_t):
     return dict(sorted_terms)
 
 
-def run_pseudo_relevance_feedback(captions_by_file, inverted_index, n_d, n_t, queries_filename='queries.txt', results_filename='results_pseudo.txt'):
+def run_pseudo_relevance_feedback(captions_by_file, inverted_index, n_d, n_t, queries_filename, results_filename):
     queries = read_queries_from_file(queries_filename)
     results = {}
 
@@ -56,6 +56,7 @@ def run_pseudo_relevance_feedback(captions_by_file, inverted_index, n_d, n_t, qu
         # Append the content of all the n_d documents together
         # For every term in the appeneded documents, calcualte the tfidf score. Use the formula tf.log(N/df)
         # Sort the terms by tfidf score. Report the top n_t terms
+        print(top_docs)
         if top_docs:
             processed_docs = process_top_documents(top_docs, captions_by_file, n_t)
             results[idx] = processed_docs
