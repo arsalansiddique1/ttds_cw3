@@ -33,9 +33,9 @@ def get_matching_rows(terms):
         SELECT * FROM terms_json WHERE term = ANY(%s);
         """
         # Bind the term parameter to the statement
-        result = cursor.execute(sql, (terms,))
+        cursor.execute(sql, (terms,))
 
-        matching_rows = result.fetchall()
+        matching_rows = cursor.fetchall()
 
         return matching_rows
 
@@ -69,18 +69,18 @@ def retrieve_image_data(ids):
     with conn.cursor() as cursor:
         ids_str = ', '.join(ids)
 
-        sql = f"SELECT DISTINCT ON (title, caption) * FROM captions2 WHERE id IN ({ids_str});"
+        sql = f"SELECT DISTINCT ON (title, caption) * FROM captions2 WHERE id IN (%s);"
 
-        result = cursor.execute(sql)
-
-        # Get column names from the result set's description attribute
-        columns = [desc[0] for desc in result.cursor.description]
+        # Execute the query with the list of IDs as a parameter
+        cursor.execute(sql, (ids,))
 
         # Fetch all rows
-        matching_rows = result.fetchall()
-        output_dict = {row[0]: dict(zip(columns, row)) for row in matching_rows}
+        output_dict = dict()
+        columns = [desc[0] for desc in cursor.description]  # Get column names
+        output_dict = {row[0]: dict(zip(columns, row)) for row in cursor.fetchall()}
 
         return output_dict
+
     
 def main():
     if len(sys.argv) != 2:
