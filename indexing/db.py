@@ -98,9 +98,9 @@ try:
     #insert_data_from_json(json_data, conn)
     
     #Creates b-tree indexes for term column to optimise df lookups
-    cur.execute(b_tree_idx_terms)
+    #cur.execute(b_tree_idx_terms)
     #Will speed up lookup of document lengths
-    cur.execute(b_tree_idx_file)
+    #cur.execute(b_tree_idx_file)
     
     '''
     # List tables

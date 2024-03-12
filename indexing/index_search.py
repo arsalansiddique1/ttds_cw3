@@ -45,7 +45,7 @@ produce_tfidf_results(inverted_index = positional_index, queries_filename="queri
 produce_bm25_results(inverted_index = positional_index, queries_filename='queries.txt', results_filename='results.bm25.txt')
 
 
-'''
+
 # Testing queries
 start_time = time.perf_counter()  # Start timing
 simple_result = perform_search('wilhelm', positional_index)
@@ -70,11 +70,11 @@ print(f"Proximity Search Time: {duration:.6f} seconds")
 
 
 start_time = time.perf_counter()  # Start timing
-phrase_result = perform_search('"black diamond"', positional_index)
+phrase_result = perform_search('"black diamond liber"', positional_index)
 print("Phrase Search Result:", phrase_result)
 end_time = time.perf_counter()  # End timing
 duration = end_time - start_time  # Calculate duration
 print(f"Prase Search Time: {duration:.6f} seconds")
 
 
-'''
+
