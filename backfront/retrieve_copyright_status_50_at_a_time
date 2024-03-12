@@ -33,15 +33,12 @@ def fetch_image_metadata_bulk(file_names):
         'format': 'json'
     }
     response = requests.get(api_base_url, params=params).json() # Add headers=headers if using with authentification
-    #print(response)
     
     name_mapping = {}
 
     # Populate the mapping based on the response
     if 'query' in response and 'normalized' in response['query']:
-        # print("query", response['query'])
         for norm in response['query']['normalized']:
-            # print("norm", norm)
             normed_name = norm['to'].replace('File:', '')
             original_name = norm['from'].replace('File:', '')
             #name_mapping[normed_name] = original_name
@@ -59,12 +56,7 @@ def fetch_image_metadata_bulk(file_names):
             images_info[title] = page['imageinfo']
         else:
             title = page['title'].replace('File:', '')
-            images_info[title] = []
-            
-    #print("Name Mapping:", name_mapping)
-    #print("Images Info Keys:", images_info.keys())
-
-    
+            images_info[title] = [] 
     return images_info, name_mapping
 
 
@@ -73,31 +65,22 @@ def fetch_image_metadata_bulk(file_names):
 def process_batch(batch, conn):
     file_names = [file_name for _, file_name in batch]
     images_info, name_mapping = fetch_image_metadata_bulk(file_names)
-
     records_to_insert = []
-    #print( 'images_info'+ str(images_info))
-    
-    
     for document_id, file_name in batch:
-        #print('file_name ' + str (file_name))
-        #lookup_name = '/'.join(file_name.split('/')[2:])
         lookup_name = file_name
-        #print( 'lookup_name '+ str(lookup_name))
         normalized_name = name_mapping.get(lookup_name, lookup_name)
         
-        
-        #print( 'normalized_name '+ str(normalized_name))
-        
+                
         if normalized_name in images_info:
             try:
                 license, date, file_size, width, height = extract_image_license_date_size_bulk(normalized_name, images_info)
-                print(normalized_name,license, date, file_size, width, height)
+                #print(normalized_name,license, date, file_size, width, height)
             except Exception as e:
                 license, date, file_size, width, height = write_unknown_file()
-                print(f'Error in image {file_name}: {e}')
+                #print(f'Error in image {file_name}: {e}')
         else:
             license, date, file_size, width, height = write_unknown_file()
-            print(normalized_name,license, date, file_size, width, height + ' not in images_info')
+            #print(normalized_name,license, date, file_size, width, height)
 
         print(document_id, license, date, file_size, width, height)
         records_to_insert.append({
@@ -125,7 +108,7 @@ def process_batch(batch, conn):
 def extract_image_license_date_size_bulk(image_name, images_info):
     if image_name in images_info and images_info[image_name]:
         image_info = images_info[image_name][0]  # Assuming there's always at least one imageinfo entry
-        license = image_info.get('extmetadata', {}).get('LicenseShortName', {}).get('value', 'Unknown license get')
+        license = image_info.get('extmetadata', {}).get('LicenseShortName', {}).get('value', 'Unknown license')
         date_original = image_info['extmetadata'].get('DateTimeOriginal', {}).get('value', 'Unknown date')
         file_size = image_info.get('size', 'Unknown size')
         width = image_info.get('width', 'Unknown width')
@@ -141,9 +124,7 @@ def extract_image_license_date_size_bulk(image_name, images_info):
             cleaned_date = cleaned_date[12:].strip()
             
     else:
-        # print('images_info')
-        # print(images_info)
-        return 'Unknown license extract else', 'Unknown date', 'Unknown size', 'Unknown width', 'Unknown height'
+        return 'Unknown license', 'Unknown date', 'Unknown size', 'Unknown width', 'Unknown height'
 
     return license, cleaned_date, file_size, width, height
 
@@ -164,7 +145,7 @@ def fetch_and_process_images(db_engine):
             if not result:
                 break
             
-            batch = [(row[0], '/'.join(row[1].split('/')[2:])) for row in result] # Weird syntax to ignore hash and make sure that we don't remove any slashes in filename
+            batch = [(row[0], '/'.join(row[1].split('/')[2:])) for row in result] # Weird syntax to ignore hash in title name and make sure that we don't remove any '/' in filename
             process_batch(batch, conn)
             offset += batch_size
             # if offset % 5000 == 0:
