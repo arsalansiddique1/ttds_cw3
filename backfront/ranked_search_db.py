@@ -10,34 +10,32 @@ from utils import *
 import connect_connector
 import sqlalchemy
 
-db: sqlalchemy.engine.base.Engine = connect_connector.connect_with_connector()
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASS")
+DB_HOST = os.getenv("DB_HOST")
+
+conn = psycopg2.connect(
+    dbname=DB_NAME,
+    user=DB_USER,
+    password=DB_PASSWORD,
+    host=DB_HOST
+)
 
 stopwords = extract_stopwords("ttds_2023_english_stop_words.txt")
 N = 8566975 #should be recalculated every now and then
 
 
 def get_matching_rows(terms):
-    with db.connect() as conn:
+    with conn.cursor() as cursor:
+        str_terms = "'" + "', '".join(terms) + "'"
         sql =f"""
-        SELECT term,
-            json_object_agg(id, positions) AS id_positions
-        FROM (
-            SELECT term,
-                id,
-                ARRAY_AGG(position ORDER BY position) AS positions
-            FROM middle
-            WHERE term = ANY(:terms)
-            GROUP BY term, id
-        ) AS subquery
-        GROUP BY term;
+        SELECT * FROM terms_json WHERE term = ANY(%s);
         """
-
-        stmt = sqlalchemy.text(sql)
         # Bind the term parameter to the statement
-        stmt = stmt.bindparams(terms=terms)
-        result = conn.execute(stmt)
+        cursor.execute(sql, (terms,))
 
-        matching_rows = result.fetchall()
+        matching_rows = cursor.fetchall()
 
         return matching_rows
 
@@ -68,34 +66,33 @@ def ranked_tfidf_search(query):
     return tfidfs
 
 def retrieve_image_data(ids):
-    with db.connect() as conn:
+    with conn.cursor() as cursor:
         ids_str = ', '.join(ids)
 
-        sql = f"SELECT DISTINCT ON (title, caption) * FROM captions2 WHERE id IN ({ids_str});"
+        sql = f"SELECT DISTINCT ON (title, caption) * FROM captions2 WHERE id IN %s;"
 
-        stmt = sqlalchemy.text(sql)
-        result = conn.execute(stmt)
-
-        # Get column names from the result set's description attribute
-        columns = [desc[0] for desc in result.cursor.description]
+        # Execute the query with the list of IDs as a parameter
+        cursor.execute(sql, (tuple(ids),))
 
         # Fetch all rows
-        matching_rows = result.fetchall()
-        output_dict = {row[0]: dict(zip(columns, row)) for row in matching_rows}
+        output_dict = dict()
+        columns = [desc[0] for desc in cursor.description]  # Get column names
+        output_dict = {row[0]: dict(zip(columns, row)) for row in cursor.fetchall()}
 
         return output_dict
+
     
-# def main():
-#     if len(sys.argv) != 2:
-#         print("Usage: python script.py 'query'")
-#         sys.exit(1)
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python script.py 'query'")
+        sys.exit(1)
 
-#     query = sys.argv[1]
-#     tfidfs = ranked_tfidf_search(query)
-#     sorted_results = sorted(tfidfs, key=tfidfs.get, reverse=True)[:500]
-#     image_data = retrieve_image_data(sorted_results)
-#     captions = [image_data[int(i)]["caption"] for i in sorted_results if int(i) in image_data]
-#     print(captions)
+    query = sys.argv[1]
+    tfidfs = ranked_tfidf_search(query)
+    sorted_results = sorted(tfidfs, key=tfidfs.get, reverse=True)[:500]
+    print(sorted_results)
+    image_data = retrieve_image_data(sorted_results)
+    captions = [image_data[int(i)]["caption"] for i in sorted_results if int(i) in image_data]
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
