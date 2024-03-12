@@ -43,11 +43,13 @@ def proximity_2_terms(term1_locs, term2_locs, dist, phrase=False):
 #phrase search by using proximity_2_terms with distance 1
 def phrasesearch(query):
     terms = preprocess_text(query, stopwords)
+    print(terms)
+    if(len(terms)==1): return getDocs(terms[0]) #phrase with only one word is term search
 
     output = set()
     for i in range(len(terms)-1):
-        term1_locs = fetch_db_single_term[0](terms[i])[1]
-        term2_locs = fetch_db_single_term[0](terms[i+1])[1]
+        term1_locs = fetch_db_single_term(terms[i])[0][1]
+        term2_locs = fetch_db_single_term(terms[i+1])[0][1]
 
         results_two_terms = set(proximity_2_terms(term1_locs, term2_locs, 1, phrase=True))
 
@@ -58,7 +60,10 @@ def phrasesearch(query):
 
 #get the documents for the different search cases after splitting for AND or OR or operators
 def getDocs(searchTerm):
-    if searchTerm[0] == '#':    #if hashtag then proximity search
+    print("x", searchTerm)
+    searchTerm = searchTerm.strip()
+    if searchTerm[0] == '~':    #if hashtag then proximity search
+        print("prox search ", searchTerm)
         proximity_args = re.findall(r"[\w']+", searchTerm)
 
         processed_term1 = preprocess_text(proximity_args[1], stopwords).pop()
@@ -79,14 +84,16 @@ def getDocs(searchTerm):
         return searchResult
     else:                       #otherwise just get the docs associated with term
         searchTerm = preprocess_text(searchTerm, stopwords).pop() #preprocess search term
-        print(fetch_db_single_term(searchTerm))
         searchResult = set(fetch_db_single_term(searchTerm)[0][1])
         return searchResult
 
+MAX_NUM_RESULTS = 500
 #boolean search, standard search performed. deals with allqueries even if no AND or OR are identified
-def bool_search(query):
+def bool_search_db(query):
+    print(query)
     query = query.strip()
     formatted_query = query_handler(query)
+    print(formatted_query)
 
     docs = set() 
     for ors in formatted_query:
@@ -97,7 +104,12 @@ def bool_search(query):
                 andDocs = andDocs.difference(retrieved_docs)
             else: andDocs = andDocs.intersection(retrieved_docs)
         docs = docs.union(andDocs)
-    return docs
+
+    if(len(list(docs))>0):
+        image_data = retrieve_image_data((list(docs)))
+        results = list(image_data.values())[:MAX_NUM_RESULTS]
+        return results
+    else: return None
 
 def main():
     if len(sys.argv) != 2:
@@ -105,7 +117,7 @@ def main():
         sys.exit(1)
 
     query = sys.argv[1]
-    ids = bool_search(query)
+    ids = bool_search_db(query)
     
     image_data = retrieve_image_data(list(ids))
     captions = [i["caption"] for i in image_data.values()]

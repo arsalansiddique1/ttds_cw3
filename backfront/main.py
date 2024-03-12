@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
-from ranked_search_db import ranked_tfidf_search, ranked_search
+from ranked_search_db import ranked_search_db
+from boolean_search_db import bool_search_db
 
 # # Load environment variables from the .env file
 load_dotenv()
@@ -26,10 +27,11 @@ def read_root():
 @app.get("/search")
 def search(query: str):
     # Implement search logic here
-    results = ranked_search(query)
+    results = ranked_search_db(query)
     return {"results": results}
 
 @app.get("/boolean_search")
 def boolean_search(query: str):
     # Implement search logic here
-    return None
+    results = bool_search_db(query)
+    return {"results": results}

@@ -34,12 +34,14 @@ def ranked_tfidf_search(query):
 
 
 MAX_NUM_RESULTS = 500
-def ranked_search(query):
+def ranked_search_db(query):
     tfidfs = ranked_tfidf_search(query)
     sorted_results = sorted(tfidfs, key=tfidfs.get, reverse=True)[:MAX_NUM_RESULTS]
-    image_data = retrieve_image_data(sorted_results)
-    results = [image_data[int(i)] for i in sorted_results if int(i) in image_data]
-    return results
+    if (len(sorted_results) > 0):
+        image_data = retrieve_image_data(sorted_results)
+        results = [image_data[int(i)] for i in sorted_results if int(i) in image_data]
+        return results
+    else: return None
     
 def main():
     if len(sys.argv) != 2:
