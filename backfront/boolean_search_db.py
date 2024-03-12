@@ -43,7 +43,7 @@ def proximity_2_terms(term1_locs, term2_locs, dist, phrase=False):
 #phrase search by using proximity_2_terms with distance 1
 def phrasesearch(query):
     terms = preprocess_text(query, stopwords)
-
+    print(terms)
     if(len(terms)==1): return getDocs(terms[0]) #phrase with only one word is term search
 
     output = set()
