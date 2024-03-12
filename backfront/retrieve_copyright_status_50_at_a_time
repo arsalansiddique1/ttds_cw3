@@ -33,7 +33,7 @@ def fetch_image_metadata_bulk(file_names):
         'format': 'json'
     }
     response = requests.get(api_base_url, params=params).json() # Add headers=headers if using with authentification
-    print(response)
+    #print(response)
     
     name_mapping = {}
 
@@ -41,8 +41,7 @@ def fetch_image_metadata_bulk(file_names):
     if 'query' in response and 'normalized' in response['query']:
         print("query", response['query'])
         for norm in response['query']['normalized']:
-            print("norm", norm)
-            # Map the normalized 'to' back to the original 'from'
+            # print("norm", norm)
             normed_name = norm['to'].replace('File:', '')
             original_name = norm['from'].replace('File:', '')
             #name_mapping[normed_name] = original_name
@@ -62,8 +61,8 @@ def fetch_image_metadata_bulk(file_names):
             title = page['title'].replace('File:', '')
             images_info[title] = []
             
-    print("Name Mapping:", name_mapping)
-    print("Images Info Keys:", images_info.keys())
+    #print("Name Mapping:", name_mapping)
+    #print("Images Info Keys:", images_info.keys())
 
     
     return images_info, name_mapping
@@ -76,18 +75,18 @@ def process_batch(batch, conn):
     images_info, name_mapping = fetch_image_metadata_bulk(file_names)
 
     records_to_insert = []
-    print( 'images_info'+ str(images_info))
+    #print( 'images_info'+ str(images_info))
     
     
     for document_id, file_name in batch:
-        print('file_name ' + str (file_name))
+        #print('file_name ' + str (file_name))
         #lookup_name = '/'.join(file_name.split('/')[2:])
         lookup_name = file_name
-        print( 'lookup_name '+ str(lookup_name))
+        #print( 'lookup_name '+ str(lookup_name))
         normalized_name = name_mapping.get(lookup_name, lookup_name)
         
         
-        print( 'normalized_name '+ str(normalized_name))
+        #print( 'normalized_name '+ str(normalized_name))
         
         if normalized_name in images_info:
             try:
@@ -150,7 +149,7 @@ def extract_image_license_date_size_bulk(image_name, images_info):
 def fetch_and_process_images(db_engine):
     with db_engine.connect() as conn:
         offset = 0
-        batch_size = 2
+        batch_size = 5
         
         while True:
             fetch_stmt = sqlalchemy.text("""
@@ -167,7 +166,7 @@ def fetch_and_process_images(db_engine):
             offset += batch_size
             # if offset % 5000 == 0:
             #     print(f'Processed {offset} images')
-            if offset % 2 == 0:
+            if offset % 10 == 0:
                 break
             
           
