@@ -100,7 +100,8 @@ def bool_search_db(query):
         docs = docs.union(andDocs)
 
     image_data = retrieve_image_data((list(docs)))
-    results = image_data[MAX_NUM_RESULTS]
+    print(image_data)
+    results = image_data[:MAX_NUM_RESULTS]
     return results
 
 def main():
