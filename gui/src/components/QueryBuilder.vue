@@ -22,7 +22,7 @@
           <select v-model="condition.logic" class="logic-dropdown" >
             <option value="AND">AND</option>
             <option value="OR">OR</option>
-            <option value="AND_NOT">AND NOT</option>
+            <option value="AND NOT">AND NOT</option>
           </select>
           <select v-model="condition.type">
             <option value="free">Free Text</option>
