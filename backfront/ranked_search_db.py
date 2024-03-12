@@ -28,11 +28,12 @@ N = 8566975 #should be recalculated every now and then
 
 def get_matching_rows(terms):
     with conn.cursor() as cursor:
+        str_terms = ', '.join(terms)
         sql =f"""
-        SELECT * FROM terms_json WHERE term = ANY(:terms);
+        SELECT * FROM terms_json WHERE term = ANY({str_terms});
         """
         # Bind the term parameter to the statement
-        result = cursor.execute(sql, (terms,))
+        result = cursor.execute(sql)
 
         matching_rows = result.fetchall()
 
