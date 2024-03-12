@@ -13,7 +13,18 @@ conn = psycopg2.connect(
     host=DB_HOST
 )
 
-def get_matching_rows(terms):
+def fetch_db_single_term(term):
+    with conn.cursor() as cursor:
+        sql =f"""
+        SELECT * FROM terms_json WHERE term = {term};
+        """
+        cursor.execute(sql)
+
+        matching_rows = cursor.fetchall()
+
+        return matching_rows
+
+def fetch_db_multiple_terms(terms):
     with conn.cursor() as cursor:
         sql =f"""
         SELECT * FROM terms_json WHERE term = ANY(%s);

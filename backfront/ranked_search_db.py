@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 from utils import *
-from db_retrieval_functions import get_matching_rows, retrieve_image_data
+from db_retrieval_functions import fetch_db_multiple_terms, retrieve_image_data
 
 stopwords = extract_stopwords("ttds_2023_english_stop_words.txt")
 N = 8566975 #should be recalculated every now and then
@@ -16,7 +16,7 @@ def ranked_tfidf_search(query):
     def tfidf(tf, df):
         return (1 + np.log10(tf)) * (np.log10(N/df))
 
-    term_freqs = get_matching_rows(query)
+    term_freqs = fetch_db_multiple_terms(query)
     for term in term_freqs:
         positions = term[1]
         docfreq = len(positions)

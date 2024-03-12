@@ -6,32 +6,10 @@ from nltk.stem import PorterStemmer
 import pandas as pd
 import sys
 from utils import preprocess_text, extract_stopwords
-from old_ranked_search_db import retrieve_image_data
-import connect_connector
-import sqlalchemy
-
-stopwords = extract_stopwords("ttds_2023_english_stop_words.txt")
-
-db: sqlalchemy.engine.base.Engine = connect_connector.connect_with_connector()
+from db_retrieval_functions import retrieve_image_data, fetch_db_single_term
 
 stopwords = extract_stopwords("ttds_2023_english_stop_words.txt")
 N = 8566975 #should be recalculated every now and then
-
-
-def get_matching_rows(term):
-    with db.connect() as conn:
-        sql =f"""
-        SELECT * FROM terms_json WHERE term = :term;
-        """
-
-        stmt = sqlalchemy.text(sql)
-        # Bind the term parameter to the statement
-        stmt = stmt.bindparams(term=term)
-        result = conn.execute(stmt)
-
-        matching_rows = result.fetchall()
-
-        return matching_rows
 
 #treat query by splitting it into parts by identifying AND or OR
 def query_handler(query):
@@ -68,8 +46,8 @@ def phrasesearch(query):
 
     output = set()
     for i in range(len(terms)-1):
-        term1_locs = get_matching_rows[0](terms[i])[1]
-        term2_locs = get_matching_rows[0](terms[i+1])[1]
+        term1_locs = fetch_db_single_term[0](terms[i])[1]
+        term2_locs = fetch_db_single_term[0](terms[i+1])[1]
 
         results_two_terms = set(proximity_2_terms(term1_locs, term2_locs, 1, phrase=True))
 
@@ -86,8 +64,8 @@ def getDocs(searchTerm):
         processed_term1 = preprocess_text(proximity_args[1], stopwords).pop()
         processed_term2 = preprocess_text(proximity_args[2], stopwords).pop()
 
-        term1_locs = get_matching_rows(processed_term1)[0][1]
-        term2_locs = get_matching_rows(processed_term2)[0][1]
+        term1_locs = fetch_db_single_term(processed_term1)[0][1]
+        term2_locs = fetch_db_single_term(processed_term2)[0][1]
 
         searchResult = set(proximity_2_terms(term1_locs, term2_locs, int(proximity_args[0])))
         return searchResult
@@ -97,12 +75,12 @@ def getDocs(searchTerm):
     elif "NOT " in searchTerm:  #if NOT get complement
         searchTerm = searchTerm[4:]
         searchTerm = preprocess_text(searchTerm, stopwords).pop() #add preprocess stop and stem
-        searchResult = set(get_matching_rows(searchTerm)[0][1])
+        searchResult = set(fetch_db_single_term(searchTerm)[0][1])
         return searchResult
     else:                       #otherwise just get the docs associated with term
         searchTerm = preprocess_text(searchTerm, stopwords).pop() #preprocess search term
-        print(get_matching_rows(searchTerm))
-        searchResult = set(get_matching_rows(searchTerm)[0][1])
+        print(fetch_db_single_term(searchTerm))
+        searchResult = set(fetch_db_single_term(searchTerm)[0][1])
         return searchResult
 
 #boolean search, standard search performed. deals with allqueries even if no AND or OR are identified
