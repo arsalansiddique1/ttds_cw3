@@ -138,7 +138,7 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
         print("Running page rank iteration", iteration)
 
         threads = [threading.Thread(
-            target=process_node_thread, args=(graph, current, d, n, node_lists[i])
+            target=process_node_thread, args=(graph, current, d, n, node_lists[i], i)
         )
                    for i in range(thread_count)]
 
@@ -158,7 +158,9 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-10, max_iter=100):
     return results
 
 
-def process_node_thread(graph, current, d, n, nodes):
+def process_node_thread(graph, current, d, n, nodes, i):
+    print("Thread", i, "started")
+
     # this is algorithm from the Web Search 1 lecture slides
     for node in nodes:
         graph.nodes[node]['pr'][current] = \
@@ -166,6 +168,8 @@ def process_node_thread(graph, current, d, n, nodes):
              +
              d * sum([graph.nodes[y]['pr'][not current] / len(list(graph.successors(y)))
                       for y in graph.predecessors(node)]))
+
+    print("Thread", i, "ended")
 
 # def write_to_db(results_file):
 #     # see this page for instructions to connect to DB:
