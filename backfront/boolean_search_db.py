@@ -60,7 +60,7 @@ def phrasesearch(query):
 def getDocs(searchTerm):
     print("x", searchTerm)
     searchTerm = searchTerm.strip()
-    if searchTerm[0] == '#':    #if hashtag then proximity search
+    if searchTerm[0] == '~':    #if hashtag then proximity search
         print("prox search ", searchTerm)
         proximity_args = re.findall(r"[\w']+", searchTerm)
 
