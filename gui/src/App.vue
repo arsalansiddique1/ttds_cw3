@@ -327,8 +327,8 @@ img {
 }
 
 .portfolio-lightbox__content {
-  max-width: 25vw;
-  max-height: 80vh;
+  max-width: 50vw;
+  max-height: 90vh;
   background: rgba(150, 150, 150, 0.95);
   padding: 1em;
   position: relative;
@@ -337,7 +337,7 @@ img {
 
 .portfolio-lightbox__content img {
   max-width: 100%; /* Ensure the image fits within its container */
-  max-height: 50vh; /* Limit the maximum height of the image */
+  max-height: 35vh; /* Limit the maximum height of the image */
   object-fit: contain; /* Maintain aspect ratio while fitting the image within the specified dimensions */
 }
 
