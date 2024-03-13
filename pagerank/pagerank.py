@@ -141,7 +141,7 @@ def algorithm(graph: nx.DiGraph, d=0.85, stopping=1e-14, max_iter=20):
 #
 #     with open(results_file) as results_reader, db.connect() as conn:
 #         stmt = sqlalchemy.text(
-#             "INSERT INTO pagerank (title, score) VALUES (:title, :score)"
+#             "UPDATE captions2_copy SET pagerank_score=:score WHERE title=:title;"
 #         )
 #         for line in results_file:
 #             title, score = line.split('\t')
