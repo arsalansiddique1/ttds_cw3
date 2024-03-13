@@ -1,6 +1,5 @@
 const API_URL = 'http://146.148.26.219:8000/';
-// const API_URL = 'http://127.0.0.1:8000/';
-const BASE_URL = "https://upload.wikimedia.org/wikipedia/commons/";
+//const API_URL = 'http://127.0.0.1:8000/';
 
 export default {
   search(searchTerm) {
@@ -12,7 +11,8 @@ export default {
         if (result && result.results) { // Check if result is not null and has results property
           const data = result.results.map(item => ({
             id: item.id,
-            url: BASE_URL + item.filename,
+            url: item.filename,
+            filename: item.filename,
             title: item.title,
             caption: item.caption
           }));
@@ -37,7 +37,8 @@ export default {
         if (result && result.results) { // Check if result is not null and has results property
           const data = result.results.map(item => ({
             id: item.id,
-            url: BASE_URL + item.filename,
+            url: item.filename,
+            filename: item.filename,
             title: item.title,
             caption: item.caption
           }));
