@@ -29,7 +29,7 @@
           <a href="#portfolio" class="close"></a>
           <img :src="image.url">
           <p class="portfolio-lightbox__body">{{ image.caption }}</p>
-          <p>Date: {{ image.date || 'Unknown' }}, Size: {{ image.size || 'Unknown' }}, License: {{ image.license || 'Unknown' }}</p>
+          <p>Date: {{ image.date || 'Unknown date' }}, Size: {{ image.size || 'Unknown size' }}, License: {{ image.license || 'Unknown size' }}</p>
           <a :href="'https://en.wikipedia.org/wiki/' + image.title.replace(/\s+/g, '_')" class="portfolio-lightbox__website" target="_blank" style="color: white ;">Full article: {{ image.title }}</a>
         </div>
       </div>
