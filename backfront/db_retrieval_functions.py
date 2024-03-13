@@ -38,7 +38,8 @@ def fetch_db_multiple_terms(terms):
 
 def retrieve_image_data(ids):
     with conn.cursor() as cursor:
-        sql = f"SELECT DISTINCT ON (title, caption) * FROM captions2_copy WHERE id IN %s;"
+        sql = f"SELECT DISTINCT ON (title, caption) * FROM captions2_copy C LEFT OUTER JOIN classification_info as info ON C.id = info.id WHERE C.id IN %s AND pagerank_score IS NOT NULL;;"
+        #sql = f"SELECT DISTINCT ON (title, caption) * FROM captions2_copy WHERE id IN %s AND pagerank_score IS NOT NULL;"
 
         # Execute the query with the list of IDs as a parameter
         cursor.execute(sql, (tuple(ids),))
