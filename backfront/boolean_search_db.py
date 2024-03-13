@@ -43,7 +43,6 @@ def proximity_2_terms(term1_locs, term2_locs, dist, phrase=False):
 #phrase search by using proximity_2_terms with distance 1
 def phrasesearch(query):
     terms = preprocess_text(query, stopwords)
-    print(terms)
     if(len(terms)==1): return getDocs(terms[0]) #phrase with only one word is term search
 
     output = set()
@@ -60,10 +59,8 @@ def phrasesearch(query):
 
 #get the documents for the different search cases after splitting for AND or OR or operators
 def getDocs(searchTerm):
-    print("x", searchTerm)
     searchTerm = searchTerm.strip()
     if searchTerm[0] == '~':    #if hashtag then proximity search
-        print("prox search ", searchTerm)
         proximity_args = re.findall(r"[\w']+", searchTerm)
 
         processed_term1 = preprocess_text(proximity_args[1], stopwords).pop()
@@ -90,10 +87,8 @@ def getDocs(searchTerm):
 MAX_NUM_RESULTS = 500
 #boolean search, standard search performed. deals with allqueries even if no AND or OR are identified
 def bool_search_db(query):
-    print(query)
     query = query.strip()
     formatted_query = query_handler(query)
-    print(formatted_query)
 
     docs = set() 
     for ors in formatted_query:
