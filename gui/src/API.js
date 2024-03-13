@@ -14,7 +14,10 @@ export default {
             url: item.filename,
             filename: item.filename,
             title: item.title,
-            caption: item.caption
+            caption: item.caption,
+            date: item.date,
+            license: item.license,
+            size: item.size
           }));
           console.log(result);
           console.log(data);
@@ -40,7 +43,10 @@ export default {
             url: item.filename,
             filename: item.filename,
             title: item.title,
-            caption: item.caption
+            caption: item.caption,
+            date: item.date,
+            license: item.license,
+            size: item.size
           }));
           console.log(result);
           console.log(data);
