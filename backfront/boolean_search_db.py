@@ -47,10 +47,12 @@ def phrasesearch(query):
 
     output = set()
     for i in range(len(terms)-1):
-        term1_locs = fetch_db_single_term(terms[i])[0][1]
-        term2_locs = fetch_db_single_term(terms[i+1])[0][1]
+        term1_locs = fetch_db_single_term(terms[i])
+        term2_locs = fetch_db_single_term(terms[i+1])
 
-        results_two_terms = set(proximity_2_terms(term1_locs, term2_locs, 1, phrase=True))
+        if len(term1_locs) > 0 and len(term2_locs) > 0:
+            results_two_terms = set(proximity_2_terms(term1_locs[0][1], term2_locs[0][1], 1, phrase=True))
+        else: results_two_terms = set()
 
         if i == 0: output = output.union(results_two_terms)
         else: output = output.intersection(results_two_terms)
@@ -66,23 +68,29 @@ def getDocs(searchTerm):
         processed_term1 = preprocess_text(proximity_args[1], stopwords).pop()
         processed_term2 = preprocess_text(proximity_args[2], stopwords).pop()
 
-        term1_locs = fetch_db_single_term(processed_term1)[0][1]
-        term2_locs = fetch_db_single_term(processed_term2)[0][1]
+        term1_locs = fetch_db_single_term(processed_term1)
+        term2_locs = fetch_db_single_term(processed_term2)
 
-        searchResult = set(proximity_2_terms(term1_locs, term2_locs, int(proximity_args[0])))
+        if len(term1_locs) > 0 and len(term2_locs) > 0:
+            searchResult = set(proximity_2_terms(term1_locs[0][1], term2_locs[0][1], int(proximity_args[0])))
+        else: searchResult = set()
         return searchResult
+    
     elif searchTerm[0] == '"':  #if quotation marks phrase seach
         searchResult = phrasesearch(searchTerm)
         return searchResult
     elif "NOT " in searchTerm:  #if NOT get complement
         searchTerm = searchTerm[4:]
         searchTerm = preprocess_text(searchTerm, stopwords).pop() #add preprocess stop and stem
-        searchResult = set(fetch_db_single_term(searchTerm)[0][1])
-        return searchResult
+        #searchResult = set(fetch_db_single_term(searchTerm)[0][1])
+        searchResult = fetch_db_single_term(searchTerm)
+        if len(searchResult) > 0: return set(searchResult[0][1])
+        else: return set()
     else:                       #otherwise just get the docs associated with term
         searchTerm = preprocess_text(searchTerm, stopwords).pop() #preprocess search term
-        searchResult = set(fetch_db_single_term(searchTerm)[0][1])
-        return searchResult
+        searchResult = fetch_db_single_term(searchTerm)
+        if len(searchResult) > 0: return set(searchResult[0][1])
+        else: return set()
 
 MAX_NUM_RESULTS = 500
 #boolean search, standard search performed. deals with allqueries even if no AND or OR are identified

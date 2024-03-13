@@ -29,6 +29,7 @@
           <a href="#portfolio" class="close"></a>
           <img :src="image.url">
           <p class="portfolio-lightbox__body">{{ image.caption }}</p>
+          <p>Date: {{ image.date || 'Unknown date' }}, Size: {{ image.size || 'Unknown size' }}, License: {{ image.license || 'Unknown size' }}</p>
           <a :href="'https://en.wikipedia.org/wiki/' + image.title.replace(/\s+/g, '_')" class="portfolio-lightbox__website" target="_blank" style="color: white ;">Full article: {{ image.title }}</a>
         </div>
       </div>
@@ -128,6 +129,9 @@ export default {
                 url: image.url,
                 filename: image.filename,
                 caption: image.caption,
+                date: image.date,
+                license: image.license,
+                size: image.size,
                 showCaption: false, // Initialize showCaption to false
               }));
               this.totalPages = Math.ceil(this.images.length / this.pageSize);
@@ -151,6 +155,9 @@ export default {
             url: image.url,
             filename: image.filename,
             caption: image.caption,
+            date: image.date,
+            license: image.license,
+            size: image.size,
             showCaption: false, // Initialize showCaption to false
           }));
           this.totalPages = Math.ceil(this.images.length / this.pageSize);
