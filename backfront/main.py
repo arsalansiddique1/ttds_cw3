@@ -25,9 +25,16 @@ def read_root():
     return {"message": "Welcome to your FastAPI app"}
 
 @app.get("/search")
-def search(query: str):
+def search(query: str, queryExpansion: bool = False):
     # Implement search logic here
-    results = ranked_search_db(query)
+    if queryExpansion:
+        #ARSALAN CODE HERE
+        #call your function
+        #call ranked_search_db(modified_query)
+        return {"results": None}
+    else:
+        #DEFAULT: DO NOT CHANGE
+        results = ranked_search_db(query)
     return {"results": results}
 
 @app.get("/boolean_search")

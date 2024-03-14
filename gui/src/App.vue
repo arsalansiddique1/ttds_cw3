@@ -9,6 +9,9 @@
         <img v-else src="../images/up.png" alt=""> <!-- New icon when showQueryBuilder is true -->
       </button>
     </form>
+    <label for="queryExpansion" style="font-size: 14px;">Use Query Expansion</label>
+    <input id="queryExpansion" type="checkbox" v-model="queryExpansionEnabled" style="font-size: 12px;">
+
     <QueryBuilder v-if="showQueryBuilder" @clicked="onClickChild"></QueryBuilder>
     <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
     <div  v-if="!loading && retrievalTime > 0" class="retrieval-time">
@@ -67,12 +70,12 @@ export default {
       showQueryBuilder: false, // Add a boolean data property to control visibility
       retrievalTime: 0,
       loadedImages: [],
+      queryExpansionEnabled: false,
     };
   },
   components: {
     QueryBuilder
   },
-
   methods: {
     loadImages() {
       const BASE_URL = "https://upload.wikimedia.org/wikipedia/commons/";  
@@ -149,7 +152,7 @@ export default {
       this.currentPage = 1; // Reset currentPage to 1
       this.images = [];
       this.preloadedImages = []; // Reset preloadedImages
-      API.search(this.searchTerm)
+      API.search(this.searchTerm, this.queryExpansionEnabled)
         .then(images => {
           this.images = images.map(image => ({
             id: image.id,
@@ -174,7 +177,10 @@ export default {
     toggleQueryBuilder() {
       this.showQueryBuilder = !this.showQueryBuilder;
     },
-
+    toggleQueryExpansion() {
+      // Toggle the value of queryExpansionEnabled
+      this.queryExpansionEnabled = !this.queryExpansionEnabled;
+    },
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;
@@ -302,7 +308,7 @@ img {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   grid-gap: 1em;
-  padding: 5em;
+  padding: 1em 3em; /* 1em top and bottom, 5em left and right */
   background-color: white;
   align-content: start;
 }
