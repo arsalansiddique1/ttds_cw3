@@ -2,8 +2,8 @@ const API_URL = 'http://146.148.26.219:8000/';
 //const API_URL = 'http://127.0.0.1:8000/';
 
 export default {
-  search(searchTerm) {
-    const url = `${API_URL}search?query=${searchTerm}`;
+  search(searchTerm, queryExpansion) {
+    const url = `${API_URL}search?query=${searchTerm}&queryExpansion=${queryExpansion}`;
     console.log(url)
     return fetch(url)
       .then(response => response.json())
