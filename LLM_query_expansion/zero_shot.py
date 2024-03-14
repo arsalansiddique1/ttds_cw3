@@ -10,24 +10,25 @@ from keywords_extraction import *
 classifier = pipeline("zero-shot-classification", model = "facebook/bart-large-mnli")
 
 
-query = "pakistan and it's people"
+query = "a lazy cat"
 start_time = time.perf_counter()  # Start timing
 keywords = extract_keywords(query)
-
+rel_terms = []
 for keyword in keywords:
     synonym_list = find_synonyms(keyword)
     if synonym_list:
         if (len(synonym_list) > 5):
             result = classifier(query, synonym_list[:5], multi_label = True)
-            print(result)
+            rel_terms.append(result['labels'][0])
         else:
             result = classifier(query, synonym_list[:5], multi_label = True)
-            print(result)
+            rel_terms.append(result['labels'][0])
             
     
 end_time = time.perf_counter()  # End timing
 duration = end_time - start_time  # Calculate duration
 print(f"Classification time: {duration:.6f} seconds")
+print(rel_terms)
 
 
 
