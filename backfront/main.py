@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 from ranked_search_db import ranked_search_db
 from boolean_search_db import bool_search_db
-from ..LLM_query_expansion.zero_shot import get_relevant_terms
+from zero_shot import get_relevant_terms
 # # Load environment variables from the .env file
 load_dotenv()
 
