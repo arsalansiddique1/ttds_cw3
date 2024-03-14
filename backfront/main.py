@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 from ranked_search_db import ranked_search_db
 from boolean_search_db import bool_search_db
-
+from ..LLM_query_expansion.zero_shot import get_relevant_terms
 # # Load environment variables from the .env file
 load_dotenv()
 
@@ -31,7 +31,10 @@ def search(query: str, queryExpansion: bool = False):
         #ARSALAN CODE HERE
         #call your function
         #call ranked_search_db(modified_query)
-        return {"results": None}
+        rel_terms = get_relevant_terms(query)
+        extended_query = query + " " + " ".join(rel_terms)
+        results = ranked_search_db(extended_query)
+        return {"results": results}
     else:
         #DEFAULT: DO NOT CHANGE
         results = ranked_search_db(query)

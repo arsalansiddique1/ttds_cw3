@@ -12,15 +12,6 @@ dictionary = MultiDictionary()
 # Load English tokenizer, tagger, parser, NER, and word vectors
 nlp = spacy.load("en_core_web_sm")
 
-'''
-def find_synonyms(word):
-    synonyms = set()
-    for syn in wordnet.synsets(word):
-        for lemma in syn.lemmas():
-            if lemma.name().lower() != word.lower():  # Ensure the original word isn't added as a synonym
-                synonyms.add(lemma.name())
-    return list(synonyms)
-'''
 
 def find_synonyms(word):
     return dictionary.synonym('en', word)
@@ -31,8 +22,7 @@ def extract_keywords(text):
     keywords = [token.text for token in doc if token.pos_ in ('NOUN', 'PROPN', 'ADJ')]
     return keywords
 
-query = "Pakistan and it's people"
-keywords = extract_keywords(query)
+
 
 
 '''

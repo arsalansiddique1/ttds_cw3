@@ -1,16 +1,15 @@
 from transformers import pipeline
 import pandas as pd
-import time
+#import time
 from keywords_extraction import *
 
 
-# Load the dataset
-#df = pd.read_csv('dataset.csv')
+
 def get_relevant_terms(query):
     classifier = pipeline("zero-shot-classification", model = "facebook/bart-large-mnli")
 
 
-    start_time = time.perf_counter()  # Start timing
+    #start_time = time.perf_counter()  # Start timing
     keywords = extract_keywords(query)
     rel_terms = []
     for keyword in keywords:
@@ -24,13 +23,14 @@ def get_relevant_terms(query):
                 rel_terms.append(result['labels'][0])
                 
         
-    end_time = time.perf_counter()  # End timing
-    duration = end_time - start_time  # Calculate duration
+    #end_time = time.perf_counter()  # End timing
+    #duration = end_time - start_time  # Calculate duration
     #print(f"Classification time: {duration:.6f} seconds")
     return rel_terms
 
 
-result = print(get_relevant_terms("this is a test"))
+
+
 
 
 
