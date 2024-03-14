@@ -28,9 +28,6 @@ def read_root():
 def search(query: str, queryExpansion: bool = False):
     # Implement search logic here
     if queryExpansion:
-        #ARSALAN CODE HERE
-        #call your function
-        #call ranked_search_db(modified_query)
         rel_terms = get_relevant_terms(query)
         extended_query = query + " " + " ".join(rel_terms)
         results = ranked_search_db(extended_query)
