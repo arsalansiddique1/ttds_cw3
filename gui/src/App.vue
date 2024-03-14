@@ -9,8 +9,8 @@
         <img v-else src="../images/up.png" alt=""> <!-- New icon when showQueryBuilder is true -->
       </button>
     </form>
-    <label for="queryExpansion" style="font-size: 14px;">Use Query Expansion</label>
-    <input id="queryExpansion" type="checkbox" v-model="queryExpansionEnabled" style="font-size: 12px;">
+    <label v-if="!showQueryBuilder" for="queryExpansion" style="font-size: 14px;">Use Query Expansion</label>
+    <input v-if="!showQueryBuilder" id="queryExpansion" type="checkbox" v-model="queryExpansionEnabled" style="font-size: 12px;">
 
     <QueryBuilder v-if="showQueryBuilder" @clicked="onClickChild"></QueryBuilder>
     <img v-if="loading" class="loading-image" src="https://assets-v2.lottiefiles.com/a/83c5f61a-1181-11ee-8dbf-6fd67f708c77/NBb1C3ME0z.gif">
