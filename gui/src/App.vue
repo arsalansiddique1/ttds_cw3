@@ -16,7 +16,6 @@
     </div>
     <div v-if="!loading && images.length > 0" class="portfolio" id = "portfolio">
       <div class="portfolio__item" v-for="(image, index) in loadedImages" :key="image.id">
-        <!-- <img :src="image.url" v-if="image.valid" @click="openLightbox(index)"> -->
         <img :src="image.url" @click="openLightbox(index)"> <!-- change to line above to filter invalid images -->
       </div>
     </div>
@@ -29,7 +28,8 @@
           <a href="#portfolio" class="close"></a>
           <img :src="image.url">
           <p class="portfolio-lightbox__body">{{ image.caption }}</p>
-          <p>Date: {{ image.date || 'Unknown date' }}, Size: {{ image.size || 'Unknown size' }}, License: {{ image.license || 'Unknown size' }}</p>
+          <p>Date: {{ image.date || 'Unknown' }}, License: {{ image.license || 'Unknown' }}</p>
+          <p>Size: {{ image.size || 'Unknown number of' }} bytes, Dimensions: {{ image.width || 'Unknown' }} x {{ image.height || 'Unknown' }} pixels</p>
           <a :href="'https://en.wikipedia.org/wiki/' + image.title.replace(/\s+/g, '_')" class="portfolio-lightbox__website" target="_blank" style="color: white ;">Full article: {{ image.title }}</a>
         </div>
       </div>
@@ -132,6 +132,8 @@ export default {
                 date: image.date,
                 license: image.license,
                 size: image.size,
+                width: image.width,
+                height: image.height,
                 showCaption: false, // Initialize showCaption to false
               }));
               this.totalPages = Math.ceil(this.images.length / this.pageSize);
@@ -158,6 +160,8 @@ export default {
             date: image.date,
             license: image.license,
             size: image.size,
+            width: image.width,
+            height: image.height,
             showCaption: false, // Initialize showCaption to false
           }));
           this.totalPages = Math.ceil(this.images.length / this.pageSize);

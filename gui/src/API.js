@@ -17,7 +17,9 @@ export default {
             caption: item.caption,
             date: item.date,
             license: item.license,
-            size: item.size
+            size: item.size,
+            width: item.width,
+            height: item.height
           }));
           console.log(result);
           console.log(data);
@@ -46,7 +48,9 @@ export default {
             caption: item.caption,
             date: item.date,
             license: item.license,
-            size: item.size
+            size: item.size,
+            width: item.width,
+            height: item.height
           }));
           console.log(result);
           console.log(data);
