@@ -30,6 +30,7 @@ def search(query: str, queryExpansion: bool = False):
     if queryExpansion:
         rel_terms = get_relevant_terms(query)
         extended_query = query + " " + " ".join(rel_terms)
+        print(extended_query)
         results = ranked_search_db(extended_query)
         return {"results": results}
     else:
