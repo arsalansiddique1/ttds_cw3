@@ -1,6 +1,7 @@
-q1: america
-q2: allah AND NOT birka
-q3: #6(turbofan, pylon)
-q4: "black diamond"
-q5: sydney
-q6: sydney
+q1: bench
+q2: graduat
+q3: black
+q4: diamond
+q5: high
+q6: august
+q7: america

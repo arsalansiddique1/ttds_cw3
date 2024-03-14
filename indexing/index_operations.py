@@ -6,7 +6,7 @@ import json
 from itertools import filterfalse
 from collections import defaultdict
 from nltk.stem import PorterStemmer
-from memory_profiler import profile
+#from memory_profiler import profile
 
 
 #@profile #Meauring memory consumption for creating indices

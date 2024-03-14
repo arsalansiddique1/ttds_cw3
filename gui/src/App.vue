@@ -29,6 +29,7 @@
           <a href="#portfolio" class="close"></a>
           <img :src="image.url">
           <p class="portfolio-lightbox__body">{{ image.caption }}</p>
+          <p>Date: {{ image.date || 'Unknown date' }}, Size: {{ image.size || 'Unknown size' }}, License: {{ image.license || 'Unknown size' }}</p>
           <a :href="'https://en.wikipedia.org/wiki/' + image.title.replace(/\s+/g, '_')" class="portfolio-lightbox__website" target="_blank" style="color: white ;">Full article: {{ image.title }}</a>
         </div>
       </div>
@@ -74,23 +75,32 @@ export default {
 
   methods: {
     loadImages() {
-      //let myArray = []; // Reset loaded images array
-      
+      const BASE_URL = "https://upload.wikimedia.org/wikipedia/commons/";  
+      const ALT_URL = "https://upload.wikimedia.org/wikipedia/en/"    
       const startIndex = (this.currentPage - 1) * this.pageSize;
       const endIndex = this.currentPage * this.pageSize;
 
       let imageArray = this.images.slice(startIndex, endIndex)
-      let outputImages = []
 
       for (let i = 0; i < imageArray.length; i++) {
         const image = imageArray[i];
         const img = new Image();
-        img.src = image.url;
+        const filename = image.filename
+        img.src = BASE_URL + filename;
         img.valid = true;
         imageArray[i].valid = true;
-        outputImages.push(img)
+        imageArray[i].url = BASE_URL + filename;
         img.onerror = () => {
-          imageArray[i].valid = false;
+          //try loading one more time with this alternative url
+          const image = imageArray[i];
+          const img = new Image();
+          img.src = BASE_URL + image.filename;
+          img.valid = true;
+          imageArray[i].valid = true;
+          imageArray[i].url = ALT_URL + filename;
+          img.onerror = () => {
+            imageArray[i].valid = false;
+          };
         };
         
       }  
@@ -117,7 +127,11 @@ export default {
                 id: image.id,
                 title: image.title,
                 url: image.url,
+                filename: image.filename,
                 caption: image.caption,
+                date: image.date,
+                license: image.license,
+                size: image.size,
                 showCaption: false, // Initialize showCaption to false
               }));
               this.totalPages = Math.ceil(this.images.length / this.pageSize);
@@ -139,7 +153,11 @@ export default {
             id: image.id,
             title: image.title,
             url: image.url,
+            filename: image.filename,
             caption: image.caption,
+            date: image.date,
+            license: image.license,
+            size: image.size,
             showCaption: false, // Initialize showCaption to false
           }));
           this.totalPages = Math.ceil(this.images.length / this.pageSize);
@@ -316,8 +334,8 @@ img {
 }
 
 .portfolio-lightbox__content {
-  max-width: 25vw;
-  max-height: 80vh;
+  max-width: 50vw;
+  max-height: 90vh;
   background: rgba(150, 150, 150, 0.95);
   padding: 1em;
   position: relative;
@@ -326,7 +344,7 @@ img {
 
 .portfolio-lightbox__content img {
   max-width: 100%; /* Ensure the image fits within its container */
-  max-height: 50vh; /* Limit the maximum height of the image */
+  max-height: 35vh; /* Limit the maximum height of the image */
   object-fit: contain; /* Maintain aspect ratio while fitting the image within the specified dimensions */
 }
 
